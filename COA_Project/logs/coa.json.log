@@ -1,0 +1,102 @@
+{"timestamp": "2026-04-24T16:16:36.696383", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-24T16:16:36.730902", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "DRY RUN: Would execute: taskkill /F /PID 1234"}
+{"timestamp": "2026-04-24T16:16:36.734403", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Command execution blocked - no approval"}
+{"timestamp": "2026-04-24T16:16:37.906102", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:37.908512", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:37.909182", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by test_user", "scan_id": "COA-20260424161637"}
+{"timestamp": "2026-04-24T16:16:37.910388", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-24T16:16:38.414575", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.503572, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-24T16:16:38.416463", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-24T16:16:38.417420", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-24T16:16:38.420491", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:38.421168", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by john_123", "scan_id": "COA-20260424161638"}
+{"timestamp": "2026-04-24T16:16:38.422559", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-24T16:16:38.927556", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.504122, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-24T16:16:38.929001", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-24T16:16:38.929630", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-24T16:16:38.932377", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:39.436784", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:39.439478", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-24T16:16:39.441894", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-24T16:16:39.448218", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:20:22.916555", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:20:22.944499", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "DRY RUN: Would execute: taskkill /F /PID 1234"}
+{"timestamp": "2026-04-26T14:20:22.946463", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Command execution blocked - no approval"}
+{"timestamp": "2026-04-26T14:20:24.076942", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:24.078694", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:24.079206", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by test_user", "scan_id": "COA-20260426142024"}
+{"timestamp": "2026-04-26T14:20:24.080417", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:20:24.585057", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.503961, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-26T14:20:24.586604", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:20:24.587321", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:20:24.589720", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:24.590433", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by john_123", "scan_id": "COA-20260426142024"}
+{"timestamp": "2026-04-26T14:20:24.591421", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:20:25.094854", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.502784, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-26T14:20:25.096653", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:20:25.097420", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:20:25.100049", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:25.604819", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:25.607058", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:20:25.609511", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:20:25.615296", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:20:36.660277", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:20:36.665552", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "YARA not installed. Install with: pip install yara-python"}
+{"timestamp": "2026-04-26T14:20:36.708146", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:20:37.212394", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.50368, "connections": 3, "processes": 3}
+{"timestamp": "2026-04-26T14:20:37.214074", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:20:37.214734", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:23:30.557209", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:23:30.559021", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "YARA not installed. Install with: pip install yara-python"}
+{"timestamp": "2026-04-26T14:23:30.561595", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:23:31.065787", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.503561, "connections": 2, "processes": 3}
+{"timestamp": "2026-04-26T14:23:31.067219", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:23:31.068026", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:23:31.068737", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:31.069337", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by test", "scan_id": "COA-20260426142331"}
+{"timestamp": "2026-04-26T14:23:31.070220", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:23:31.573169", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.502354, "connections": 2, "processes": 3}
+{"timestamp": "2026-04-26T14:23:31.574795", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:23:31.575455", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:23:36.247148", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:23:36.315624", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "DRY RUN: Would execute: taskkill /F /PID 1234"}
+{"timestamp": "2026-04-26T14:23:36.318207", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Command execution blocked - no approval"}
+{"timestamp": "2026-04-26T14:23:37.452172", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:37.454483", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:37.455115", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by test_user", "scan_id": "COA-20260426142337"}
+{"timestamp": "2026-04-26T14:23:37.456306", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:23:37.960417", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.503496, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-26T14:23:37.962211", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:23:37.962945", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:23:37.965363", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:37.965966", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by john_123", "scan_id": "COA-20260426142337"}
+{"timestamp": "2026-04-26T14:23:37.966772", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-26T14:23:38.470390", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.502883, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-26T14:23:38.471863", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-26T14:23:38.472692", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-26T14:23:38.475153", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:38.978863", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:38.981125", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-26T14:23:38.983207", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-26T14:23:38.989252", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-27T08:01:56.889479", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-27T08:01:56.963060", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "DRY RUN: Would execute: taskkill /F /PID 1234"}
+{"timestamp": "2026-04-27T08:01:56.965782", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Command execution blocked - no approval"}
+{"timestamp": "2026-04-27T08:01:58.102681", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:58.104783", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:58.105499", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by test_user", "scan_id": "COA-20260427080158"}
+{"timestamp": "2026-04-27T08:01:58.106779", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-27T08:01:58.613112", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.51s", "duration": 0.505619, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-27T08:01:58.614888", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-27T08:01:58.615767", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-27T08:01:58.619016", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:58.620002", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Helpdesk scan requested by john_123", "scan_id": "COA-20260427080158"}
+{"timestamp": "2026-04-27T08:01:58.621125", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting parallel data collection"}
+{"timestamp": "2026-04-27T08:01:59.126345", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Data collection completed in 0.50s", "duration": 0.504426, "connections": 2, "processes": 4}
+{"timestamp": "2026-04-27T08:01:59.128183", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Starting threat analysis"}
+{"timestamp": "2026-04-27T08:01:59.129019", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Analysis complete: 0 threats found", "critical": 0, "high": 0}
+{"timestamp": "2026-04-27T08:01:59.132420", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:59.638011", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:59.641209", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
+{"timestamp": "2026-04-27T08:01:59.643872", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-27T08:01:59.651503", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}

@@ -1,0 +1,378 @@
+"""
+Council of Agents — Connected via Local Ollama LLM
+====================================================
+The 3 agents are connected through CrewAI orchestration.
+All agents share the same local llama3.1 model running on Ollama.
+
+How it works:
+    User → main.py → CouncilOfAgents → CrewAI → Each Agent → Ollama (localhost:11434) → llama3.1
+"""
+
+import requests
+from typing import Optional
+from utils.logger import logger
+from config.settings import (
+    LLM_MODEL, LLM_BASE_URL, LLM_TEMPERATURE, AGENT_CONFIG
+)
+
+
+class OllamaConnectionError(Exception):
+    """خطأ مخصص لمشاكل الاتصال بـ Ollama"""
+    pass
+
+
+def check_ollama_running(base_url: str = LLM_BASE_URL) -> bool:
+    """
+    التحقق إذا كان Ollama يعمل
+    Returns: True/False
+    """
+    try:
+        response = requests.get(f"{base_url}/api/tags", timeout=3)
+        return response.status_code == 200
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        return False
+
+
+def check_model_available(model_name: str, base_url: str = LLM_BASE_URL) -> bool:
+    """
+    التحقق إذا كان النموذج مثبتاً في Ollama
+    Returns: True/False
+    """
+    try:
+        response = requests.get(f"{base_url}/api/tags", timeout=3)
+        if response.status_code != 200:
+            return False
+
+        data = response.json()
+        installed_models = [m.get('name', '').split(':')[0] for m in data.get('models', [])]
+        model_base = model_name.split(':')[0]
+
+        return model_base in installed_models
+    except Exception:
+        return False
+
+
+def diagnose_ollama() -> dict:
+    """
+    تشخيص شامل لـ Ollama - يساعد على معرفة المشكلة
+    Returns: dict بتفاصيل التشخيص
+    """
+    diagnosis = {
+        'ollama_running': False,
+        'model_available': False,
+        'model_name': LLM_MODEL,
+        'base_url': LLM_BASE_URL,
+        'error': None,
+        'suggestion': None,
+    }
+
+    # فحص 1: هل Ollama يعمل؟
+    if not check_ollama_running():
+        diagnosis['error'] = 'Ollama is not running'
+        diagnosis['suggestion'] = (
+            'Start Ollama by running: ollama serve\n'
+            'Or download Ollama from: https://ollama.com/download'
+        )
+        return diagnosis
+
+    diagnosis['ollama_running'] = True
+
+    # فحص 2: هل النموذج متوفر؟
+    if not check_model_available(LLM_MODEL):
+        diagnosis['error'] = f"Model '{LLM_MODEL}' not found"
+        diagnosis['suggestion'] = (
+            f'Download the model by running: ollama pull {LLM_MODEL}\n'
+            f'Or change LLM_MODEL in config/settings.py to an installed model'
+        )
+        return diagnosis
+
+    diagnosis['model_available'] = True
+    return diagnosis
+
+
+# ==================== Lazy Imports for CrewAI ====================
+# نستخدم lazy imports لأن CrewAI ثقيل ولتجنب أخطاء عند فحص النظام فقط
+
+def _get_crewai():
+    """استيراد CrewAI فقط عند الحاجة"""
+    try:
+        from crewai import Agent, Task, Crew, Process
+        from langchain_community.llms import Ollama
+        return Agent, Task, Crew, Process, Ollama
+    except ImportError as e:
+        raise ImportError(
+            f"CrewAI or LangChain not installed: {e}\n"
+            f"Install with: pip install crewai langchain-community"
+        )
+
+
+class CouncilOfAgents:
+    """
+    مجلس الوكلاء الكامل — يدير الوكلاء الثلاثة عبر LLM محلي
+
+    Architecture:
+        ┌──────────────────────────────────────────┐
+        │  Ollama (http://localhost:11434)         │
+        │  └── llama3.1 model                      │
+        └─────────────┬────────────────────────────┘
+                      │
+            ┌─────────┼─────────┐
+            ▼         ▼         ▼
+        ┌───────┐ ┌───────┐ ┌───────┐
+        │Agent 1│ │Agent 2│ │Agent 3│
+        │(Eye)  │ │(Brain)│ │(Plan) │
+        └───────┘ └───────┘ └───────┘
+            │         │         │
+            └─────────┼─────────┘
+                      ▼
+              CrewAI orchestrator
+    """
+
+    def __init__(self, auto_diagnose: bool = True):
+        """
+        تهيئة المجلس
+
+        Args:
+            auto_diagnose: إذا True، يقوم بتشخيص Ollama قبل البدء
+        """
+        # تشخيص Ollama قبل تحميل CrewAI
+        if auto_diagnose:
+            diagnosis = diagnose_ollama()
+            if not diagnosis['model_available']:
+                error_msg = (
+                    f"\n{'='*60}\n"
+                    f"❌ Ollama Setup Issue\n"
+                    f"{'='*60}\n"
+                    f"Error:      {diagnosis['error']}\n"
+                    f"Model:      {diagnosis['model_name']}\n"
+                    f"URL:        {diagnosis['base_url']}\n\n"
+                    f"💡 How to fix:\n{diagnosis['suggestion']}\n"
+                    f"{'='*60}\n"
+                )
+                logger.error(error_msg)
+                raise OllamaConnectionError(error_msg)
+
+            logger.info(
+                f"✓ Ollama is running with {diagnosis['model_name']}",
+                base_url=diagnosis['base_url'],
+            )
+
+        # الآن نحمّل CrewAI ونبني الوكلاء
+        Agent, Task, Crew, Process, Ollama = _get_crewai()
+
+        self.Agent = Agent
+        self.Task = Task
+        self.Crew = Crew
+        self.Process = Process
+
+        self.llm = self._initialize_llm(Ollama)
+
+        # بناء الوكلاء الثلاثة
+        self.data_collector = self._create_data_collector()
+        self.threat_hunter = self._create_threat_hunter()
+        self.solution_advisor = self._create_solution_advisor()
+
+        logger.info("Council of Agents initialized successfully")
+
+    def _initialize_llm(self, OllamaClass):
+        """تهيئة الاتصال بـ Ollama المحلي"""
+        try:
+            llm = OllamaClass(
+                model=LLM_MODEL,
+                base_url=LLM_BASE_URL,
+                temperature=LLM_TEMPERATURE,
+            )
+            logger.info(f"LLM initialized: {LLM_MODEL} @ {LLM_BASE_URL}")
+            return llm
+        except Exception as e:
+            raise OllamaConnectionError(
+                f"Failed to initialize Ollama LLM:\n"
+                f"  Model: {LLM_MODEL}\n"
+                f"  URL: {LLM_BASE_URL}\n"
+                f"  Error: {e}\n\n"
+                f"Make sure:\n"
+                f"  1. Ollama is running: ollama serve\n"
+                f"  2. Model is installed: ollama pull {LLM_MODEL}"
+            )
+
+    # ==================== Agent 1: The Eye ====================
+    def _create_data_collector(self):
+        """الوكيل الأول: جامع البيانات"""
+        return self.Agent(
+            role="System Data Collector",
+            goal=(
+                "Gather comprehensive raw data from the system including "
+                "network connections, running processes, and system metrics. "
+                "Format everything into clean, structured JSON."
+            ),
+            backstory=(
+                "You are 'The Eye' of the council — a meticulous data collector "
+                "with years of experience in system forensics. Your job is NOT "
+                "to analyze or judge; only to observe and report faithfully. "
+                "You never miss a detail and always produce clean, structured output."
+            ),
+            llm=self.llm,
+            **AGENT_CONFIG,
+        )
+
+    # ==================== Agent 2: The Brain ====================
+    def _create_threat_hunter(self):
+        """الوكيل الثاني: صائد التهديدات"""
+        return self.Agent(
+            role="Cybersecurity Threat Hunter",
+            goal=(
+                "Analyze system data to identify suspicious patterns, anomalies, "
+                "and potential security threats. Classify each threat by severity "
+                "(CRITICAL, HIGH, MEDIUM, LOW) with clear reasoning."
+            ),
+            backstory=(
+                "You are 'The Brain' — an elite threat hunter trained on thousands "
+                "of malware samples and attack patterns. You think like an attacker "
+                "to defend like a pro. You focus on: unusual network connections, "
+                "processes running from temp folders, suspicious ports, and "
+                "behavioral anomalies. You are precise and never cry wolf."
+            ),
+            llm=self.llm,
+            **AGENT_CONFIG,
+        )
+
+    # ==================== Agent 3: The Strategist ====================
+    def _create_solution_advisor(self):
+        """الوكيل الثالث: مستشار الحلول"""
+        return self.Agent(
+            role="Security Solution Strategist",
+            goal=(
+                "For each identified threat, generate precise, safe remediation "
+                "commands. Always prefer reversible actions. Mark risk level for "
+                "each command. NEVER approve auto-execution — human must decide."
+            ),
+            backstory=(
+                "You are 'The Strategist' — a senior security architect who has "
+                "remediated thousands of incidents. You know that a wrong command "
+                "can cause more damage than the threat itself. You craft surgical "
+                "fixes: taskkill, firewall rules, registry cleanups — all with "
+                "clear explanations so the human operator can make informed decisions."
+            ),
+            llm=self.llm,
+            **AGENT_CONFIG,
+        )
+
+    # ==================== Tasks ====================
+    def create_collection_task(self, raw_data: str):
+        return self.Task(
+            description=(
+                f"Review the following raw system data and structure it:\n\n"
+                f"{raw_data}\n\n"
+                f"Output a concise structured summary highlighting key observations."
+            ),
+            agent=self.data_collector,
+            expected_output="A structured summary of system data.",
+        )
+
+    def create_analysis_task(self, threats_data: str):
+        return self.Task(
+            description=(
+                f"Analyze these detected threats and enrich each with explanations:\n\n"
+                f"{threats_data}\n\n"
+                f"For each threat, explain WHY it's suspicious and the potential impact."
+            ),
+            agent=self.threat_hunter,
+            expected_output="Enriched threat analysis with explanations.",
+        )
+
+    def create_solution_task(self, analyzed_threats: str):
+        return self.Task(
+            description=(
+                f"For each analyzed threat, provide remediation:\n\n"
+                f"{analyzed_threats}\n\n"
+                f"Include: exact command, risk level, reversibility, explanation.\n"
+                f"REMEMBER: Human decides — never auto-execute."
+            ),
+            agent=self.solution_advisor,
+            expected_output="Actionable remediation plan.",
+        )
+
+    # ==================== Orchestration ====================
+    def run_council(self, raw_data: str, threats_data: str) -> str:
+        """
+        تشغيل المجلس الكامل - الوكلاء الثلاثة يعملون بالتسلسل
+        """
+        logger.info("Starting Council of Agents collaboration")
+
+        task1 = self.create_collection_task(raw_data)
+        task2 = self.create_analysis_task(threats_data)
+        task3 = self.create_solution_task(threats_data)
+
+        crew = self.Crew(
+            agents=[
+                self.data_collector,
+                self.threat_hunter,
+                self.solution_advisor,
+            ],
+            tasks=[task1, task2, task3],
+            process=self.Process.sequential,
+            verbose=True,
+        )
+
+        try:
+            result = crew.kickoff()
+            logger.info("Council collaboration completed")
+            return str(result)
+        except Exception as e:
+            logger.error(f"Council collaboration failed: {e}")
+            raise
+
+
+# ==================== Standalone Test ====================
+def test_connection():
+    """
+    اختبار سريع للتأكد من أن كل شيء جاهز
+    شغّل هذا قبل استخدام النظام:
+        python -m agents.council
+    """
+    print("\n" + "=" * 60)
+    print("  C.O.A — Connection Test")
+    print("=" * 60 + "\n")
+
+    print("[1] Checking Ollama...")
+    diagnosis = diagnose_ollama()
+
+    if diagnosis['ollama_running']:
+        print(f"    ✓ Ollama is running at {diagnosis['base_url']}")
+    else:
+        print(f"    ❌ {diagnosis['error']}")
+        print(f"    💡 {diagnosis['suggestion']}")
+        return False
+
+    print(f"\n[2] Checking model '{diagnosis['model_name']}'...")
+    if diagnosis['model_available']:
+        print(f"    ✓ Model is installed and ready")
+    else:
+        print(f"    ❌ {diagnosis['error']}")
+        print(f"    💡 {diagnosis['suggestion']}")
+        return False
+
+    print("\n[3] Initializing Council of Agents...")
+    try:
+        council = CouncilOfAgents()
+        print("    ✓ All 3 agents created successfully")
+        print(f"    ✓ Agent 1: {council.data_collector.role}")
+        print(f"    ✓ Agent 2: {council.threat_hunter.role}")
+        print(f"    ✓ Agent 3: {council.solution_advisor.role}")
+    except Exception as e:
+        print(f"    ❌ Failed: {e}")
+        return False
+
+    print("\n" + "=" * 60)
+    print("  ✅ Everything is ready!")
+    print("=" * 60)
+    print("\nYou can now run:")
+    print("  python main.py       # Full scan")
+    print("  python gui.py        # Graphical interface")
+    print("  python helpdesk_api.py  # REST API")
+    print()
+    return True
+
+
+if __name__ == "__main__":
+    test_connection()

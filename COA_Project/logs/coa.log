@@ -1,0 +1,102 @@
+2026-04-24 16:16:36,696 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-24 16:16:36,730 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-04-24 16:16:36,734 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-04-24 16:16:37,906 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:37,908 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:37,909 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-04-24 16:16:37,910 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-24 16:16:38,414 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-24 16:16:38,416 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-24 16:16:38,417 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-24 16:16:38,420 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:38,421 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-04-24 16:16:38,422 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-24 16:16:38,927 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-24 16:16:38,929 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-24 16:16:38,929 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-24 16:16:38,932 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:39,436 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:39,439 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-24 16:16:39,441 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-24 16:16:39,448 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:20:22,916 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:20:22,944 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-04-26 14:20:22,946 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-04-26 14:20:24,076 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:24,078 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:24,079 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-04-26 14:20:24,080 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:20:24,585 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:20:24,586 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:20:24,587 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:20:24,589 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:24,590 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-04-26 14:20:24,591 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:20:25,094 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:20:25,096 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:20:25,097 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:20:25,100 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:25,604 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:25,607 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:20:25,609 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:20:25,615 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:20:36,660 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:20:36,665 | WARNING  | logger:_log:113 | YARA not installed. Install with: pip install yara-python
+2026-04-26 14:20:36,708 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:20:37,212 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:20:37,214 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:20:37,214 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:23:30,557 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:23:30,559 | WARNING  | logger:_log:113 | YARA not installed. Install with: pip install yara-python
+2026-04-26 14:23:30,561 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:23:31,065 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:23:31,067 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:23:31,068 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:23:31,068 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:31,069 | INFO     | logger:_log:113 | Helpdesk scan requested by test
+2026-04-26 14:23:31,070 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:23:31,573 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:23:31,574 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:23:31,575 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:23:36,247 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:23:36,315 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-04-26 14:23:36,318 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-04-26 14:23:37,452 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:37,454 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:37,455 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-04-26 14:23:37,456 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:23:37,960 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:23:37,962 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:23:37,962 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:23:37,965 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:37,965 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-04-26 14:23:37,966 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-26 14:23:38,470 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-26 14:23:38,471 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-26 14:23:38,472 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-26 14:23:38,475 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:38,978 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:38,981 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-26 14:23:38,983 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-26 14:23:38,989 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-27 08:01:56,889 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-27 08:01:56,963 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-04-27 08:01:56,965 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-04-27 08:01:58,102 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:58,104 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:58,105 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-04-27 08:01:58,106 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-27 08:01:58,613 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-04-27 08:01:58,614 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-27 08:01:58,615 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-27 08:01:58,619 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:58,620 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-04-27 08:01:58,621 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-27 08:01:59,126 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-27 08:01:59,128 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-27 08:01:59,129 | INFO     | logger:_log:113 | Analysis complete: 0 threats found
+2026-04-27 08:01:59,132 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:59,638 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:59,641 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-04-27 08:01:59,643 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-04-27 08:01:59,651 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided

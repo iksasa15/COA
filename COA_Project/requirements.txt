@@ -1,0 +1,45 @@
+# ===== C.O.A v3.0 Requirements =====
+
+# === Core Dependencies ===
+crewai>=0.28.0
+crewai-tools>=0.1.6
+
+# === Local LLM Support ===
+langchain>=0.1.0
+langchain-community>=0.0.20
+ollama>=0.1.7
+
+# === System Monitoring ===
+psutil>=5.9.6
+
+# === Beautiful CLI ===
+rich>=13.7.0
+pyfiglet>=1.0.2
+
+# === Admin Check (Windows) ===
+pywin32>=306; sys_platform == 'win32'
+
+# === Utilities ===
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+requests>=2.31.0
+
+# === NEW in v3.0 ===
+
+# VirusTotal integration (HTTP requests)
+# Already covered by 'requests' above
+
+# YARA rules engine (optional but recommended)
+yara-python>=4.5.0
+
+# REST API for Helpdesk Bot integration (optional)
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# === Testing ===
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# NOTE: GUI (gui.py) uses Tkinter which is included with Python 3
+# No additional install needed for GUI

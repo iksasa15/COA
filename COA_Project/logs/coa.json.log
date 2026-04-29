@@ -100,3 +100,4 @@
 {"timestamp": "2026-04-27T08:01:59.641209", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
 {"timestamp": "2026-04-27T08:01:59.643872", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
 {"timestamp": "2026-04-27T08:01:59.651503", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-04-29T20:17:45.730639", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "C.O.A v3.0 scan started", "dry_run": false, "vt": false, "yara": false}

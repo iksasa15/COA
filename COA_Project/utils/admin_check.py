@@ -17,8 +17,9 @@ def is_admin() -> bool:
     try:
         if os.name == 'nt':  # Windows
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
-        else:  # Linux/Mac
-            return os.geteuid() == 0
+        # macOS / Linux: لا نطلب root — جمع ps/netstat وغيره يعمل للمستخدم الحالي.
+        # طلب geteuid() == 0 كان يمنع التشغيل العادي على macOS.
+        return True
     except Exception:
         return False
 
@@ -36,7 +37,11 @@ def require_admin():
         print("    • Scan network connections")
         print("    • Monitor running processes")
         print("    • Execute security commands\n")
-        print("  👉 Please run CMD as Administrator and try again.\n")
+        if os.name == 'nt':
+            print("  👉 Open Command Prompt or PowerShell as Administrator and try again.\n")
+        else:
+            print("  👉 Run with elevated privileges if you need full system visibility, e.g.:\n")
+            print("       sudo python main.py\n")
         print("=" * 60 + "\n")
         sys.exit(1)
 

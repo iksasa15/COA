@@ -110,3 +110,17 @@
 2026-04-29 20:18:51,276 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-04-29 20:18:51,276 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-04-29 20:18:51,277 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-04-29 20:20:50,273 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-04-29 20:20:51,275 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-29 20:20:51,276 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-04-29 20:20:51,782 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-04-29 20:20:53,288 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-29 20:20:53,288 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:20:53,290 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:20:53,292 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:20:53,293 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-04-29 20:20:58,226 | INFO     | logger:_log:113 | Executing command: ps -p 522 -o pid,cmd,ppid,user
+2026-04-29 20:20:58,245 | INFO     | logger:_log:113 | Security action approved
+2026-04-29 20:21:04,482 | INFO     | logger:_log:113 | Executing command: ps -p 38365 -o pid,cmd,ppid,user
+2026-04-29 20:21:04,500 | INFO     | logger:_log:113 | Security action approved
+2026-04-29 20:21:04,505 | INFO     | logger:_log:113 | Scan completed successfully

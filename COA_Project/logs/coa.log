@@ -101,3 +101,12 @@
 2026-04-27 08:01:59,643 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-04-27 08:01:59,651 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-04-29 20:17:45,730 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-04-29 20:18:48,257 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-04-29 20:18:49,264 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-29 20:18:49,266 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-04-29 20:18:49,769 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-29 20:18:51,275 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-29 20:18:51,276 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:18:51,276 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:18:51,276 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:18:51,277 | INFO     | logger:_log:113 | Analysis complete: 3 threats found

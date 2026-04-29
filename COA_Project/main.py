@@ -19,6 +19,7 @@ Usage:
     python main.py --all              # Enable EVERYTHING
 """
 
+import os
 import sys
 import argparse
 import json
@@ -170,7 +171,10 @@ def cli_scan(args):
     # التحقق من Admin
     if not args.no_admin_check:
         require_admin()
-        ui.success("Administrator privileges confirmed")
+        if os.name == "nt":
+            ui.success("Administrator privileges confirmed")
+        else:
+            ui.success("Running with current user privileges (use sudo for deeper system access)")
 
     reporter = ReportGenerator()
     reporter.log_event("SYSTEM", f"C.O.A v3.0 scan initiated")

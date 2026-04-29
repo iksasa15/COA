@@ -41,5 +41,5 @@ pytest>=7.4.0
 pytest-cov>=4.1.0
 pytest-asyncio>=0.21.0
 
-# NOTE: GUI (gui.py) uses Tkinter which is included with Python 3
-# No additional install needed for GUI
+# NOTE: Legacy gui.py uses Tkinter (on macOS: brew install python-tk@3.11).
+# Preferred UI: React in web/ — run python web_api.py then npm run dev in web/

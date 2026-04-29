@@ -7,12 +7,12 @@ New in v3.0:
 - VirusTotal integration (--vt)
 - YARA rules engine (--yara)
 - 4th agent: Incident Reporter (always on)
-- GUI mode (--gui)
+- React Web UI (--gui starts API for `web/`)
 - Helpdesk bot mode (--helpdesk)
 
 Usage:
     python main.py                    # Normal CLI scan
-    python main.py --gui              # Launch graphical interface
+    python main.py --gui              # Start API for React UI (see on-screen steps)
     python main.py --helpdesk         # Launch helpdesk bot
     python main.py --vt               # Enable VirusTotal enrichment
     python main.py --yara             # Enable YARA scanning
@@ -49,7 +49,7 @@ def parse_arguments():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Modes:
-  python main.py --gui                # Graphical interface
+  python main.py --gui                # Web API for React dashboard (web/)
   python main.py --helpdesk           # Interactive chatbot
   python main.py                      # CLI scan (default)
 
@@ -63,7 +63,7 @@ CLI Options:
     )
 
     # Main modes
-    parser.add_argument('--gui', action='store_true', help='Launch PyQt6 GUI')
+    parser.add_argument('--gui', action='store_true', help='Start Web API for React UI (see terminal hints)')
     parser.add_argument('--helpdesk', action='store_true', help='Launch helpdesk bot')
 
     # CLI options
@@ -82,13 +82,19 @@ CLI Options:
 
 
 def launch_gui():
-    """تشغيل GUI"""
-    try:
-        from gui.app import main as gui_main
-        gui_main()
-    except ImportError as e:
-        print(f"❌ GUI requires PyQt6: pip install PyQt6\nError: {e}")
-        sys.exit(1)
+    """تشغيل واجهة الويب (React) — يشغّل خادم الـ API حتى تستخدم `npm run dev` داخل web/"""
+    ui = UIManager()
+    ui.display_banner()
+    ui.section_header("React dashboard", "🖥️")
+    ui.info("API:  http://127.0.0.1:5050")
+    ui.info("Open a second terminal, then:")
+    ui.info("  cd web && npm install && npm run dev")
+    ui.info("Browser:  http://localhost:5173")
+    ui.info("Legacy Tkinter UI:  python gui.py")
+    ui.divider()
+    from web_api import create_app
+
+    create_app().run(host="127.0.0.1", port=5050, debug=False, threaded=True)
 
 
 def launch_helpdesk():

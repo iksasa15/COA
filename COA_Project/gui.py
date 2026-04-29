@@ -1,10 +1,9 @@
 """
-C.O.A GUI - Graphical User Interface
-====================================
-Professional dark-themed desktop interface
-Uses Tkinter (included with Python - no extra install needed)
+C.O.A GUI - Graphical User Interface (legacy Tkinter)
+======================================================
+Prefer the React dashboard: run `python web_api.py` then `cd web && npm run dev`.
 
-Run with: python gui.py
+Run this file with: python gui.py  (requires Python built with Tk / python-tk on macOS)
 """
 
 import sys

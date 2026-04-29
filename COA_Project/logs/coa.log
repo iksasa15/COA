@@ -124,3 +124,11 @@
 2026-04-29 20:21:04,482 | INFO     | logger:_log:113 | Executing command: ps -p 38365 -o pid,cmd,ppid,user
 2026-04-29 20:21:04,500 | INFO     | logger:_log:113 | Security action approved
 2026-04-29 20:21:04,505 | INFO     | logger:_log:113 | Scan completed successfully
+2026-04-29 20:28:58,595 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-29 20:28:58,596 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-04-29 20:28:59,097 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-04-29 20:28:59,098 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-29 20:28:59,098 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:28:59,098 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:28:59,099 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:28:59,099 | INFO     | logger:_log:113 | Analysis complete: 3 threats found

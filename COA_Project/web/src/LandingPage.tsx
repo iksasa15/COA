@@ -27,6 +27,11 @@ const FEATURE_CARDS = [
     title: "OT / ICS (الوكيل #6)",
     desc: "مخزون تقريبي، تنبيهات منافذ صناعية، سيناريوهات OT، تقييم ICS Specialist، أمثلة MITRE ICS.",
   },
+  {
+    to: "/dev-tests",
+    title: "تشغيل pytest من المتصفح",
+    desc: "زر لتشغيل اختبارات الوحدة عبر الـ API (يتطلب COA_ALLOW_DEV_TESTS=1 على خادم web_api).",
+  },
 ] as const;
 
 export default function LandingPage() {

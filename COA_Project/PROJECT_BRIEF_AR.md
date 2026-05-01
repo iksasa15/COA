@@ -20,7 +20,7 @@
 
 | الواجهة | العنوان / المسار | ماذا يحتوي؟ |
 |--------|-------------------|-------------|
-| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **SPA** في [web/src/App.tsx](web/src/App.tsx): رئيسية `#/`، فحص `#/dashboard`، سياق دفاعي `#/defense-context`، MITRE عميق `#/mitre-deep`، خريطة MITRE `#/mitre-heatmap`، OT/ICS `#/ot-dashboard` — بعد فحص: `sessionStorage` (`coa_last_scan_extras`). توثيق الصفحات: [docs/React_Additions_AR.md](docs/React_Additions_AR.md). |
+| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **SPA** في [web/src/App.tsx](web/src/App.tsx): رئيسية `#/`، فحص `#/dashboard`، سياق دفاعي `#/defense-context`، MITRE عميق `#/mitre-deep`، خريطة MITRE `#/mitre-heatmap`، OT/ICS `#/ot-dashboard`، pytest `#/dev-tests` (يتطلب `COA_ALLOW_DEV_TESTS=1`) — بعد فحص: `sessionStorage` (`coa_last_scan_extras`). توثيق: [docs/React_Additions_AR.md](docs/React_Additions_AR.md). |
 | **واجهة Tkinter** | تشغيل سطح المكتب عبر `python gui.py` | واجهة رسومية قديمة بنفس الفكرة تقريباً: فحص، جداول، تبويبات، تصدير. |
 | **سطر الأوامر CLI** | `python main.py` | لا «صفحة»؛ مخرجات في الطرفية وتقارير في مجلد `reports/`. |
 | **تقرير HTML ثابت (مثال)** | ملف مثل [reports/COA_Report.html](reports/COA_Report.html) | تقرير تفاعلي يُنشأ بعد الفحص (وليس صفحة تنقل داخل التطبيق). |

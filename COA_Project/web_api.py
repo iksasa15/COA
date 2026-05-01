@@ -11,6 +11,8 @@ Open http://localhost:5173
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
 import traceback
 from datetime import datetime
@@ -39,6 +41,13 @@ _last_reporter: ReportGenerator | None = None
 
 MAX_PROCESSES_RESPONSE = 250
 MAX_CONNECTIONS_RESPONSE = 400
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+
+def _dev_tests_allowed() -> bool:
+    """Run pytest from UI only when explicitly enabled (local dev / demos)."""
+    return os.environ.get("COA_ALLOW_DEV_TESTS", "").strip().lower() in ("1", "true", "yes")
 
 
 def _json_safe(obj):
@@ -208,6 +217,85 @@ def create_app() -> Flask:
             return jsonify({"ok": False, "error": "Run a scan first; no Navigator layer available"}), 400
         return jsonify(_json_safe(layer))
 
+    @app.get("/api/dev/tests-enabled")
+    def dev_tests_enabled():
+        """Whether POST /api/dev/run-tests is allowed (requires COA_ALLOW_DEV_TESTS=1)."""
+        return jsonify({"ok": True, "enabled": _dev_tests_allowed()})
+
+    @app.post("/api/dev/run-tests")
+    def dev_run_tests():
+        """
+        Run pytest on tests/ (fixed argv only — no shell injection).
+        Enable with: COA_ALLOW_DEV_TESTS=1 python web_api.py
+        """
+        if not _dev_tests_allowed():
+            return (
+                jsonify(
+                    {
+                        "ok": False,
+                        "enabled": False,
+                        "error": "Disabled. Start API with COA_ALLOW_DEV_TESTS=1 to enable UI test runs.",
+                    }
+                ),
+                403,
+            )
+        tests_dir = PROJECT_ROOT / "tests"
+        if not tests_dir.is_dir():
+            return jsonify({"ok": False, "error": "tests/ directory not found"}), 400
+
+        body = request.get_json(silent=True) or {}
+        scope = str(body.get("scope") or "all").strip().lower()
+        cmd = [
+            sys.executable,
+            "-m",
+            "pytest",
+            str(tests_dir),
+            "-q",
+            "--tb=line",
+            "--no-header",
+        ]
+        if scope == "quick":
+            cmd = [
+                sys.executable,
+                "-m",
+                "pytest",
+                str(tests_dir / "test_core.py"),
+                str(tests_dir / "test_defense_context.py"),
+                str(tests_dir / "test_ics_analyzer.py"),
+                str(tests_dir / "test_mitre_deep.py"),
+                str(tests_dir / "test_v3_features.py"),
+                "-q",
+                "--tb=line",
+                "--no-header",
+            ]
+
+        try:
+            proc = subprocess.run(
+                cmd,
+                cwd=str(PROJECT_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=180,
+                env={**os.environ, "PYTHONUTF8": "1"},
+            )
+            out = (proc.stdout or "") + (("\n" + proc.stderr) if proc.stderr else "")
+            logger.info("Dev pytest finished", exit_code=proc.returncode, scope=scope)
+            return jsonify(
+                {
+                    "ok": True,
+                    "enabled": True,
+                    "exit_code": proc.returncode,
+                    "scope": scope,
+                    "command": cmd,
+                    "output": out[-200000:] if len(out) > 200000 else out,
+                }
+            )
+        except subprocess.TimeoutExpired:
+            return jsonify({"ok": False, "enabled": True, "error": "pytest timed out (180s)"}), 500
+        except Exception as e:
+            logger.error(f"pytest run failed: {e}")
+            return jsonify({"ok": False, "enabled": True, "error": str(e)}), 500
+
     return app
 
 
@@ -218,5 +306,7 @@ if __name__ == "__main__":
     print("  API:  http://127.0.0.1:5050")
     print("  UI:   cd web && npm install && npm run dev")
     print("        → http://localhost:5173")
+    if _dev_tests_allowed():
+        print("  Dev:  UI pytest — COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests")
     print("=" * 60 + "\n")
     create_app().run(host="127.0.0.1", port=5050, debug=False, threaded=True)

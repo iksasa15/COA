@@ -7,6 +7,7 @@ const LINKS = [
   { to: "/mitre-deep", label: "MITRE عميق" },
   { to: "/mitre-heatmap", label: "خريطة MITRE" },
   { to: "/ot-dashboard", label: "OT/ICS (#6)" },
+  { to: "/dev-tests", label: "pytest" },
 ] as const;
 
 export default function FeatureNav() {

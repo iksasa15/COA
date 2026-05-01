@@ -1,5 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import DefenseContextPage from "./DefenseContextPage";
+import DevTestsPage from "./DevTestsPage";
 import LandingPage from "./LandingPage";
 import MitreDeepPage from "./MitreDeepPage";
 import MitreHeatmapPage from "./MitreHeatmapPage";
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/mitre-deep" element={<MitreDeepPage />} />
         <Route path="/mitre-heatmap" element={<MitreHeatmapPage />} />
         <Route path="/ot-dashboard" element={<OtDashboardPage />} />
+        <Route path="/dev-tests" element={<DevTestsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

@@ -15,6 +15,8 @@ cd /Users/ahmed/Desktop/COA/COA_Project
 python web_api.py
 ```
 
+- لتفعيل **تشغيل pytest من الواجهة** (`#/dev-tests`): ابدأ الخادم بـ `COA_ALLOW_DEV_TESTS=1 python web_api.py` (لا تستخدم ذلك على خوادم إنتاج).
+
 - يستمع عادة على: `http://127.0.0.1:5050`
 - مسار الفحص: `POST http://127.0.0.1:5050/api/scan`
 
@@ -63,6 +65,7 @@ python main.py
 | `#/mitre-deep` | `MitreDeepPage.tsx` | **تحليل MITRE العميق**: سلسلة قتل، فجوات كشف، سياق ICS، تقرير ASCII، تصدير طبقة Navigator من الجلسة. |
 | `#/mitre-heatmap` | `MitreHeatmapPage.tsx` | **خريطة حرارية**: تقنيات ملوّنة وفلترة (الكل / أعلى APT / فجوات نصية) + رابط للصفحة العميقة. |
 | `#/ot-dashboard` | `OtDashboardPage.tsx` | **OT/ICS + الوكيل #6**: منافذ صناعية سلبية، مخزون تقريبي، سيناريوهات OT، تقييم ICS Specialist، أمثلة MITRE ICS. |
+| `#/dev-tests` | `DevTestsPage.tsx` | تشغيل **pytest** عبر `POST /api/dev/run-tests` (معطّل إلا إذا `COA_ALLOW_DEV_TESTS=1`). |
 
 شريط التنقل المشترك: `web/src/FeatureNav.tsx` — يظهر في الصفحات أعلاه لتسهيل القفز بين الاختبارات.
 
@@ -95,6 +98,11 @@ python main.py
 - **ماذا:** تحليل **سلبي** لمنافذ وبروتوكولات صناعية شائعة من جدول الاتصالات، سيناريوهات `defense_playbooks_ot`، درجة استمرارية إنتاج تجريبية، وتقرير **ICS Specialist (الوكيل #6)**.
 - **لماذا:** إبراز تمييز المشروع عن أدوات IT فقط؛ والالتزام بمبدأ **Passive-by-default** في سياق OT (لا فحص نشط من الواجهة).
 
+### 6) صفحة pytest `#/dev-tests`
+
+- **ماذا:** أزرار تشغيل `python -m pytest` على مجلد `tests/` (أو مجموعة «سريعة» من ملفات الاختبار الحالية) وعرض المخرجات في الصفحة.
+- **لماذا:** تسهيل **التحقق السريع** أثناء العرض أو الهاكاثون دون التبديل للطرفية؛ مع **تعطيل افتراضي** حتى لا يصبح تشغيل أوامر على الخادم ثغرة أمنية في النشر.
+
 ---
 
 ## ملاحظات تقنية مختصرة
@@ -102,6 +110,7 @@ python main.py
 - **مصدر البيانات للصفحات المنفصلة:** آخر فحص ناجح من React؛ المفتاح الرئيسي `coa_last_scan_extras` يحتوي عادةً: `defense_context`, `mitre_deep`, `ot_ics`.
 - **بدون فحص:** الصفحات تعرض رسالة توجيه للعودة إلى `#/dashboard`.
 - **تصدير Navigator من الخادم (وليس من الجلسة فقط):** بعد الفحص، يمكن استدعاء `GET http://127.0.0.1:5050/api/reports/mitre-navigator.json` إن كان الخادم يحتفظ بآخر فحص في الذاكرة.
+- **تشغيل الاختبارات من الـ API:** `GET /api/dev/tests-enabled` — `POST /api/dev/run-tests` مع جسم JSON اختياري `{"scope":"all"}` أو `"quick"` (يُفعّل فقط مع `COA_ALLOW_DEV_TESTS=1`).
 
 ---
 
@@ -111,6 +120,8 @@ python main.py
 |--------|------|
 | توجيه React | `web/src/App.tsx` |
 | تنقل الاختبار | `web/src/FeatureNav.tsx` |
+| صفحة pytest | `web/src/DevTestsPage.tsx` |
+| نقاط نهاية pytest | `web_api.py` (`/api/dev/tests-enabled`, `/api/dev/run-tests`) |
 | سياق MITRE للعرض | `docs/MITRE_ATTACK_DEFENSE_AR.md` |
 | OT سلبي ومبدأ العمل | `docs/OT_ICS_DEFENSE_AR.md` |
 | محرك سياق دفاعي | `core/defense_context_engine.py` |

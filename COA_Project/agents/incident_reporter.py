@@ -201,7 +201,7 @@ class IncidentReporter:
         return recs
 
     @classmethod
-    def generate_full_report(cls, system_info, analysis, events, output_path, defense_context=None):
+    def generate_full_report(cls, system_info, analysis, events, output_path, defense_context=None, mitre_deep=None):
         """توليد التقرير الكامل"""
         logger.info("Generating incident report")
 
@@ -259,15 +259,22 @@ class IncidentReporter:
                         lines.append(f"    • {signal}")
                 lines.append("")
 
-        # MITRE
+        # MITRE (quick index)
         if ttps:
             lines.append("=" * 75)
-            lines.append("MITRE ATT&CK MAPPING")
+            lines.append("MITRE ATT&CK — QUICK INDEX (indicator-level)")
             lines.append("=" * 75)
             for ttp in ttps:
                 lines.append(f"• {ttp['technique']} — {ttp['name']}")
                 lines.append(f"  Tactic: {ttp['tactic']}")
                 lines.append("")
+
+        if mitre_deep and mitre_deep.get("ascii_report"):
+            lines.append("=" * 75)
+            lines.append("MITRE ATT&CK — DEEP ANALYSIS (kill chain + D3FEND + gaps)")
+            lines.append("=" * 75)
+            lines.append(mitre_deep["ascii_report"].strip())
+            lines.append("")
 
         if defense_context:
             lines.append("=" * 75)

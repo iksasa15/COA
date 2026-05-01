@@ -1,11 +1,24 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type HeatCell = {
   technique_id: string;
   name: string;
   tactic: string;
   heat: number;
+};
+
+type ProfileRank = {
+  profile_id?: string;
+  display_name?: string;
+  similarity?: number;
+  ttps?: string[];
+};
+
+type MitreDeepExtras = {
+  navigator_layer?: Record<string, unknown>;
+  detection_gap_hints?: string[];
+  ics_context?: { ics_relevant?: boolean; note?: string };
 };
 
 const HEAT_COLORS: Record<number, string> = {
@@ -22,25 +35,46 @@ const HEAT_LABELS: Record<number, string> = {
   3: "شوهد + تطابق ملف تعريف",
 };
 
+type ViewFilter = "all" | "apt_top" | "gaps_only";
+
 export default function MitreHeatmapPage() {
   const [cells, setCells] = useState<HeatCell[]>([]);
   const [disclaimer, setDisclaimer] = useState<string | null>(null);
   const [attribution, setAttribution] = useState<string>("");
+  const [profiles, setProfiles] = useState<ProfileRank[]>([]);
+  const [mitreDeep, setMitreDeep] = useState<MitreDeepExtras | null>(null);
+  const [viewFilter, setViewFilter] = useState<ViewFilter>("all");
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("coa_defense_context");
-      if (!raw) {
-        setDisclaimer("لا توجد بيانات. نفّذ فحصاً من لوحة الأداء أولاً.");
-        return;
-      }
-      const dc = JSON.parse(raw) as {
+      const extrasRaw = sessionStorage.getItem("coa_last_scan_extras");
+      let dc: {
         mitre_heatmap?: HeatCell[];
         disclaimer?: string;
         attribution?: { likely_actor?: string; confidence_percent?: number };
-      };
+        profiles_ranked?: ProfileRank[];
+      } | null = null;
+
+      if (extrasRaw) {
+        const x = JSON.parse(extrasRaw) as {
+          defense_context?: typeof dc;
+          mitre_deep?: MitreDeepExtras;
+        };
+        dc = x.defense_context ?? null;
+        setMitreDeep(x.mitre_deep ?? null);
+      }
+      if (!dc) {
+        const raw = sessionStorage.getItem("coa_defense_context");
+        if (!raw) {
+          setDisclaimer("لا توجد بيانات. نفّذ فحصاً من لوحة الأداء أولاً.");
+          return;
+        }
+        dc = JSON.parse(raw) as NonNullable<typeof dc>;
+      }
+
       setCells(dc.mitre_heatmap || []);
       setDisclaimer(dc.disclaimer || null);
+      setProfiles(dc.profiles_ranked || []);
       const a = dc.attribution;
       if (a) {
         setAttribution(`${a.likely_actor ?? ""} (${a.confidence_percent ?? 0}% confidence)`);
@@ -49,6 +83,34 @@ export default function MitreHeatmapPage() {
       setDisclaimer("تعذّر قراءة بيانات السياق الدفاعي.");
     }
   }, []);
+
+  const topAptTtps = useMemo(() => {
+    const p = profiles[0];
+    if (!p?.ttps?.length) return new Set<string>();
+    return new Set(p.ttps.map((t) => String(t).trim()));
+  }, [profiles]);
+
+  const displayCells = useMemo(() => {
+    if (viewFilter === "apt_top" && topAptTtps.size > 0) {
+      return cells.filter((c) => topAptTtps.has(c.technique_id));
+    }
+    if (viewFilter === "gaps_only") {
+      return [];
+    }
+    return cells;
+  }, [cells, viewFilter, topAptTtps]);
+
+  function downloadNavigatorLayer() {
+    const layer = mitreDeep?.navigator_layer;
+    if (!layer) return;
+    const blob = new Blob([JSON.stringify(layer, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "coa_mitre_navigator_layer.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
@@ -68,15 +130,27 @@ export default function MitreHeatmapPage() {
         >
           ← لوحة الأداء
         </Link>
-        <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--fg)" }}>خريطة MITRE ATT&CK الحرارية</h1>
+        <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--fg)" }}>
+          MITRE ATT&CK Coverage — تغطية وخريطة حرارية
+        </h1>
         <Link to="/" style={{ marginLeft: "auto", color: "var(--muted)", fontSize: "0.88rem" }}>
           الرئيسية
         </Link>
       </header>
 
       <div style={{ padding: "1rem 1.5rem", flex: 1 }}>
+        <p style={{ color: "var(--muted)", fontSize: "0.88rem", maxWidth: "56rem", marginTop: 0 }}>
+          يعرض هذا العرض تقنيات مرتبطة <strong>بفحص واحد</strong> وليس تكراراً على 30 يوماً — يمكن ربط
+          التخزين الزمني لاحقاً. راجع الوثيقة{" "}
+          <a href="https://attack.mitre.org/" style={{ color: "var(--cyan)" }}>
+            MITRE ATT&CK
+          </a>{" "}
+          والدليل المحلي{" "}
+          <code style={{ color: "var(--cyan)" }}>docs/MITRE_ATTACK_DEFENSE_AR.md</code>.
+        </p>
+
         {attribution && (
-          <p style={{ color: "var(--muted)", marginTop: 0 }}>
+          <p style={{ color: "var(--muted)" }}>
             <strong style={{ color: "var(--fg)" }}>الإسناد (فرضي):</strong> {attribution}
           </p>
         )}
@@ -84,46 +158,112 @@ export default function MitreHeatmapPage() {
           <p style={{ color: "var(--yellow)", fontSize: "0.9rem", maxWidth: "48rem" }}>{disclaimer}</p>
         )}
 
-        <p style={{ color: "var(--muted)", fontSize: "0.85rem", maxWidth: "52rem" }}>
-          الألوان: أحمر داكن = تطابق قوي مع تكتيكات ملفات APT المحمّلة + مؤشرات الفحص؛ برتقالي = شوهد في
-          الفحص؛ أصفر = تأكيد إقليمي من الملفات فقط؛ رمادي = لا خلية لهذا الفحص.
-        </p>
+        {mitreDeep?.ics_context?.ics_relevant && (
+          <div
+            style={{
+              padding: "0.75rem 1rem",
+              background: "#422006",
+              borderRadius: "var(--radius)",
+              border: "1px solid #b45309",
+              color: "#ffedd5",
+              fontSize: "0.88rem",
+              maxWidth: "56rem",
+              marginBottom: "0.75rem",
+            }}
+          >
+            <strong>ICS / OT:</strong> {mitreDeep.ics_context.note}
+          </div>
+        )}
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: "0.65rem",
-            marginTop: "1rem",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            alignItems: "center",
+            marginBottom: "0.75rem",
           }}
         >
-          {cells.length === 0 && !disclaimer?.includes("نفّذ") && (
-            <span style={{ color: "var(--muted)" }}>لا توجد تقنيات مسجّلة لهذا الفحص.</span>
-          )}
-          {cells.map((c) => (
+          <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>فلتر العرض:</span>
+          {(["all", "apt_top", "gaps_only"] as const).map((k) => (
+            <button
+              key={k}
+              type="button"
+              className={viewFilter === k ? "btn-primary" : "btn-ghost"}
+              style={{ padding: "0.4rem 0.75rem", fontSize: "0.82rem" }}
+              onClick={() => setViewFilter(k)}
+            >
+              {k === "all" ? "الكل" : k === "apt_top" ? "تقنيات أعلى APT (ملف YAML)" : "فجوات كشف (نص)"}
+            </button>
+          ))}
+          <button
+            type="button"
+            className="btn-accent"
+            style={{ marginLeft: "auto", fontSize: "0.82rem" }}
+            disabled={!mitreDeep?.navigator_layer}
+            onClick={downloadNavigatorLayer}
+          >
+            تصدير Navigator JSON
+          </button>
+        </div>
+
+        {viewFilter === "gaps_only" ? (
+          <ul style={{ color: "var(--fg)", maxWidth: "48rem" }}>
+            {(mitreDeep?.detection_gap_hints?.length ? mitreDeep.detection_gap_hints : ["لا توجد تلميحات فجوات بعد الفحص الأخير."]).map(
+              (g, i) => (
+                <li key={i} style={{ marginBottom: "0.35rem" }}>
+                  {g}
+                </li>
+              ),
+            )}
+          </ul>
+        ) : (
+          <>
+            <p style={{ color: "var(--muted)", fontSize: "0.85rem", maxWidth: "52rem" }}>
+              الألوان: أحمر داكن = تطابق قوي؛ برتقالي = شوهد في الفحص؛ أصفر = إقليمي من الملفات؛ رمادي = لا
+              خلية.
+            </p>
             <div
-              key={c.technique_id}
-              title={`${c.tactic} — ${HEAT_LABELS[c.heat] ?? ""}`}
               style={{
-                borderRadius: "var(--radius)",
-                padding: "0.75rem",
-                background: HEAT_COLORS[c.heat] ?? HEAT_COLORS[0],
-                color: "#f8fafc",
-                border: "1px solid #1e293b",
-                minHeight: "5.5rem",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "0.65rem",
+                marginTop: "0.5rem",
               }}
             >
-              <div style={{ fontFamily: "var(--mono)", fontSize: "0.78rem", opacity: 0.95 }}>
-                {c.technique_id}
-              </div>
-              <div style={{ fontWeight: 600, fontSize: "0.88rem", marginTop: "0.25rem" }}>{c.name}</div>
-              <div style={{ fontSize: "0.75rem", opacity: 0.88, marginTop: "0.35rem" }}>{c.tactic}</div>
-              <div style={{ fontSize: "0.72rem", marginTop: "0.35rem", opacity: 0.85 }}>
-                Heat: {c.heat} — {HEAT_LABELS[c.heat] ?? ""}
-              </div>
+              {displayCells.length === 0 && !disclaimer?.includes("نفّذ") && (
+                <span style={{ color: "var(--muted)" }}>
+                  {viewFilter === "apt_top"
+                    ? "لا تقاطع بين تقنيات الفحص وأعلى ملف APT — جرّب «الكل»."
+                    : "لا توجد تقنيات مسجّلة لهذا الفحص."}
+                </span>
+              )}
+              {displayCells.map((c) => (
+                <div
+                  key={c.technique_id}
+                  title={`${c.tactic} — ${HEAT_LABELS[c.heat] ?? ""}`}
+                  style={{
+                    borderRadius: "var(--radius)",
+                    padding: "0.75rem",
+                    background: HEAT_COLORS[c.heat] ?? HEAT_COLORS[0],
+                    color: "#f8fafc",
+                    border: "1px solid #1e293b",
+                    minHeight: "5.5rem",
+                  }}
+                >
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "0.78rem", opacity: 0.95 }}>
+                    {c.technique_id}
+                  </div>
+                  <div style={{ fontWeight: 600, fontSize: "0.88rem", marginTop: "0.25rem" }}>{c.name}</div>
+                  <div style={{ fontSize: "0.75rem", opacity: 0.88, marginTop: "0.35rem" }}>{c.tactic}</div>
+                  <div style={{ fontSize: "0.72rem", marginTop: "0.35rem", opacity: 0.85 }}>
+                    Heat: {c.heat} — {HEAT_LABELS[c.heat] ?? ""}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -25,6 +25,7 @@ from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
+from core.mitre_deep_analysis import build_mitre_deep_bundle
 from core.threat_analyzer import ThreatAnalyzer
 from utils.html_report import HTMLReportGenerator
 from utils.logger import logger
@@ -85,6 +86,12 @@ def create_app() -> Flask:
 
             reporter.log_event("DEFENSE_CONTEXT", "Running Defense Context Analyzer (Agent #5)…")
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            mitre_deep = build_mitre_deep_bundle(
+                analysis,
+                defense_context,
+                system_data,
+                system_data["system_info"],
+            )
 
             classification = IncidentReporter.classify_incident(analysis)
             summary = IncidentReporter.executive_summary(
@@ -97,6 +104,7 @@ def create_app() -> Flask:
                 "classification": classification,
                 "summary": summary,
                 "defense_context": defense_context,
+                "mitre_deep": mitre_deep,
                 "dry_run": dry_run,
                 "completed_at": datetime.now().isoformat(),
             }
@@ -109,6 +117,7 @@ def create_app() -> Flask:
                 "classification": classification,
                 "summary": summary,
                 "defense_context": defense_context,
+                "mitre_deep": mitre_deep,
                 "collection_duration": system_data.get("collection_duration", 0),
                 "processes": system_data["processes"][:MAX_PROCESSES_RESPONSE],
                 "processes_total": len(system_data["processes"]),
@@ -174,10 +183,22 @@ def create_app() -> Flask:
                 rep.events,
                 out,
                 defense_context=data.get("defense_context"),
+                mitre_deep=data.get("mitre_deep"),
             )
             return send_file(path, as_attachment=True, download_name=Path(path).name)
         except Exception as e:
             return jsonify({"ok": False, "error": str(e)}), 500
+
+    @app.get("/api/reports/mitre-navigator.json")
+    def mitre_navigator_json():
+        err = _require_last()
+        if err[1]:
+            return err[1]
+        (data, _) = err[0]
+        layer = (data.get("mitre_deep") or {}).get("navigator_layer")
+        if not layer:
+            return jsonify({"ok": False, "error": "Run a scan first; no Navigator layer available"}), 400
+        return jsonify(_json_safe(layer))
 
     return app
 

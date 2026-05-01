@@ -59,6 +59,9 @@
 - **[data_collector.py](core/data_collector.py)** — جمع بيانات النظام (عمليات، شبكة، …).
 - **[threat_analyzer.py](core/threat_analyzer.py)** — تحليل التهديدات والنتائج المجمّعة.
 - **[defense_context_engine.py](core/defense_context_engine.py)** — مطابقة مؤشرات الفحص مع ملفات APT/SOC playbooks (محرك حتمي).
+- **[mitre_deep_analysis.py](core/mitre_deep_analysis.py)** — تحليل MITRE «عميق»: ترتيب تكتيكات، D3FEND، فجوات كشف، طبقة Navigator، سياق ICS.
+- **[docs/MITRE_ATTACK_DEFENSE_AR.md](docs/MITRE_ATTACK_DEFENSE_AR.md)** — شرح ATT&CK والربط العميق للعرض والمحكّمين.
+- **[scripts/download_mitre_stix.py](scripts/download_mitre_stix.py)** — تنزيل `enterprise-attack.json` / `ics-attack.json` إلى `mitre_data/` (اختياري).
 - **[solution_engine.py](core/solution_engine.py)** — اقتراح/تحقق من خطوات المعالجة (مع دعم محاكاة).
 - **[virustotal.py](core/virustotal.py)** — تكامل VirusTotal.
 - **[yara_engine.py](core/yara_engine.py)** — محرك قواعد YARA.

@@ -22,6 +22,7 @@ from core.solution_engine import SolutionEngine
 from utils.report_generator import ReportGenerator
 from utils.html_report import HTMLReportGenerator
 from agents.defense_context_analyzer import DefenseContextAnalyzer
+from core.mitre_deep_analysis import build_mitre_deep_bundle
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 
@@ -51,6 +52,7 @@ class COAGui:
         self.scan_data = None
         self.analysis_result = None
         self.defense_context = None
+        self.mitre_deep = None
         self.reporter = ReportGenerator()
         self.solution_engine = SolutionEngine(dry_run=False)
         self.event_queue = queue.Queue()
@@ -453,6 +455,12 @@ class COAGui:
             })
 
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            mitre_deep = build_mitre_deep_bundle(
+                analysis,
+                defense_context,
+                system_data,
+                system_data["system_info"],
+            )
             self.event_queue.put({
                 'type': 'log',
                 'text': 'Defense Context Analyzer (Agent #5) completed',
@@ -466,6 +474,7 @@ class COAGui:
                     'system_data': system_data,
                     'analysis': analysis,
                     'defense_context': defense_context,
+                    'mitre_deep': mitre_deep,
                 },
             })
 
@@ -483,6 +492,7 @@ class COAGui:
         self.scan_data = data['system_data']
         self.analysis_result = data['analysis']
         self.defense_context = data.get('defense_context')
+        self.mitre_deep = data.get('mitre_deep')
 
         # تحديث الإحصائيات
         self.stat_labels["Connections"].config(
@@ -584,6 +594,7 @@ class COAGui:
                 self.reporter.events,
                 output,
                 defense_context=self.defense_context,
+                mitre_deep=self.mitre_deep,
             )
             messagebox.showinfo(
                 "Incident Report",

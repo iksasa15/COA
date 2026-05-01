@@ -19,10 +19,19 @@ type DefenseContextPayload = {
   campaign?: Record<string, string>;
 };
 
+type MitreDeepPayload = {
+  kill_chain_phases?: unknown[];
+  navigator_layer?: Record<string, unknown>;
+  ascii_report?: string;
+  ics_context?: { ics_relevant?: boolean; note?: string };
+  detection_gap_hints?: string[];
+};
+
 type ScanPayload = {
   ok: boolean;
   error?: string;
   defense_context?: DefenseContextPayload;
+  mitre_deep?: MitreDeepPayload;
   system_info?: Record<string, unknown>;
   analysis?: {
     total_threats: number;
@@ -101,6 +110,13 @@ export default function ScanPage() {
       if (json.defense_context) {
         try {
           sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
+          sessionStorage.setItem(
+            "coa_last_scan_extras",
+            JSON.stringify({
+              defense_context: json.defense_context,
+              mitre_deep: json.mitre_deep ?? null,
+            }),
+          );
         } catch {
           /* ignore quota */
         }
@@ -235,6 +251,14 @@ export default function ScanPage() {
           onClick={() => downloadFromApi("/api/reports/incident", "COA_Incident_Report.txt")}
         >
           Incident report
+        </button>
+        <button
+          type="button"
+          className="btn-ghost"
+          disabled={!data?.ok}
+          onClick={() => downloadFromApi("/api/reports/mitre-navigator.json", "coa_mitre_navigator_layer.json")}
+        >
+          Navigator JSON
         </button>
       </div>
 

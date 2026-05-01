@@ -285,6 +285,7 @@ def run_defense_context_analysis(system_data: Dict[str, Any], analysis: Dict[str
                 "display_name": prof.get("display_name"),
                 "similarity": round(sc, 1),
                 "reasons": rsn,
+                "ttps": list(prof.get("ttps") or []),
             }
         )
         if sc > best_score:

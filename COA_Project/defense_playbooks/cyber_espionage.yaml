@@ -1,0 +1,7 @@
+id: cyber_espionage
+name_ar: "التجسس السيبراني"
+name_en: "Cyber espionage indicators"
+signals_any:
+  - external_connection_from_temp
+  - suspicious_port
+min_threats: 1

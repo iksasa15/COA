@@ -24,6 +24,7 @@ from typing import Dict, List, Optional
 from core.data_collector import SystemDataCollector
 from core.threat_analyzer import ThreatAnalyzer
 from core.solution_engine import SolutionEngine
+from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.incident_reporter import IncidentReporter
 from utils.logger import logger
 
@@ -69,13 +70,14 @@ class COAHelpdesk:
 
             # تحليل
             analysis = ThreatAnalyzer.full_analysis(system_data)
+            defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
 
             # تصنيف للـ Helpdesk
             classification = IncidentReporter.classify_incident(analysis)
 
             # توليد ردّ مبسط للـ bot
             summary = IncidentReporter.executive_summary(
-                system_data["system_info"], analysis, classification
+                system_data["system_info"], analysis, classification, defense_context
             )
 
             response = {
@@ -91,6 +93,7 @@ class COAHelpdesk:
                 "critical_count": analysis["critical"],
                 "high_count": analysis["high"],
                 "summary": summary,
+                "defense_context": defense_context,
                 "needs_action": classification["priority"] <= 3,
                 "bot_response": self._generate_bot_response(classification, analysis),
             }

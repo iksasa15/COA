@@ -1,0 +1,24 @@
+# Heuristic profile — MITRE G0040 (Chafer)
+id: chafer
+display_name: "Chafer"
+mitre_group_id: "G0040"
+region_focus:
+  - Middle East
+sectors:
+  - telecommunications
+  - travel
+ttps:
+  - T1071
+  - T1119
+  - T1048
+tool_keywords:
+  - vpn
+  - dns
+  - autolt
+ioc_text_patterns:
+  - "connection"
+  - "remote"
+regional_tactic_boost:
+  - "Command and Control"
+  - "Exfiltration"
+source_note: "MITRE ATT&CK G0040"

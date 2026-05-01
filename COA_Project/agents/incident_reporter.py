@@ -11,6 +11,8 @@ Synthesizes findings into professional incident reports with:
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
+
+from agents.defense_context_analyzer import DefenseContextAnalyzer
 from utils.logger import logger
 
 
@@ -67,7 +69,7 @@ class IncidentReporter:
         }
 
     @staticmethod
-    def executive_summary(system_info, analysis, classification):
+    def executive_summary(system_info, analysis, classification, defense_context=None):
         """ملخص تنفيذي لأصحاب القرار"""
         threats = analysis.get('threats', [])
         hostname = system_info.get('hostname', 'Unknown')
@@ -104,6 +106,14 @@ class IncidentReporter:
             )
         else:
             summary += "Review findings and approve appropriate remediation."
+
+        if defense_context:
+            att = defense_context.get('attribution') or {}
+            summary += (
+                f"\n\n**Defense context (heuristic):** {att.get('likely_actor', 'N/A')} "
+                f"— confidence {att.get('confidence_percent', 0)}%. "
+                f"{att.get('reasoning', '')}"
+            )
 
         return summary
 
@@ -191,7 +201,7 @@ class IncidentReporter:
         return recs
 
     @classmethod
-    def generate_full_report(cls, system_info, analysis, events, output_path):
+    def generate_full_report(cls, system_info, analysis, events, output_path, defense_context=None):
         """توليد التقرير الكامل"""
         logger.info("Generating incident report")
 
@@ -218,7 +228,7 @@ class IncidentReporter:
         lines.append("=" * 75)
         lines.append("EXECUTIVE SUMMARY")
         lines.append("=" * 75)
-        lines.append(cls.executive_summary(system_info, analysis, classification))
+        lines.append(cls.executive_summary(system_info, analysis, classification, defense_context))
         lines.append("")
 
         # System
@@ -258,6 +268,13 @@ class IncidentReporter:
                 lines.append(f"• {ttp['technique']} — {ttp['name']}")
                 lines.append(f"  Tactic: {ttp['tactic']}")
                 lines.append("")
+
+        if defense_context:
+            lines.append("=" * 75)
+            lines.append("DEFENSE CONTEXT (Agent #5 — heuristic)")
+            lines.append("=" * 75)
+            lines.append(DefenseContextAnalyzer.format_report(defense_context))
+            lines.append("")
 
         # Recommendations
         lines.append("=" * 75)

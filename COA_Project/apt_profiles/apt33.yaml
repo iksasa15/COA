@@ -1,0 +1,27 @@
+# Heuristic profile — MITRE G0064 (APT33 / Elfin)
+id: apt33
+display_name: "APT33 (Elfin)"
+mitre_group_id: "G0064"
+region_focus:
+  - Middle East
+  - East Asia
+sectors:
+  - aviation
+  - energy
+  - defense
+ttps:
+  - T1078
+  - T1021.001
+  - T1486
+  - T1566.002
+tool_keywords:
+  - spearphish
+  - dde
+  - custom
+ioc_text_patterns:
+  - "outlook"
+  - "lnk"
+regional_tactic_boost:
+  - "Initial Access"
+  - "Impact"
+source_note: "MITRE ATT&CK G0064 (high-level public TTPs only)"

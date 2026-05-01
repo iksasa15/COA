@@ -1,0 +1,6 @@
+id: supply_chain
+name_ar: "اختراق سلسلة الإمداد (فرضية)"
+name_en: "Supply-chain style cluster (heuristic)"
+signals_all:
+  - runs_from_temp
+min_threats: 2

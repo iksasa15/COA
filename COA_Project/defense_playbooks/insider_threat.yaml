@@ -1,0 +1,5 @@
+id: insider_threat
+name_ar: "مؤشرات تهديد داخلي (فرضية)"
+name_en: "Insider-style cluster (heuristic)"
+# Heuristic: many concurrent low-trust findings (tune in your SOC)
+min_threats_only: 3

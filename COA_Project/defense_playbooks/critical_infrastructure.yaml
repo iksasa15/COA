@@ -1,0 +1,6 @@
+# Triggers when SCADA-related ports appear on outbound connections (heuristic only)
+id: critical_infrastructure
+name_ar: "استهداف البنية التحتية الحساسة"
+name_en: "Sensitive infrastructure targeting (heuristic)"
+any_remote_ports: [502, 102]
+min_connection_matches: 1

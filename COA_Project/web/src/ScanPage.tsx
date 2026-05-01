@@ -3,9 +3,26 @@ import { Link } from "react-router-dom";
 
 type LogEvent = { timestamp: string; type: string; details: string };
 
+type DefenseContextPayload = {
+  agent?: string;
+  attribution?: Record<string, unknown>;
+  mitre_heatmap?: Array<{
+    technique_id: string;
+    name: string;
+    tactic: string;
+    heat: number;
+  }>;
+  disclaimer?: string;
+  playbooks_triggered?: Array<Record<string, unknown>>;
+  strategic_intent?: Record<string, string>;
+  sophistication?: Record<string, unknown>;
+  campaign?: Record<string, string>;
+};
+
 type ScanPayload = {
   ok: boolean;
   error?: string;
+  defense_context?: DefenseContextPayload;
   system_info?: Record<string, unknown>;
   analysis?: {
     total_threats: number;
@@ -81,6 +98,13 @@ export default function ScanPage() {
         throw new Error(json.error || "Scan failed");
       }
       setData(json);
+      if (json.defense_context) {
+        try {
+          sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
+        } catch {
+          /* ignore quota */
+        }
+      }
       const serverLines = (json.events || []).map((ev) => ({
         ts: ev.timestamp,
         level: ev.type === "ERROR" ? "ERROR" : "INFO",
@@ -150,6 +174,17 @@ export default function ScanPage() {
         <span style={{ color: "var(--muted)", fontSize: "0.95rem" }}>
           Council of Agents — لوحة الأداء
         </span>
+        <Link
+          to="/mitre-heatmap"
+          style={{
+            color: "var(--purple)",
+            fontSize: "0.9rem",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          خريطة MITRE الحرارية
+        </Link>
         <Link to="/" style={linkHome}>
           الرئيسية
         </Link>
@@ -243,6 +278,38 @@ export default function ScanPage() {
         >
           <strong style={{ color: "var(--fg)" }}>Executive summary</strong>
           <p style={{ margin: "0.5rem 0 0", whiteSpace: "pre-wrap" }}>{data.summary}</p>
+        </div>
+      )}
+
+      {data?.defense_context?.attribution && (
+        <div
+          style={{
+            margin: "0 1.5rem 0.75rem",
+            padding: "0.85rem 1rem",
+            background: "var(--bg2)",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--purple)",
+            fontSize: "0.88rem",
+            color: "var(--muted)",
+          }}
+        >
+          <strong style={{ color: "var(--purple)" }}>Defense Context (Agent #5)</strong>
+          <p style={{ margin: "0.4rem 0 0" }}>
+            {String((data.defense_context.attribution as { likely_actor?: string }).likely_actor ?? "")}{" "}
+            <span style={{ opacity: 0.85 }}>
+              — confidence{" "}
+              {String((data.defense_context.attribution as { confidence_percent?: number }).confidence_percent ?? 0)}%
+            </span>
+          </p>
+          <p style={{ margin: "0.35rem 0 0", fontSize: "0.82rem" }}>
+            {String((data.defense_context.attribution as { reasoning?: string }).reasoning ?? "")}
+          </p>
+          {(data.defense_context.playbooks_triggered?.length ?? 0) > 0 && (
+            <p style={{ margin: "0.5rem 0 0", fontSize: "0.82rem" }}>
+              Playbooks:{" "}
+              {data.defense_context.playbooks_triggered!.map((p) => String(p.id ?? p)).join(", ")}
+            </p>
+          )}
         </div>
       )}
 

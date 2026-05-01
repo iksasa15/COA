@@ -54,16 +54,29 @@ class YaraEngine:
             logger.warning(f"YARA rules directory not found: {self.rules_dir}")
             return
 
-        # جمع كل ملفات .yar و .yara
+        # جمع قواعد الجذر + مجلد defense_context (مفاتيح فريدة ببادئة dc_)
         rule_files = list(self.rules_dir.glob("*.yar")) + list(self.rules_dir.glob("*.yara"))
+        dc_dir = self.rules_dir / "defense_context"
+        if dc_dir.is_dir():
+            rule_files.extend(dc_dir.glob("*.yar"))
+            rule_files.extend(dc_dir.glob("*.yara"))
 
         if not rule_files:
             logger.warning("No YARA rule files found")
             return
 
         try:
-            # بناء dict من {namespace: filepath}
-            filepaths = {f.stem: str(f) for f in rule_files}
+            filepaths: Dict[str, str] = {}
+            for f in rule_files:
+                key = f.stem
+                if f.parent.name == "defense_context":
+                    key = f"dc_{f.stem}"
+                base = key
+                n = 0
+                while key in filepaths:
+                    n += 1
+                    key = f"{base}_{n}"
+                filepaths[key] = str(f)
             self.compiled_rules = yara.compile(filepaths=filepaths)
             logger.info(f"YARA rules loaded: {len(rule_files)} files")
         except Exception as e:

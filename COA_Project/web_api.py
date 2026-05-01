@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
+from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
@@ -82,9 +83,12 @@ def create_app() -> Flask:
             for t in analysis.get("threats", []):
                 reporter.log_threat(t)
 
+            reporter.log_event("DEFENSE_CONTEXT", "Running Defense Context Analyzer (Agent #5)…")
+            defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+
             classification = IncidentReporter.classify_incident(analysis)
             summary = IncidentReporter.executive_summary(
-                system_data["system_info"], analysis, classification
+                system_data["system_info"], analysis, classification, defense_context
             )
 
             _last = {
@@ -92,6 +96,7 @@ def create_app() -> Flask:
                 "analysis": analysis,
                 "classification": classification,
                 "summary": summary,
+                "defense_context": defense_context,
                 "dry_run": dry_run,
                 "completed_at": datetime.now().isoformat(),
             }
@@ -103,6 +108,7 @@ def create_app() -> Flask:
                 "analysis": analysis,
                 "classification": classification,
                 "summary": summary,
+                "defense_context": defense_context,
                 "collection_duration": system_data.get("collection_duration", 0),
                 "processes": system_data["processes"][:MAX_PROCESSES_RESPONSE],
                 "processes_total": len(system_data["processes"]),
@@ -167,6 +173,7 @@ def create_app() -> Flask:
                 data["analysis"],
                 rep.events,
                 out,
+                defense_context=data.get("defense_context"),
             )
             return send_file(path, as_attachment=True, download_name=Path(path).name)
         except Exception as e:

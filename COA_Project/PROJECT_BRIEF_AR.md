@@ -20,7 +20,7 @@
 
 | الواجهة | العنوان / المسار | ماذا يحتوي؟ |
 |--------|-------------------|-------------|
-| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **صفحة واحدة (SPA)** في [web/src/App.tsx](web/src/App.tsx): رأس العنوان، زر بدء الفحص، خيار dry-run، إحصائيات، ثم **تبويبات**: Threats، Processes، Network، Logs، وأزرار تنزيل التقارير بعد فحص ناجح. |
+| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **SPA** في [web/src/App.tsx](web/src/App.tsx): صفحة رئيسية، **لوحة الأداء** `#/dashboard` (فحص، تبويبات، سياق دفاعي)، **خريطة MITRE** `#/mitre-heatmap` (بعد فحص يحفظ الجلسة `sessionStorage`). |
 | **واجهة Tkinter** | تشغيل سطح المكتب عبر `python gui.py` | واجهة رسومية قديمة بنفس الفكرة تقريباً: فحص، جداول، تبويبات، تصدير. |
 | **سطر الأوامر CLI** | `python main.py` | لا «صفحة»؛ مخرجات في الطرفية وتقارير في مجلد `reports/`. |
 | **تقرير HTML ثابت (مثال)** | ملف مثل [reports/COA_Report.html](reports/COA_Report.html) | تقرير تفاعلي يُنشأ بعد الفحص (وليس صفحة تنقل داخل التطبيق). |
@@ -51,16 +51,21 @@
 
 - **[council.py](agents/council.py)** — منطق «مجلس الوكلاء» الأصلي (CrewAI) للمهام المتخصصة.
 - **[incident_reporter.py](agents/incident_reporter.py)** — الوكيل الرابع: تقرير حادث، تصنيف شدة، ملخص تنفيذي، MITRE، إلخ.
+- **[defense_context_analyzer.py](agents/defense_context_analyzer.py)** — الوكيل الخامس: سياق دفاعي (APT profiles + playbooks + heatmap بيانات للواجهة).
 - **[prompts.py](agents/prompts.py)** — نصوص الـ prompts للوكلاء.
 
 ### `core/`
 
 - **[data_collector.py](core/data_collector.py)** — جمع بيانات النظام (عمليات، شبكة، …).
 - **[threat_analyzer.py](core/threat_analyzer.py)** — تحليل التهديدات والنتائج المجمّعة.
+- **[defense_context_engine.py](core/defense_context_engine.py)** — مطابقة مؤشرات الفحص مع ملفات APT/SOC playbooks (محرك حتمي).
 - **[solution_engine.py](core/solution_engine.py)** — اقتراح/تحقق من خطوات المعالجة (مع دعم محاكاة).
 - **[virustotal.py](core/virustotal.py)** — تكامل VirusTotal.
 - **[yara_engine.py](core/yara_engine.py)** — محرك قواعد YARA.
-- **[rules/baseline.yar](core/rules/baseline.yar)** — ملف قواعد YARA الجاهزة.
+- **[rules/baseline.yar](core/rules/baseline.yar)** — قواعد YARA العامة.
+- **[rules/defense_context/](core/rules/defense_context/)** — قواعد YARA إضافية للسياق الدفاعي (مع `baseline` تُحمّل معاً).
+- **[apt_profiles/](apt_profiles/)** — ملفات YAML لملفات تعريف APT علنية (للمطابقة التجريبية).
+- **[defense_playbooks/](defense_playbooks/)** — سيناريوهات دفاعية مبسطة (YAML).
 
 ### `utils/`
 
@@ -73,7 +78,7 @@
 
 ### `tests/`
 
-- **[test_core.py](tests/test_core.py)** و **[test_v3_features.py](tests/test_v3_features.py)** — اختبارات الوحدات للميزات الأساسية وإصدار v3.
+- **[test_core.py](tests/test_core.py)** و **[test_v3_features.py](tests/test_v3_features.py)** و **[test_defense_context.py](tests/test_defense_context.py)** — اختبارات الوحدات.
 
 ### `web/src/` (واجهة React)
 

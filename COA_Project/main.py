@@ -38,6 +38,7 @@ from utils.cache import global_cache
 from core.data_collector import SystemDataCollector
 from core.threat_analyzer import ThreatAnalyzer
 from core.solution_engine import SolutionEngine
+from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 
@@ -278,6 +279,13 @@ def cli_scan(args):
                 reporter.log_threat(t)
         else:
             ui.success("🎉 No threats detected!")
+
+        # ============ PHASE 2.8: Defense Context Analyzer (Agent #5) ============
+        ui.divider()
+        ui.section_header("PHASE 2.8: Defense Context Analyzer", "🎯")
+        ui.loading_animation("Correlating with regional APT heuristics & playbooks...", 0.8)
+        defense_context = DefenseContextAnalyzer.analyze(system_data, analysis_result)
+        ui.info(DefenseContextAnalyzer.format_report(defense_context).strip().replace("\n", "\n  "))
 
         # ============ PHASE 3-4: Solutions + Approval ============
         if threats:

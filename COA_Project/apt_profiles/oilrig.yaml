@@ -1,0 +1,30 @@
+# Heuristic profile — public references: MITRE G0049 (OilRig / APT34)
+id: oilrig
+display_name: "APT34 (OilRig)"
+mitre_group_id: "G0049"
+region_focus:
+  - Middle East
+  - Gulf
+sectors:
+  - government
+  - energy
+  - finance
+ttps:
+  - T1071
+  - T1059.001
+  - T1564.003
+  - T1583.003
+tool_keywords:
+  - dns
+  - powershell
+  - encoded
+  - mshta
+  - rundll32
+ioc_text_patterns:
+  - "%comspec%"
+  - "-enc"
+  - "http://"
+regional_tactic_boost:
+  - "Command and Control"
+  - "Execution"
+source_note: "MITRE ATT&CK G0049 + open reporting (non-classified)"

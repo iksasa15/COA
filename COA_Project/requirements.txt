@@ -21,6 +21,7 @@ pywin32>=306; sys_platform == 'win32'
 
 # === Utilities ===
 python-dotenv>=1.0.0
+PyYAML>=6.0.1
 pydantic>=2.5.0
 requests>=2.31.0
 

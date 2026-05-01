@@ -1,0 +1,25 @@
+# Heuristic profile — MITRE G0032 (Lazarus Group)
+id: lazarus
+display_name: "Lazarus Group"
+mitre_group_id: "G0032"
+region_focus:
+  - Global
+sectors:
+  - finance
+  - cryptocurrency
+  - defense
+ttps:
+  - T1486
+  - T1496
+  - T1071
+tool_keywords:
+  - wannacry
+  - dtrack
+  - fakeinstaller
+ioc_text_patterns:
+  - "crypt"
+  - "miner"
+regional_tactic_boost:
+  - "Impact"
+  - "Command and Control"
+source_note: "MITRE ATT&CK G0032 (public TTP summaries only)"

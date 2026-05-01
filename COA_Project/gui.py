@@ -21,6 +21,7 @@ from core.threat_analyzer import ThreatAnalyzer
 from core.solution_engine import SolutionEngine
 from utils.report_generator import ReportGenerator
 from utils.html_report import HTMLReportGenerator
+from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 
@@ -49,6 +50,7 @@ class COAGui:
 
         self.scan_data = None
         self.analysis_result = None
+        self.defense_context = None
         self.reporter = ReportGenerator()
         self.solution_engine = SolutionEngine(dry_run=False)
         self.event_queue = queue.Queue()
@@ -450,10 +452,21 @@ class COAGui:
                 'level': 'WARNING' if analysis["total_threats"] > 0 else 'SUCCESS',
             })
 
+            defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            self.event_queue.put({
+                'type': 'log',
+                'text': 'Defense Context Analyzer (Agent #5) completed',
+                'level': 'INFO',
+            })
+
             self.event_queue.put({'type': 'progress_stop'})
             self.event_queue.put({
                 'type': 'scan_complete',
-                'data': {'system_data': system_data, 'analysis': analysis},
+                'data': {
+                    'system_data': system_data,
+                    'analysis': analysis,
+                    'defense_context': defense_context,
+                },
             })
 
         except Exception as e:
@@ -469,6 +482,7 @@ class COAGui:
         """عند اكتمال الفحص"""
         self.scan_data = data['system_data']
         self.analysis_result = data['analysis']
+        self.defense_context = data.get('defense_context')
 
         # تحديث الإحصائيات
         self.stat_labels["Connections"].config(
@@ -569,6 +583,7 @@ class COAGui:
                 self.analysis_result,
                 self.reporter.events,
                 output,
+                defense_context=self.defense_context,
             )
             messagebox.showinfo(
                 "Incident Report",

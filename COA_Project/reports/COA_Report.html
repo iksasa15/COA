@@ -155,7 +155,7 @@
             تقرير فحص أمني — Council of Agents
             <br>
             <span class="badge badge-green">Local & Private 🔒</span>
-            <span class="badge badge-green">3 Threats Analyzed</span>
+            <span class="badge badge-green">4 Threats Analyzed</span>
         </div>
     </div>
 
@@ -173,7 +173,7 @@
             <div class="stat-label">Medium Severity</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value low">3</div>
+            <div class="stat-value low">4</div>
             <div class="stat-label">Low Severity</div>
         </div>
     </div>
@@ -194,7 +194,7 @@
 
             <div class="info-item">
                 <div class="info-key">Cpu Usage</div>
-                <div class="info-value">14.1</div>
+                <div class="info-value">8.4</div>
             </div>
 
             <div class="info-item">
@@ -204,12 +204,12 @@
 
             <div class="info-item">
                 <div class="info-key">Memory Used Percent</div>
-                <div class="info-value">53.8</div>
+                <div class="info-value">65.2</div>
             </div>
 
             <div class="info-item">
                 <div class="info-key">Disk Usage Percent</div>
-                <div class="info-value">43.6</div>
+                <div class="info-value">48.9</div>
             </div>
 
             <div class="info-item">
@@ -255,6 +255,21 @@
                     <td><span class="severity-pill severity-LOW">LOW</span></td>
                     <td><span class="confidence-LOW">LOW</span></td>
                     <td>30</td>
+                    <td>com.apple.dt.Xcode.DeveloperSystemPolicyService (PID: 23606)</td>
+                    <td>
+                        Detected: runs from /Applications/Xcode.app/Contents/SharedFrameworks/
+                        <details>
+                            <summary>Signals (1)</summary>
+                            <span class="signal-tag">runs_from_temp</span>
+                        </details>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td><span class="severity-pill severity-LOW">LOW</span></td>
+                    <td><span class="confidence-LOW">LOW</span></td>
+                    <td>30</td>
                     <td>reversetemplated (PID: 38365)</td>
                     <td>
                         Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.
@@ -266,7 +281,7 @@
                 </tr>
 
                 <tr>
-                    <td>3</td>
+                    <td>4</td>
                     <td><span class="severity-pill severity-LOW">LOW</span></td>
                     <td><span class="confidence-LOW">LOW</span></td>
                     <td>20</td>
@@ -296,13 +311,73 @@
             </thead>
             <tbody>
 
+                <tr>
+                    <td>2026-05-01 15:42:36</td>
+                    <td><strong>SYSTEM</strong></td>
+                    <td>React UI scan started</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:36</td>
+                    <td><strong>DATA</strong></td>
+                    <td>Collecting system data…</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>DATA</strong></td>
+                    <td>Collected 1 connections, 885 processes</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>ANALYSIS</strong></td>
+                    <td>Running threat analysis…</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>THREAT_DETECTED</strong></td>
+                    <td>[LOW] Process Threat — com.apple.Mobile (PID: 522): Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>THREAT_DETECTED</strong></td>
+                    <td>[LOW] Process Threat — com.apple.dt.Xcode.DeveloperSystemPolicyService (PID: 23606): Detected: runs from /Applications/Xcode.app/Contents/SharedFrameworks/</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>THREAT_DETECTED</strong></td>
+                    <td>[LOW] Process Threat — reversetemplated (PID: 38365): Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>THREAT_DETECTED</strong></td>
+                    <td>[LOW] Process Threat — kernel_task (PID: 0): Detected: no executable path</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>DEFENSE_CONTEXT</strong></td>
+                    <td>Running Defense Context Analyzer (Agent #5)…</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-01 15:42:37</td>
+                    <td><strong>OT_ICS</strong></td>
+                    <td>Passive OT/ICS correlation (ports/processes only)…</td>
+                </tr>
+
             </tbody>
         </table>
     </div>
 
     <div class="footer">
         Generated by C.O.A — Council of Agents<br>
-        2026-04-29 20:31:58 • All data remains local 🔒
+        2026-05-01 15:42:50 • All data remains local 🔒
     </div>
 </div>
 </body>

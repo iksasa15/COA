@@ -485,6 +485,23 @@ export default function ScanPage() {
             </p>
             {data?.ot_ics && (
               <>
+                {(data.ot_ics.ics_protocol_hits || []).length === 0 && (
+                  <p
+                    style={{
+                      margin: 0,
+                      padding: "0.5rem 0.65rem",
+                      background: "rgba(34, 197, 94, 0.12)",
+                      border: "1px solid rgba(34, 197, 94, 0.35)",
+                      borderRadius: "var(--radius)",
+                      fontSize: "0.82rem",
+                      color: "var(--fg)",
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    <strong>0 hits طبيعي</strong> على جهاز بدون اتصالات صناعية — الفحص نفسه ناجح؛ راجع تبويب
+                    Threats وصفحات MITRE/السياق الدفاعي لبقية النتائج.
+                  </p>
+                )}
                 <div style={{ fontSize: "0.85rem", color: "var(--fg)" }}>
                   <strong>Distinct ICS protocols:</strong> {data.ot_ics.distinct_ics_protocols ?? 0} ·{" "}
                   <strong>Hits:</strong> {(data.ot_ics.ics_protocol_hits || []).length} ·{" "}

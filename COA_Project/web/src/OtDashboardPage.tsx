@@ -120,6 +120,26 @@ export default function OtDashboardPage() {
 
         {ot && (
           <>
+            {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && (
+              <div
+                style={{
+                  marginBottom: "1rem",
+                  padding: "0.75rem 1rem",
+                  borderRadius: "8px",
+                  border: "1px solid #14532d",
+                  background: "#052e16",
+                  color: "#bbf7d0",
+                  fontSize: "0.86rem",
+                  lineHeight: 1.55,
+                }}
+              >
+                <strong style={{ color: "#86efac" }}>الفحص يعمل — OT فارغ لسبب متوقع:</strong> التحليل هنا يربط
+                جدول اتصالات المضيف بمنافذ ICS شائعة (مثل 502، 102، 4840). على حاسوب تطوير عادي غالباً{" "}
+                <strong>لا</strong> تظهر مثل هذه الاتصالات، فيبقى العدد 0 وهذا ليس عطلاً. جرّب من جهاز يصل لشبكة OT،
+                أو لاحقاً PCAP/Scapy. أقسام <strong>MITRE</strong> و<strong>السياق الدفاعي</strong> تعتمد إشارات أخرى وقد
+                تُظهر نتائج حتى بدون OT.
+              </div>
+            )}
             <div
               style={{
                 display: "grid",

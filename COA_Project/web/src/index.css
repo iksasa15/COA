@@ -57,6 +57,10 @@ button:disabled {
   filter: brightness(1.08);
 }
 
+a.btn-primary.landing-cta:hover {
+  filter: brightness(1.08);
+}
+
 .btn-ghost {
   background: var(--bg3);
   color: var(--fg);

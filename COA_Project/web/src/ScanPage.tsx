@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import FeatureNav from "./FeatureNav";
 
 type LogEvent = { timestamp: string; type: string; details: string };
 
@@ -191,43 +192,24 @@ export default function ScanPage() {
     <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
       <header
         style={{
-          padding: "1.25rem 1.5rem",
+          padding: "1rem 1.5rem 0.5rem",
           borderBottom: "1px solid var(--bg3)",
           display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
+          flexDirection: "column",
+          alignItems: "stretch",
+          gap: "0",
         }}
       >
-        <h1 style={{ margin: 0, fontSize: "1.75rem", color: "var(--cyan)" }}>C.O.A</h1>
-        <span style={{ color: "var(--muted)", fontSize: "0.95rem" }}>
-          Council of Agents — لوحة الأداء
-        </span>
-        <Link
-          to="/mitre-heatmap"
-          style={{
-            color: "var(--purple)",
-            fontSize: "0.9rem",
-            textDecoration: "none",
-            fontWeight: 600,
-          }}
-        >
-          خريطة MITRE الحرارية
-        </Link>
-        <Link
-          to="/ot-dashboard"
-          style={{
-            color: "#64748b",
-            fontSize: "0.9rem",
-            textDecoration: "none",
-            fontWeight: 600,
-          }}
-        >
-          OT/ICS Dashboard
-        </Link>
-        <Link to="/" style={linkHome}>
-          الرئيسية
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "0.35rem" }}>
+          <h1 style={{ margin: 0, fontSize: "1.75rem", color: "var(--cyan)" }}>C.O.A</h1>
+          <span style={{ color: "var(--muted)", fontSize: "0.95rem" }}>
+            Council of Agents — لوحة الأداء
+          </span>
+          <Link to="/" style={linkHome}>
+            الرئيسية
+          </Link>
+        </div>
+        <FeatureNav />
       </header>
 
       <div

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import FeatureNav from "./FeatureNav";
 
 type HeatCell = {
   technique_id: string;
@@ -118,24 +119,18 @@ export default function MitreHeatmapPage() {
         style={{
           padding: "1rem 1.5rem",
           borderBottom: "1px solid var(--bg3)",
+          background: "var(--bg2)",
           display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
+          flexDirection: "column",
+          alignItems: "stretch",
         }}
       >
-        <Link
-          to="/dashboard"
-          style={{ color: "var(--cyan)", textDecoration: "none", fontWeight: 600, fontSize: "0.9rem" }}
-        >
-          ← لوحة الأداء
-        </Link>
-        <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--fg)" }}>
-          MITRE ATT&CK Coverage — تغطية وخريطة حرارية
-        </h1>
-        <Link to="/" style={{ marginLeft: "auto", color: "var(--muted)", fontSize: "0.88rem" }}>
-          الرئيسية
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--fg)" }}>
+            MITRE ATT&CK Coverage — تغطية وخريطة حرارية
+          </h1>
+        </div>
+        <FeatureNav />
       </header>
 
       <div style={{ padding: "1rem 1.5rem", flex: 1 }}>
@@ -146,7 +141,12 @@ export default function MitreHeatmapPage() {
             MITRE ATT&CK
           </a>{" "}
           والدليل المحلي{" "}
-          <code style={{ color: "var(--cyan)" }}>docs/MITRE_ATTACK_DEFENSE_AR.md</code>.
+          <code style={{ color: "var(--cyan)" }}>docs/MITRE_ATTACK_DEFENSE_AR.md</code>. للتحليل العميق والـ Navigator
+          انظر{" "}
+          <Link to="/mitre-deep" style={{ color: "var(--cyan)" }}>
+            صفحة MITRE العميق
+          </Link>
+          .
         </p>
 
         {attribution && (

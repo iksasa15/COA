@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import FeatureNav from "./FeatureNav";
 
 type OtIcsHit = {
   process?: string;
@@ -72,23 +73,16 @@ export default function OtDashboardPage() {
           padding: "1rem 1.5rem",
           borderBottom: "1px solid #334155",
           display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: "0.75rem",
+          flexDirection: "column",
+          alignItems: "stretch",
           background: "#0c1929",
         }}
       >
-        <h1 style={{ margin: 0, fontSize: "1.35rem", color: "#94a3b8" }}>OT / ICS</h1>
-        <span style={{ color: "#64748b", fontSize: "0.9rem" }}>Passive-by-default · مراقبة فقط</span>
-        <Link
-          to="/dashboard"
-          style={{ marginLeft: "auto", color: "#38bdf8", fontSize: "0.9rem", fontWeight: 600, textDecoration: "none" }}
-        >
-          ← لوحة الفحص
-        </Link>
-        <Link to="/" style={{ color: "#64748b", fontSize: "0.88rem", textDecoration: "none" }}>
-          الرئيسية
-        </Link>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem", marginBottom: "0.25rem" }}>
+          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "#94a3b8" }}>OT / ICS</h1>
+          <span style={{ color: "#64748b", fontSize: "0.9rem" }}>Passive-by-default · مراقبة فقط</span>
+        </div>
+        <FeatureNav />
       </header>
 
       <main style={{ flex: 1, padding: "1.25rem 1.5rem", maxWidth: "1100px", margin: "0 auto", width: "100%" }}>

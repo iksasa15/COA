@@ -205,3 +205,19 @@
 2026-04-29 20:37:54,735 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-04-29 20:37:54,736 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-04-29 20:37:54,737 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-04-29 20:38:46,600 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-29 20:38:46,602 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-04-29 20:38:47,107 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-04-29 20:38:47,107 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-29 20:38:47,108 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:38:47,108 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:38:47,109 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-29 20:38:47,109 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-04-30 00:42:20,258 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-04-30 00:42:20,259 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-04-30 00:42:20,764 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-04-30 00:42:20,765 | INFO     | logger:_log:113 | Starting threat analysis
+2026-04-30 00:42:20,765 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-30 00:42:20,766 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-30 00:42:20,768 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-04-30 00:42:20,769 | INFO     | logger:_log:113 | Analysis complete: 3 threats found

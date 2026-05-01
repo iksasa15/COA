@@ -107,7 +107,7 @@ python main.py
 
 ## ملاحظات تقنية مختصرة
 
-- **مصدر البيانات للصفحات المنفصلة:** آخر فحص ناجح من React؛ المفتاح الرئيسي `coa_last_scan_extras` يحتوي عادةً: `defense_context`, `mitre_deep`, `ot_ics`.
+- **مصدر البيانات للصفحات المنفصلة:** آخر فحص ناجح من React؛ المفتاح الرئيسي `coa_last_scan_extras` يحتوي عادةً: `defense_context`, `mitre_deep`, `ot_ics`. بعد كل فحص ناجح يُطلق الحدث `coa-scan-complete` في النافذة نفسها، ويُحدَّث `sessionStorage` فيُطلق `storage` في النوافذ الأخرى — لتُحدَّث الصفحات المفتوحة دون إعادة تحميل يدوية للمتصفح.
 - **بدون فحص:** الصفحات تعرض رسالة توجيه للعودة إلى `#/dashboard`.
 - **تصدير Navigator من الخادم (وليس من الجلسة فقط):** بعد الفحص، يمكن استدعاء `GET http://127.0.0.1:5050/api/reports/mitre-navigator.json` إن كان الخادم يحتفظ بآخر فحص في الذاكرة.
 - **تشغيل الاختبارات من الـ API:** `GET /api/dev/tests-enabled` — `POST /api/dev/run-tests` مع جسم JSON اختياري `{"scope":"all"}` أو `"quick"` (يُفعّل فقط مع `COA_ALLOW_DEV_TESTS=1`).

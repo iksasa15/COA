@@ -1,5 +1,5 @@
-import { useEffect, useState, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
 
 type DefenseContext = {
@@ -33,14 +33,33 @@ function loadDc(): DefenseContext | null {
 export default function DefenseContextPage() {
   const [dc, setDc] = useState<DefenseContext | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const location = useLocation();
 
-  useEffect(() => {
+  const refresh = useCallback(() => {
     try {
+      setErr(null);
       setDc(loadDc());
     } catch {
       setErr("تعذّر قراءة البيانات.");
     }
   }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [location.key, refresh]);
+
+  useEffect(() => {
+    const onScan = () => refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "coa_last_scan_extras" || e.key === "coa_defense_context") refresh();
+    };
+    window.addEventListener("coa-scan-complete", onScan);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("coa-scan-complete", onScan);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [refresh]);
 
   const att = dc?.attribution || {};
 

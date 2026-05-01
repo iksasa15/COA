@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
 
 type Phase = {
@@ -34,10 +34,28 @@ function loadDeep(): MitreDeep | null {
 
 export default function MitreDeepPage() {
   const [deep, setDeep] = useState<MitreDeep | null>(null);
+  const location = useLocation();
 
-  useEffect(() => {
+  const refresh = useCallback(() => {
     setDeep(loadDeep());
   }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [location.key, refresh]);
+
+  useEffect(() => {
+    const onScan = () => refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "coa_last_scan_extras") refresh();
+    };
+    window.addEventListener("coa-scan-complete", onScan);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("coa-scan-complete", onScan);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [refresh]);
 
   function downloadNavigatorLayer() {
     const layer = deep?.navigator_layer;

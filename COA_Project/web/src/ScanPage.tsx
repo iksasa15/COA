@@ -132,6 +132,7 @@ export default function ScanPage() {
             ot_ics: json.ot_ics ?? null,
           }),
         );
+        window.dispatchEvent(new Event("coa-scan-complete"));
       } catch {
         /* ignore quota */
       }

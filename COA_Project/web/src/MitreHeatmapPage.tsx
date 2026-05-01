@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import FeatureNav from "./FeatureNav";
 
 type HeatCell = {
@@ -45,32 +45,50 @@ export default function MitreHeatmapPage() {
   const [profiles, setProfiles] = useState<ProfileRank[]>([]);
   const [mitreDeep, setMitreDeep] = useState<MitreDeepExtras | null>(null);
   const [viewFilter, setViewFilter] = useState<ViewFilter>("all");
+  const location = useLocation();
 
-  useEffect(() => {
+  type DcShape = {
+    mitre_heatmap?: HeatCell[];
+    disclaimer?: string;
+    attribution?: { likely_actor?: string; confidence_percent?: number };
+    profiles_ranked?: ProfileRank[];
+  };
+
+  const refresh = useCallback(() => {
     try {
       const extrasRaw = sessionStorage.getItem("coa_last_scan_extras");
-      let dc: {
-        mitre_heatmap?: HeatCell[];
-        disclaimer?: string;
-        attribution?: { likely_actor?: string; confidence_percent?: number };
-        profiles_ranked?: ProfileRank[];
-      } | null = null;
+      let dc: DcShape | null = null;
+      let mitreFromExtras: MitreDeepExtras | null = null;
 
       if (extrasRaw) {
         const x = JSON.parse(extrasRaw) as {
-          defense_context?: typeof dc;
-          mitre_deep?: MitreDeepExtras;
+          defense_context?: DcShape | null;
+          mitre_deep?: MitreDeepExtras | null;
         };
         dc = x.defense_context ?? null;
-        setMitreDeep(x.mitre_deep ?? null);
+        mitreFromExtras = x.mitre_deep ?? null;
+        setMitreDeep(mitreFromExtras);
+      } else {
+        setMitreDeep(null);
       }
+
       if (!dc) {
         const raw = sessionStorage.getItem("coa_defense_context");
-        if (!raw) {
-          setDisclaimer("لا توجد بيانات. نفّذ فحصاً من لوحة الأداء أولاً.");
-          return;
+        if (raw) {
+          dc = JSON.parse(raw) as DcShape;
         }
-        dc = JSON.parse(raw) as NonNullable<typeof dc>;
+      }
+
+      if (!dc) {
+        setCells([]);
+        setProfiles([]);
+        setAttribution("");
+        setDisclaimer(
+          extrasRaw
+            ? "لا يوجد defense_context في آخر فحص. نفّذ فحصاً من لوحة الأداء أو راجع استجابة الـ API."
+            : "لا توجد بيانات. نفّذ فحصاً من لوحة الأداء أولاً.",
+        );
+        return;
       }
 
       setCells(dc.mitre_heatmap || []);
@@ -79,11 +97,30 @@ export default function MitreHeatmapPage() {
       const a = dc.attribution;
       if (a) {
         setAttribution(`${a.likely_actor ?? ""} (${a.confidence_percent ?? 0}% confidence)`);
+      } else {
+        setAttribution("");
       }
     } catch {
       setDisclaimer("تعذّر قراءة بيانات السياق الدفاعي.");
     }
   }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [location.key, refresh]);
+
+  useEffect(() => {
+    const onScan = () => refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "coa_last_scan_extras" || e.key === "coa_defense_context") refresh();
+    };
+    window.addEventListener("coa-scan-complete", onScan);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("coa-scan-complete", onScan);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [refresh]);
 
   const topAptTtps = useMemo(() => {
     const p = profiles[0];

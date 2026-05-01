@@ -1,5 +1,5 @@
-import { useMemo, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
 
 type OtIcsHit = {
@@ -51,7 +51,29 @@ function loadOtFromSession(): OtIcsPayload | null {
 }
 
 export default function OtDashboardPage() {
-  const ot = useMemo(() => loadOtFromSession(), []);
+  const [ot, setOt] = useState<OtIcsPayload | null>(null);
+  const location = useLocation();
+
+  const refresh = useCallback(() => {
+    setOt(loadOtFromSession());
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [location.key, refresh]);
+
+  useEffect(() => {
+    const onScan = () => refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "coa_last_scan_extras") refresh();
+    };
+    window.addEventListener("coa-scan-complete", onScan);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("coa-scan-complete", onScan);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [refresh]);
 
   const mitreCounts = useMemo(() => {
     const m = new Map<string, number>();

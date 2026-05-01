@@ -345,3 +345,218 @@
 2026-05-01 15:34:26,695 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-05-01 15:34:26,697 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-05-01 15:34:26,805 | INFO     | logger:_log:113 | Dev pytest finished
+2026-05-01 15:36:03,141 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:03,146 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-05-01 15:36:03,146 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-05-01 15:36:04,263 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:04,270 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:04,272 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:04,274 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:04,275 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:04,279 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:04,279 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:04,279 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-05-01 15:36:04,280 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:36:04,281 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:36:04,786 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:36:04,787 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:36:04,787 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:04,788 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:04,789 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:04,790 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:04,790 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:36:04,799 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:04,801 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:04,803 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:04,804 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-05-01 15:36:04,805 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:36:04,807 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:36:05,311 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:36:05,313 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:36:05,313 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:05,314 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:05,316 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:05,317 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:05,318 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:36:05,327 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:05,330 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:05,332 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:05,839 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:05,840 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:05,841 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:05,844 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:05,947 | INFO     | logger:_log:113 | Dev pytest finished
+2026-05-01 15:36:28,411 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:28,416 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-05-01 15:36:28,416 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-05-01 15:36:29,539 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:29,548 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:29,551 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:29,553 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:29,555 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:29,559 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:29,559 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:29,560 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-05-01 15:36:29,560 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:36:29,562 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:36:30,066 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:36:30,067 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:36:30,067 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,068 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,070 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,071 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,072 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:36:30,081 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:30,083 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:30,085 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:30,085 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-05-01 15:36:30,085 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:36:30,087 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:36:30,591 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:36:30,593 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:36:30,593 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,594 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,597 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,597 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:30,598 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:36:30,607 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:30,609 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:36:30,610 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:31,117 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:31,118 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:36:31,119 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:31,122 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:36:31,217 | INFO     | logger:_log:113 | Dev pytest finished
+2026-05-01 15:36:54,893 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:36:54,899 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:36:55,403 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:36:55,405 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:36:55,405 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:55,406 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:55,408 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:55,409 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:36:55,409 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:36:55,421 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:36:55,424 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:05,504 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:37:05,509 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-05-01 15:37:05,509 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-05-01 15:37:06,630 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:06,639 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:06,641 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:06,644 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:06,646 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:06,650 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:06,650 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:06,651 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-05-01 15:37:06,651 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:37:06,653 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:37:07,159 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:37:07,160 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:37:07,160 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,160 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,162 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,162 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,163 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:37:07,173 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:07,175 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:07,177 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:07,177 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-05-01 15:37:07,178 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:37:07,180 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:37:07,685 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:37:07,686 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:37:07,686 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,686 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,687 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,688 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:07,688 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:37:07,693 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:07,694 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:07,694 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:08,200 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:08,201 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:08,202 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:37:08,204 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:37:08,272 | INFO     | logger:_log:113 | Dev pytest finished
+2026-05-01 15:37:42,048 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:37:42,054 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-05-01 15:37:42,054 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-05-01 15:37:43,179 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:43,189 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:43,193 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:43,195 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:43,197 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:43,201 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:43,201 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:43,201 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-05-01 15:37:43,202 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:37:43,203 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:37:43,708 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:37:43,709 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:37:43,710 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:43,711 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:43,713 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:43,714 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:43,715 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:37:43,724 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:43,726 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:43,728 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:43,728 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-05-01 15:37:43,728 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:37:43,730 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:37:44,234 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:37:44,235 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:37:44,236 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:44,236 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:44,239 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:44,239 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:37:44,240 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:37:44,249 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:37:44,252 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:37:44,253 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:44,761 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:44,763 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:37:44,763 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:37:44,767 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:38:28,065 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:38:28,070 | INFO     | logger:_log:113 | DRY RUN: Would execute: taskkill /F /PID 1234
+2026-05-01 15:38:28,070 | WARNING  | logger:_log:113 | Command execution blocked - no approval
+2026-05-01 15:38:29,190 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:38:29,197 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:38:29,199 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:38:29,201 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:38:29,203 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:38:29,207 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:29,207 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:29,208 | INFO     | logger:_log:113 | Helpdesk scan requested by test_user
+2026-05-01 15:38:29,208 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:38:29,209 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:38:29,714 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:38:29,715 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:38:29,716 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:29,717 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:29,719 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:29,719 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:29,720 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:38:29,730 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:38:29,733 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:38:29,734 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:29,734 | INFO     | logger:_log:113 | Helpdesk scan requested by john_123
+2026-05-01 15:38:29,734 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-01 15:38:29,736 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-01 15:38:30,241 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-01 15:38:30,242 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-01 15:38:30,242 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:30,243 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:30,245 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:30,246 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-01 15:38:30,247 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-01 15:38:30,256 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-01 15:38:30,258 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-01 15:38:30,259 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:30,767 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:30,768 | INFO     | logger:_log:113 | COA Helpdesk API initialized
+2026-05-01 15:38:30,769 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:38:30,772 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
+2026-05-01 15:38:30,881 | INFO     | logger:_log:113 | Dev pytest finished

@@ -39,8 +39,10 @@ from core.data_collector import SystemDataCollector
 from core.threat_analyzer import ThreatAnalyzer
 from core.solution_engine import SolutionEngine
 from agents.defense_context_analyzer import DefenseContextAnalyzer
+from agents.ics_specialist import ICSSpecialistAgent
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from agents.incident_reporter import IncidentReporter
+from ics_analyzer import analyze_ot_ics
 from config.settings import REPORTS_DIR
 
 
@@ -287,11 +289,21 @@ def cli_scan(args):
         ui.loading_animation("Correlating with regional APT heuristics & playbooks...", 0.8)
         defense_context = DefenseContextAnalyzer.analyze(system_data, analysis_result)
         ui.info(DefenseContextAnalyzer.format_report(defense_context).strip().replace("\n", "\n  "))
+        ot_ics = analyze_ot_ics(system_data)
+        ot_ics["ics_specialist"] = ICSSpecialistAgent.assess(ot_ics)
+        ui.section_header("OT/ICS — Passive view (Agent #6)", "🏭")
+        ui.info(
+            (ot_ics.get("ics_specialist") or {})
+            .get("ascii_report", "")
+            .strip()
+            .replace("\n", "\n  ")[:4000]
+        )
         mitre_deep = build_mitre_deep_bundle(
             analysis_result,
             defense_context,
             system_data,
             sys_info,
+            ot_ics,
         )
         ui.section_header("MITRE ATT&CK — Deep analysis (summary)", "📚")
         ui.info(mitre_deep.get("ascii_report", "").strip().replace("\n", "\n  ")[:6000])

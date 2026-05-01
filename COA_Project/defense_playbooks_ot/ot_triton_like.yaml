@@ -1,0 +1,6 @@
+# Safety-adjacent clustering — NOT detection of Triconex; narrative for SOC drill
+id: ot_triton_like
+name_ar: "نمط يستدعي مراجعة سلامة (ليس كشف TRITON)"
+name_en: "Safety review cluster (TRITON-like drill — heuristic)"
+require_safety_adjacent: true
+require_any_ports: [502, 102]

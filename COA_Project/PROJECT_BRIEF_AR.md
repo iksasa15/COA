@@ -20,7 +20,7 @@
 
 | الواجهة | العنوان / المسار | ماذا يحتوي؟ |
 |--------|-------------------|-------------|
-| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **SPA** في [web/src/App.tsx](web/src/App.tsx): صفحة رئيسية، **لوحة الأداء** `#/dashboard` (فحص، تبويبات، سياق دفاعي)، **خريطة MITRE** `#/mitre-heatmap` (بعد فحص يحفظ الجلسة `sessionStorage`). |
+| **واجهة React (موصى بها)** | `http://localhost:5173` (Vite) + API على `http://127.0.0.1:5050` | **SPA** في [web/src/App.tsx](web/src/App.tsx): صفحة رئيسية، **لوحة الأداء** `#/dashboard` (فحص، تبويبات، سياق دفاعي، تبويب **OT/ICS**)، **خريطة MITRE** `#/mitre-heatmap`، **لوحة OT/ICS** `#/ot-dashboard` (بعد فحص يُحمّل `sessionStorage` مفتاح `coa_last_scan_extras`). |
 | **واجهة Tkinter** | تشغيل سطح المكتب عبر `python gui.py` | واجهة رسومية قديمة بنفس الفكرة تقريباً: فحص، جداول، تبويبات، تصدير. |
 | **سطر الأوامر CLI** | `python main.py` | لا «صفحة»؛ مخرجات في الطرفية وتقارير في مجلد `reports/`. |
 | **تقرير HTML ثابت (مثال)** | ملف مثل [reports/COA_Report.html](reports/COA_Report.html) | تقرير تفاعلي يُنشأ بعد الفحص (وليس صفحة تنقل داخل التطبيق). |
@@ -52,6 +52,7 @@
 - **[council.py](agents/council.py)** — منطق «مجلس الوكلاء» الأصلي (CrewAI) للمهام المتخصصة.
 - **[incident_reporter.py](agents/incident_reporter.py)** — الوكيل الرابع: تقرير حادث، تصنيف شدة، ملخص تنفيذي، MITRE، إلخ.
 - **[defense_context_analyzer.py](agents/defense_context_analyzer.py)** — الوكيل الخامس: سياق دفاعي (APT profiles + playbooks + heatmap بيانات للواجهة).
+- **[ics_specialist.py](agents/ics_specialist.py)** — الوكيل السادس: تقييم OT/ICS سلبي (نص تقرير + DO/DON'T تشغيلية).
 - **[prompts.py](agents/prompts.py)** — نصوص الـ prompts للوكلاء.
 
 ### `core/`
@@ -69,6 +70,10 @@
 - **[rules/defense_context/](core/rules/defense_context/)** — قواعد YARA إضافية للسياق الدفاعي (مع `baseline` تُحمّل معاً).
 - **[apt_profiles/](apt_profiles/)** — ملفات YAML لملفات تعريف APT علنية (للمطابقة التجريبية).
 - **[defense_playbooks/](defense_playbooks/)** — سيناريوهات دفاعية مبسطة (YAML).
+- **[ics_analyzer/](ics_analyzer/)** — تحليل OT/ICS سلبي (منافذ معروفة + جدول اتصالات؛ مجلد `protocols/` مخصص لاحقاً لـ PCAP/Scapy).
+- **[defense_playbooks_ot/](defense_playbooks_ot/)** — سيناريوهات OT تجريبية (Stuxnet-like / TRITON-like drill / إلخ — إرشادية فقط).
+- **[docs/OT_ICS_DEFENSE_AR.md](docs/OT_ICS_DEFENSE_AR.md)** — مبدأ Passive-by-default وربط MITRE ICS للعرض.
+- **[ics_vulnerabilities/README.md](ics_vulnerabilities/README.md)** — كيفية إثراء CVE من CISA/البائعين دون بيانات وهمية في المستودع.
 
 ### `utils/`
 
@@ -81,11 +86,12 @@
 
 ### `tests/`
 
-- **[test_core.py](tests/test_core.py)** و **[test_v3_features.py](tests/test_v3_features.py)** و **[test_defense_context.py](tests/test_defense_context.py)** — اختبارات الوحدات.
+- **[test_core.py](tests/test_core.py)** و **[test_v3_features.py](tests/test_v3_features.py)** و **[test_defense_context.py](tests/test_defense_context.py)** و **[test_ics_analyzer.py](tests/test_ics_analyzer.py)** — اختبارات الوحدات.
 
 ### `web/src/` (واجهة React)
 
-- **[App.tsx](web/src/App.tsx)** — كل الواجهة: حالة الفحص، الجلب من `/api/scan`، التبويبات، التصدير.
+- **[App.tsx](web/src/App.tsx)** — التوجيه: رئيسية، `#/dashboard`، `#/mitre-heatmap`، `#/ot-dashboard`.
+- **[OtDashboardPage.tsx](web/src/OtDashboardPage.tsx)** — لوحة OT/ICS من جلسة الفحص الأخيرة.
 - **[main.tsx](web/src/main.tsx)** — تشغيل التطبيق على عنصر `#root`.
 - **[vite-env.d.ts](web/src/vite-env.d.ts)** — أنواع TypeScript لبيئة Vite.
 

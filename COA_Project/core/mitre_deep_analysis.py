@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+from ics_analyzer.protocol_registry import ICS_PORT_REGISTRY
+
 # Enterprise tactic order (simplified kill-chain narrative)
 TACTIC_ORDER: List[Tuple[str, str]] = [
     ("TA0043", "Reconnaissance"),
@@ -183,32 +185,43 @@ def build_kill_chain_phases(threats: List[Dict[str, Any]]) -> List[Dict[str, Any
     return out
 
 
-def _ics_context(system_data: Dict[str, Any], playbooks: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Heuristic ICS mention when SCADA-style ports or playbook fired."""
-    ports = {502, 102}
-    hit = any(
-        p.get("id") == "critical_infrastructure" for p in (playbooks or [])
-    )
+def _ics_context(
+    system_data: Dict[str, Any],
+    playbooks: List[Dict[str, Any]],
+    ot_ics: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Heuristic ICS mention when ICS-style ports, OT passive module, or playbook fired."""
+    ports = set(ICS_PORT_REGISTRY.keys())
+    hit = any(p.get("id") == "critical_infrastructure" for p in (playbooks or []))
+    ot_hits = list((ot_ics or {}).get("ics_protocol_hits") or [])
+    if ot_hits:
+        hit = True
     for c in system_data.get("network_connections") or []:
-        ra = str(c.get("remote_address") or "")
-        if ":" in ra:
+        for addr_key in ("remote_address", "local_address"):
+            addr = str(c.get(addr_key) or "")
+            if ":" not in addr:
+                continue
             try:
-                p = int(ra.rsplit(":", 1)[-1])
+                p = int(addr.rsplit(":", 1)[-1])
                 if p in ports:
                     hit = True
                     break
             except ValueError:
                 pass
-    return {
-        "ics_relevant": hit,
-        "note": (
-            "Review MITRE ATT&CK for ICS (e.g. T0855 Unauthorized Command Message, "
-            "T0831 Manipulation of Control) if OT assets are in scope — import ics-attack.json "
-            "via scripts/download_mitre_stix.py for full matrix alignment."
-        )
-        if hit
-        else "No industrial port heuristics in this scan window.",
-    }
+        if hit:
+            break
+    base_note = (
+        "Review MITRE ATT&CK for ICS (e.g. T0855 Unauthorized Command Message, "
+        "T0831 Manipulation of Control) if OT assets are in scope — import ics-attack.json "
+        "via scripts/download_mitre_stix.py for full matrix alignment."
+    )
+    if hit and ot_hits:
+        note = base_note + f" Passive OT module: {len(ot_hits)} connection(s) on known ICS ports."
+    elif hit:
+        note = base_note
+    else:
+        note = "No industrial port heuristics in this scan window."
+    return {"ics_relevant": hit, "note": note}
 
 
 def suggested_detection_gaps(observed_ids: Set[str]) -> List[str]:
@@ -273,6 +286,7 @@ def format_deep_mitre_report(
     defense_context: Optional[Dict[str, Any]],
     system_data: Dict[str, Any],
     system_info: Dict[str, Any],
+    ot_ics: Optional[Dict[str, Any]] = None,
 ) -> str:
     """ASCII block for incident report."""
     lines: List[str] = []
@@ -335,7 +349,11 @@ def format_deep_mitre_report(
         for g in gaps:
             lines.append(f"  • {g}")
 
-    ics = _ics_context(system_data, (defense_context or {}).get("playbooks_triggered") or [])
+    ics = _ics_context(
+        system_data,
+        (defense_context or {}).get("playbooks_triggered") or [],
+        ot_ics,
+    )
     lines.append("\n▸ ICS / OT context")
     lines.append(f"  {ics['note']}")
 
@@ -352,18 +370,25 @@ def build_mitre_deep_bundle(
     defense_context: Optional[Dict[str, Any]],
     system_data: Dict[str, Any],
     system_info: Dict[str, Any],
+    ot_ics: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     threats = list(analysis.get("threats") or [])
     heat = (defense_context or {}).get("mitre_heatmap") or []
     hostname = str(system_info.get("hostname") or "host")
     phases = build_kill_chain_phases(threats)
     navigator = build_navigator_layer(hostname, heat, "C.O.A Threat Analysis")
-    report = format_deep_mitre_report(threats, defense_context, system_data, system_info)
+    report = format_deep_mitre_report(
+        threats, defense_context, system_data, system_info, ot_ics
+    )
     return {
         "kill_chain_phases": phases,
         "navigator_layer": navigator,
         "ascii_report": report,
-        "ics_context": _ics_context(system_data, (defense_context or {}).get("playbooks_triggered") or []),
+        "ics_context": _ics_context(
+            system_data,
+            (defense_context or {}).get("playbooks_triggered") or [],
+            ot_ics,
+        ),
         "detection_gap_hints": suggested_detection_gaps(
             {t["technique"] for ph in phases for t in ph["techniques"]}
         ),

@@ -1,0 +1,5 @@
+id: ot_insider_ot
+name_ar: "نشاط OT غير معتاد من عملية واحدة"
+name_en: "Single-process multi-ICS footprint (insider-style heuristic)"
+require_min_distinct_protocols: 2
+require_any_ports: [502]

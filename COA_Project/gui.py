@@ -22,8 +22,10 @@ from core.solution_engine import SolutionEngine
 from utils.report_generator import ReportGenerator
 from utils.html_report import HTMLReportGenerator
 from agents.defense_context_analyzer import DefenseContextAnalyzer
+from agents.ics_specialist import ICSSpecialistAgent
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from agents.incident_reporter import IncidentReporter
+from ics_analyzer import analyze_ot_ics
 from config.settings import REPORTS_DIR
 
 
@@ -455,15 +457,23 @@ class COAGui:
             })
 
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            ot_ics = analyze_ot_ics(system_data)
+            ot_ics["ics_specialist"] = ICSSpecialistAgent.assess(ot_ics)
             mitre_deep = build_mitre_deep_bundle(
                 analysis,
                 defense_context,
                 system_data,
                 system_data["system_info"],
+                ot_ics,
             )
             self.event_queue.put({
                 'type': 'log',
                 'text': 'Defense Context Analyzer (Agent #5) completed',
+                'level': 'INFO',
+            })
+            self.event_queue.put({
+                'type': 'log',
+                'text': 'OT/ICS passive analyzer + ICS Specialist (Agent #6) completed',
                 'level': 'INFO',
             })
 
@@ -475,6 +485,7 @@ class COAGui:
                     'analysis': analysis,
                     'defense_context': defense_context,
                     'mitre_deep': mitre_deep,
+                    'ot_ics': ot_ics,
                 },
             })
 

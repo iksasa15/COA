@@ -27,11 +27,23 @@ type MitreDeepPayload = {
   detection_gap_hints?: string[];
 };
 
+type OtIcsPayload = {
+  passive_by_default?: boolean;
+  disclaimer?: string;
+  ics_protocol_hits?: Array<Record<string, unknown>>;
+  inventory_sketch?: Array<Record<string, unknown>>;
+  distinct_ics_protocols?: number;
+  ot_playbooks_triggered?: Array<Record<string, unknown>>;
+  production_continuity_score?: number;
+  ics_specialist?: { ascii_report?: string };
+};
+
 type ScanPayload = {
   ok: boolean;
   error?: string;
   defense_context?: DefenseContextPayload;
   mitre_deep?: MitreDeepPayload;
+  ot_ics?: OtIcsPayload;
   system_info?: Record<string, unknown>;
   analysis?: {
     total_threats: number;
@@ -51,7 +63,7 @@ type ScanPayload = {
   events?: LogEvent[];
 };
 
-type TabId = "threats" | "processes" | "network" | "logs";
+type TabId = "threats" | "processes" | "network" | "ot_ics" | "logs";
 
 function appendLocalLog(
   lines: { ts: string; level: string; text: string }[],
@@ -107,19 +119,20 @@ export default function ScanPage() {
         throw new Error(json.error || "Scan failed");
       }
       setData(json);
-      if (json.defense_context) {
-        try {
+      try {
+        if (json.defense_context) {
           sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
-          sessionStorage.setItem(
-            "coa_last_scan_extras",
-            JSON.stringify({
-              defense_context: json.defense_context,
-              mitre_deep: json.mitre_deep ?? null,
-            }),
-          );
-        } catch {
-          /* ignore quota */
         }
+        sessionStorage.setItem(
+          "coa_last_scan_extras",
+          JSON.stringify({
+            defense_context: json.defense_context ?? null,
+            mitre_deep: json.mitre_deep ?? null,
+            ot_ics: json.ot_ics ?? null,
+          }),
+        );
+      } catch {
+        /* ignore quota */
       }
       const serverLines = (json.events || []).map((ev) => ({
         ts: ev.timestamp,
@@ -200,6 +213,17 @@ export default function ScanPage() {
           }}
         >
           خريطة MITRE الحرارية
+        </Link>
+        <Link
+          to="/ot-dashboard"
+          style={{
+            color: "#64748b",
+            fontSize: "0.9rem",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          OT/ICS Dashboard
         </Link>
         <Link to="/" style={linkHome}>
           الرئيسية
@@ -344,6 +368,7 @@ export default function ScanPage() {
               ["threats", "Threats"],
               ["processes", "Processes"],
               ["network", "Network"],
+              ["ot_ics", "OT/ICS"],
               ["logs", "Logs"],
             ] as const
           ).map(([id, label]) => (
@@ -466,6 +491,53 @@ export default function ScanPage() {
                 )}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {tab === "ot_ics" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
+              {data?.ot_ics?.disclaimer ||
+                "Run a scan to load passive OT/ICS correlation (known industrial ports + processes)."}
+            </p>
+            {data?.ot_ics && (
+              <>
+                <div style={{ fontSize: "0.85rem", color: "var(--fg)" }}>
+                  <strong>Distinct ICS protocols:</strong> {data.ot_ics.distinct_ics_protocols ?? 0} ·{" "}
+                  <strong>Hits:</strong> {(data.ot_ics.ics_protocol_hits || []).length} ·{" "}
+                  <strong>Production continuity (demo):</strong>{" "}
+                  {data.ot_ics.production_continuity_score ?? "—"}
+                </div>
+                {(data.ot_ics.ot_playbooks_triggered || []).length > 0 && (
+                  <div style={{ fontSize: "0.85rem", color: "var(--orange)" }}>
+                    <strong>OT playbooks:</strong>{" "}
+                    {data.ot_ics.ot_playbooks_triggered!.map((p) => String(p.id ?? p)).join(", ")}
+                  </div>
+                )}
+                <pre
+                  style={{
+                    margin: 0,
+                    padding: "0.75rem 1rem",
+                    background: "var(--bg2)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--bg3)",
+                    color: "var(--muted)",
+                    fontSize: "0.78rem",
+                    whiteSpace: "pre-wrap",
+                    maxHeight: "320px",
+                    overflow: "auto",
+                  }}
+                >
+                  {data.ot_ics.ics_specialist?.ascii_report || "(no specialist output)"}
+                </pre>
+                <Link
+                  to="/ot-dashboard"
+                  style={{ color: "var(--cyan)", fontWeight: 600, fontSize: "0.9rem", textDecoration: "none" }}
+                >
+                  فتح لوحة OT/ICS الكاملة →
+                </Link>
+              </>
+            )}
           </div>
         )}
 

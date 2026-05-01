@@ -22,10 +22,12 @@ from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
 from agents.defense_context_analyzer import DefenseContextAnalyzer
+from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
 from core.mitre_deep_analysis import build_mitre_deep_bundle
+from ics_analyzer import analyze_ot_ics
 from core.threat_analyzer import ThreatAnalyzer
 from utils.html_report import HTMLReportGenerator
 from utils.logger import logger
@@ -86,11 +88,15 @@ def create_app() -> Flask:
 
             reporter.log_event("DEFENSE_CONTEXT", "Running Defense Context Analyzer (Agent #5)…")
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            reporter.log_event("OT_ICS", "Passive OT/ICS correlation (ports/processes only)…")
+            ot_ics = analyze_ot_ics(system_data)
+            ot_ics["ics_specialist"] = ICSSpecialistAgent.assess(ot_ics)
             mitre_deep = build_mitre_deep_bundle(
                 analysis,
                 defense_context,
                 system_data,
                 system_data["system_info"],
+                ot_ics,
             )
 
             classification = IncidentReporter.classify_incident(analysis)
@@ -105,6 +111,7 @@ def create_app() -> Flask:
                 "summary": summary,
                 "defense_context": defense_context,
                 "mitre_deep": mitre_deep,
+                "ot_ics": ot_ics,
                 "dry_run": dry_run,
                 "completed_at": datetime.now().isoformat(),
             }
@@ -118,6 +125,7 @@ def create_app() -> Flask:
                 "summary": summary,
                 "defense_context": defense_context,
                 "mitre_deep": mitre_deep,
+                "ot_ics": ot_ics,
                 "collection_duration": system_data.get("collection_duration", 0),
                 "processes": system_data["processes"][:MAX_PROCESSES_RESPONSE],
                 "processes_total": len(system_data["processes"]),

@@ -1,0 +1,4 @@
+id: ot_pipedream_like
+name_ar: "استطلاع متعدد البروتوكولات (فرضية)"
+name_en: "Multi-vendor OT reconnaissance (heuristic)"
+require_min_distinct_protocols: 3

@@ -1,0 +1,6 @@
+# Heuristic: USB/engineering chain not visible in psutil — use multi-protocol OT footprint as proxy
+id: ot_stuxnet_like
+name_ar: "سيناريو شبيه بسلسلة برمجة غير معتادة (فرضية)"
+name_en: "Stuxnet-like chain (heuristic proxy)"
+require_min_distinct_protocols: 2
+require_any_ports: [502, 102]

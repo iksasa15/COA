@@ -290,3 +290,6 @@
 {"timestamp": "2026-05-01T15:17:27.227771", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "COA Helpdesk API initialized"}
 {"timestamp": "2026-05-01T15:17:27.228406", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
 {"timestamp": "2026-05-01T15:17:27.231175", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
+{"timestamp": "2026-05-01T15:24:25.247900", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "OT/ICS passive analysis complete", "hits": 0, "distinct_ics_protocols": 0}
+{"timestamp": "2026-05-01T15:24:25.249315", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "OT/ICS passive analysis complete", "hits": 1, "distinct_ics_protocols": 1}
+{"timestamp": "2026-05-01T15:24:25.250936", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "OT/ICS passive analysis complete", "hits": 3, "distinct_ics_protocols": 3}

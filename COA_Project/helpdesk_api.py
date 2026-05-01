@@ -25,7 +25,9 @@ from core.data_collector import SystemDataCollector
 from core.threat_analyzer import ThreatAnalyzer
 from core.solution_engine import SolutionEngine
 from agents.defense_context_analyzer import DefenseContextAnalyzer
+from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
+from ics_analyzer import analyze_ot_ics
 from utils.logger import logger
 
 
@@ -71,6 +73,8 @@ class COAHelpdesk:
             # تحليل
             analysis = ThreatAnalyzer.full_analysis(system_data)
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
+            ot_ics = analyze_ot_ics(system_data)
+            ot_ics["ics_specialist"] = ICSSpecialistAgent.assess(ot_ics)
 
             # تصنيف للـ Helpdesk
             classification = IncidentReporter.classify_incident(analysis)
@@ -94,6 +98,7 @@ class COAHelpdesk:
                 "high_count": analysis["high"],
                 "summary": summary,
                 "defense_context": defense_context,
+                "ot_ics": ot_ics,
                 "needs_action": classification["priority"] <= 3,
                 "bot_response": self._generate_bot_response(classification, analysis),
             }

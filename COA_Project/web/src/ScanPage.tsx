@@ -29,6 +29,7 @@ type MitreDeepPayload = {
 };
 
 type OtIcsPayload = {
+  presentation_demo?: boolean;
   passive_by_default?: boolean;
   disclaimer?: string;
   ics_protocol_hits?: Array<Record<string, unknown>>;
@@ -99,6 +100,7 @@ async function downloadFromApi(path: string, fallbackName: string) {
 export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
+  const [presentationDemo, setPresentationDemo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ScanPayload | null>(null);
   const [logLines, setLogLines] = useState<{ ts: string; level: string; text: string }[]>([]);
@@ -113,7 +115,7 @@ export default function ScanPage() {
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dry_run: dryRun }),
+        body: JSON.stringify({ dry_run: dryRun, presentation_demo: presentationDemo }),
       });
       const json = (await res.json()) as ScanPayload;
       if (!res.ok || !json.ok) {
@@ -165,7 +167,7 @@ export default function ScanPage() {
     } finally {
       setLoading(false);
     }
-  }, [dryRun]);
+  }, [dryRun, presentationDemo]);
 
   const stats = useMemo(() => {
     const a = data?.analysis;
@@ -234,6 +236,14 @@ export default function ScanPage() {
           />
           Dry run (remediation simulation)
         </label>
+        <label className="checkbox" title="بيانات OT محاكاة من fixtures — للعرض أمام المحكّمين">
+          <input
+            type="checkbox"
+            checked={presentationDemo}
+            onChange={(e) => setPresentationDemo(e.target.checked)}
+          />
+          عرض OT للمحكّمين (محاكاة)
+        </label>
         <div style={{ flex: 1 }} />
         <button
           type="button"
@@ -270,6 +280,22 @@ export default function ScanPage() {
       </div>
 
       <div style={{ padding: "0.75rem 1.5rem" }}>
+        {data?.ot_ics?.presentation_demo && (
+          <div
+            style={{
+              marginBottom: "0.75rem",
+              padding: "0.65rem 0.85rem",
+              borderRadius: "var(--radius)",
+              border: "1px solid #b45309",
+              background: "#422006",
+              color: "#ffedd5",
+              fontSize: "0.86rem",
+            }}
+          >
+            <strong>عرض توضيحي:</strong> قسم OT/ICS يعرض بيانات محاكاة من المشروع (للهاكاثون) — بقية الفحص من
+            الجهاز الحقيقي.
+          </div>
+        )}
         <div
           style={{
             display: "grid",

@@ -1,0 +1,73 @@
+{
+  "presentation_demo": true,
+  "mode": "presentation_demo",
+  "passive_by_default": true,
+  "disclaimer": "عرض توضيحي للمحكّمين — بيانات OT/ICS التالية محاكاة وليست من جدول اتصالات هذا المضيف الحي. For judges: simulated OT footprint for UI demo only.",
+  "ics_protocol_hits": [
+    {
+      "process": "WinCC_Runtime",
+      "pid": 9100,
+      "local_address": "192.168.10.45:49210",
+      "remote_address": "192.168.10.21:102",
+      "direction_hint": "remote-port",
+      "port": 102,
+      "protocol": "S7comm (Siemens typical)",
+      "ics_mitre_examples": ["T0843", "T0866"],
+      "risk_note": "Programming or STOP-style sessions require OT approval — never block blindly."
+    },
+    {
+      "process": "Modbus_Client_Demo",
+      "pid": 9101,
+      "local_address": "192.168.10.45:49211",
+      "remote_address": "192.168.10.22:502",
+      "direction_hint": "remote-port",
+      "port": 502,
+      "protocol": "Modbus TCP",
+      "ics_mitre_examples": ["T0852", "T0869"],
+      "risk_note": "Write operations (FC06/16) are high-risk if unexpected — verify with operations."
+    },
+    {
+      "process": "OPC_UA_Client",
+      "pid": 9102,
+      "local_address": "192.168.10.45:49212",
+      "remote_address": "192.168.10.100:4840",
+      "direction_hint": "remote-port",
+      "port": 4840,
+      "protocol": "OPC UA",
+      "ics_mitre_examples": ["T0884", "T0861"],
+      "risk_note": "IT/OT bridge via OPC UA is a common lateral path — review segmentation."
+    }
+  ],
+  "inventory_sketch": [
+    {
+      "endpoint": "192.168.10.21",
+      "processes": ["WinCC_Runtime", "Modbus_Client_Demo"],
+      "protocols_observed": ["S7comm (Siemens typical)", "Modbus TCP"],
+      "note": "محاكاة — PLC مفترض (Reactor line)."
+    },
+    {
+      "endpoint": "192.168.10.100",
+      "processes": ["OPC_UA_Client"],
+      "protocols_observed": ["OPC UA"],
+      "note": "محاكاة — Historian / IT-OT bridge."
+    }
+  ],
+  "distinct_ics_protocols": 3,
+  "ics_ports_observed": [102, 502, 4840],
+  "ot_playbooks_triggered": [
+    {
+      "id": "ot_pipedream_like",
+      "name_ar": "استطلاع متعدد البروتوكولات (فرضية)",
+      "name_en": "Multi-vendor OT reconnaissance (heuristic)",
+      "reason": ">= 3 distinct OT protocols from passive view (demo)"
+    },
+    {
+      "id": "ot_stuxnet_like",
+      "name_ar": "سيناريو شبيه بسلسلة برمجة غير معتادة (فرضية)",
+      "name_en": "Stuxnet-like chain (heuristic proxy)",
+      "reason": "matched ICS ports [502, 102] (demo)"
+    }
+  ],
+  "production_continuity_score": 68,
+  "ics_mitre_matrix_url": "https://attack.mitre.org/matrices/ics/"
+}

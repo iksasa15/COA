@@ -13,6 +13,7 @@ type OtIcsHit = {
 };
 
 type OtIcsPayload = {
+  presentation_demo?: boolean;
   mode?: string;
   passive_by_default?: boolean;
   disclaimer?: string;
@@ -52,11 +53,41 @@ function loadOtFromSession(): OtIcsPayload | null {
 
 export default function OtDashboardPage() {
   const [ot, setOt] = useState<OtIcsPayload | null>(null);
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoErr, setDemoErr] = useState<string | null>(null);
   const location = useLocation();
 
   const refresh = useCallback(() => {
     setOt(loadOtFromSession());
   }, []);
+
+  const loadPresentationDemo = useCallback(async () => {
+    setDemoErr(null);
+    setDemoLoading(true);
+    try {
+      const res = await fetch("/api/demo/ot-ics-fixture");
+      const body = (await res.json()) as OtIcsPayload & { error?: string };
+      if (!res.ok) {
+        throw new Error(body.error || res.statusText);
+      }
+      const fixture = body as OtIcsPayload;
+      let extras: Record<string, unknown> = {};
+      try {
+        const raw = sessionStorage.getItem("coa_last_scan_extras");
+        if (raw) extras = JSON.parse(raw) as Record<string, unknown>;
+      } catch {
+        /* ignore */
+      }
+      extras.ot_ics = fixture;
+      sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
+      window.dispatchEvent(new Event("coa-scan-complete"));
+      refresh();
+    } catch (e) {
+      setDemoErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setDemoLoading(false);
+    }
+  }, [refresh]);
 
   useEffect(() => {
     refresh();
@@ -108,6 +139,17 @@ export default function OtDashboardPage() {
       </header>
 
       <main style={{ flex: 1, padding: "1.25rem 1.5rem", maxWidth: "1100px", margin: "0 auto", width: "100%" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+          <button type="button" className="btn-accent" disabled={demoLoading} onClick={() => void loadPresentationDemo()}>
+            {demoLoading ? "جاري التحميل…" : "تحميل عرض OT للمحكّمين (محاكاة)"}
+          </button>
+          <span style={{ fontSize: "0.78rem", color: "#64748b", maxWidth: "28rem" }}>
+            يملأ لوحة OT من الـ API دون إعادة فحص — مناسب للعرض إذا الجهاز بدون منافذ صناعية.
+          </span>
+        </div>
+        {demoErr && (
+          <p style={{ color: "#f87171", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{demoErr}</p>
+        )}
         {!ot && (
           <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>
             لا توجد بيانات OT بعد. شغّل فحصاً من{" "}
@@ -120,7 +162,24 @@ export default function OtDashboardPage() {
 
         {ot && (
           <>
-            {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && (
+            {ot.presentation_demo && (
+              <div
+                style={{
+                  marginBottom: "1rem",
+                  padding: "0.75rem 1rem",
+                  borderRadius: "8px",
+                  border: "1px solid #b45309",
+                  background: "#422006",
+                  color: "#ffedd5",
+                  fontSize: "0.86rem",
+                  lineHeight: 1.55,
+                }}
+              >
+                <strong style={{ color: "#fdba74" }}>عرض توضيحي للمحكّمين:</strong> بيانات OT/ICS المعروضة محاكاة من
+                ملف المشروع وليست من جدول اتصالات هذا المضيف الحي.
+              </div>
+            )}
+            {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && !ot.presentation_demo && (
               <div
                 style={{
                   marginBottom: "1rem",

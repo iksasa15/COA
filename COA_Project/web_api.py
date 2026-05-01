@@ -30,6 +30,7 @@ from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from ics_analyzer import analyze_ot_ics
+from ics_analyzer.demo_fixture import load_presentation_demo_ot_ics
 from core.threat_analyzer import ThreatAnalyzer
 from utils.html_report import HTMLReportGenerator
 from utils.logger import logger
@@ -70,11 +71,19 @@ def create_app() -> Flask:
     def health():
         return jsonify({"ok": True, "service": "C.O.A Web API", "time": datetime.now().isoformat()})
 
+    @app.get("/api/demo/ot-ics-fixture")
+    def demo_ot_ics_fixture():
+        """Simulated OT/ICS payload for judge UI demo (read-only, no host scan)."""
+        demo = load_presentation_demo_ot_ics()
+        demo["ics_specialist"] = ICSSpecialistAgent.assess(demo)
+        return jsonify(_json_safe(demo))
+
     @app.post("/api/scan")
     def scan():
         global _last, _last_reporter
         body = request.get_json(silent=True) or {}
         dry_run = bool(body.get("dry_run", False))
+        presentation_demo = bool(body.get("presentation_demo", False))
 
         reporter = ReportGenerator()
         reporter.log_event("SYSTEM", "React UI scan started")
@@ -97,8 +106,12 @@ def create_app() -> Flask:
 
             reporter.log_event("DEFENSE_CONTEXT", "Running Defense Context Analyzer (Agent #5)…")
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
-            reporter.log_event("OT_ICS", "Passive OT/ICS correlation (ports/processes only)…")
-            ot_ics = analyze_ot_ics(system_data)
+            if presentation_demo:
+                reporter.log_event("OT_ICS", "Presentation demo — loading simulated OT/ICS bundle for judges UI…")
+                ot_ics = load_presentation_demo_ot_ics()
+            else:
+                reporter.log_event("OT_ICS", "Passive OT/ICS correlation (ports/processes only)…")
+                ot_ics = analyze_ot_ics(system_data)
             ot_ics["ics_specialist"] = ICSSpecialistAgent.assess(ot_ics)
             mitre_deep = build_mitre_deep_bundle(
                 analysis,

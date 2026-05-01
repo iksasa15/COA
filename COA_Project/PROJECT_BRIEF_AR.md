@@ -73,6 +73,7 @@
 - **[ics_analyzer/](ics_analyzer/)** — تحليل OT/ICS سلبي (منافذ معروفة + جدول اتصالات؛ مجلد `protocols/` مخصص لاحقاً لـ PCAP/Scapy).
 - **[defense_playbooks_ot/](defense_playbooks_ot/)** — سيناريوهات OT تجريبية (Stuxnet-like / TRITON-like drill / إلخ — إرشادية فقط).
 - **[docs/OT_ICS_DEFENSE_AR.md](docs/OT_ICS_DEFENSE_AR.md)** — مبدأ Passive-by-default وربط MITRE ICS للعرض.
+- **[docs/wokala/README.md](docs/wokala/README.md)** — شرح كل وكيل (1–6) ومحرك التحليل الحتمي، مع روابط لملفات منفصلة.
 - **[ics_vulnerabilities/README.md](ics_vulnerabilities/README.md)** — كيفية إثراء CVE من CISA/البائعين دون بيانات وهمية في المستودع.
 
 ### `utils/`

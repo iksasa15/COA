@@ -23,10 +23,10 @@ type MitreDeepExtras = {
 };
 
 const HEAT_COLORS: Record<number, string> = {
-  0: "#334155",
-  1: "#ca8a04",
-  2: "#ea580c",
-  3: "#991b1b",
+  0: "var(--heat-0)",
+  1: "var(--heat-1)",
+  2: "var(--heat-2)",
+  3: "var(--heat-3)",
 };
 
 const HEAT_LABELS: Record<number, string> = {
@@ -151,26 +151,15 @@ export default function MitreHeatmapPage() {
   }
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-      <header
-        style={{
-          padding: "1rem 1.5rem",
-          borderBottom: "1px solid var(--bg3)",
-          background: "var(--bg2)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "stretch",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--fg)" }}>
-            MITRE ATT&CK Coverage — تغطية وخريطة حرارية
-          </h1>
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="page-header__row">
+          <h1 className="page-title page-title--fg">MITRE ATT&CK Coverage — تغطية وخريطة حرارية</h1>
         </div>
         <FeatureNav />
       </header>
 
-      <div style={{ padding: "1rem 1.5rem", flex: 1 }}>
+      <main className="page-main">
         <p style={{ color: "var(--muted)", fontSize: "0.88rem", maxWidth: "56rem", marginTop: 0 }}>
           يعرض هذا العرض تقنيات مرتبطة <strong>بفحص واحد</strong> وليس تكراراً على 30 يوماً — يمكن ربط
           التخزين الزمني لاحقاً. راجع الوثيقة{" "}
@@ -199,10 +188,10 @@ export default function MitreHeatmapPage() {
           <div
             style={{
               padding: "0.75rem 1rem",
-              background: "#422006",
+              background: "var(--warn-banner-bg)",
               borderRadius: "var(--radius)",
-              border: "1px solid #b45309",
-              color: "#ffedd5",
+              border: "1px solid var(--warn-banner-border)",
+              color: "var(--warn-banner-fg)",
               fontSize: "0.88rem",
               maxWidth: "56rem",
               marginBottom: "0.75rem",
@@ -235,8 +224,8 @@ export default function MitreHeatmapPage() {
           ))}
           <button
             type="button"
-            className="btn-accent"
-            style={{ marginLeft: "auto", fontSize: "0.82rem" }}
+            className="btn-accent ms-auto"
+            style={{ fontSize: "0.82rem" }}
             disabled={!mitreDeep?.navigator_layer}
             onClick={downloadNavigatorLayer}
           >
@@ -283,8 +272,8 @@ export default function MitreHeatmapPage() {
                     borderRadius: "var(--radius)",
                     padding: "0.75rem",
                     background: HEAT_COLORS[c.heat] ?? HEAT_COLORS[0],
-                    color: "#f8fafc",
-                    border: "1px solid #1e293b",
+                    color: "var(--heat-cell-text)",
+                    border: "1px solid var(--heat-cell-border)",
                     minHeight: "5.5rem",
                   }}
                 >
@@ -301,7 +290,7 @@ export default function MitreHeatmapPage() {
             </div>
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 }

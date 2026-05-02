@@ -36,43 +36,21 @@ const FEATURE_CARDS = [
 
 export default function LandingPage() {
   return (
-    <div
-      style={{
-        minHeight: "100%",
-        display: "flex",
-        flexDirection: "column",
-        background:
-          "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.18), transparent), var(--bg)",
-      }}
-    >
-      <header
-        style={{
-          padding: "1rem 1.5rem",
-          borderBottom: "1px solid var(--bg3)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "stretch",
-          gap: "0.25rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--cyan)" }}>C.O.A</span>
-          <span style={{ color: "var(--muted)", fontSize: "0.88rem" }}>Council of Agents</span>
+    <div className="page-shell page-shell--hero">
+      <header className="page-header">
+        <div className="page-header__row">
+          <span className="page-title" style={{ fontSize: "1.25rem" }}>
+            C.O.A
+          </span>
+          <span className="page-subtitle" style={{ fontSize: "0.88rem" }}>
+            Council of Agents
+          </span>
         </div>
         <FeatureNav />
       </header>
 
-      <main
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "1.5rem 1.5rem 2rem",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ maxWidth: "42rem", width: "100%" }}>
+      <main className="page-main page-main--marketing">
+        <div style={{ width: "100%" }}>
           <h1
             style={{
               margin: "0 0 0.5rem",
@@ -88,7 +66,7 @@ export default function LandingPage() {
             ابدأ بـ <strong>فحص واحد</strong> من لوحة الأداء، ثم افتح أي صفحة أدناه لاختبار ميزة منفردة (كل صفحة تقرأ آخر
             فحص من المتصفح).
           </p>
-          <p style={{ margin: "0 0 1.25rem", color: "var(--bg3)", fontSize: "0.82rem" }}>
+          <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "0.82rem" }}>
             التوثيق: <code style={{ color: "var(--cyan)" }}>docs/React_Additions_AR.md</code>
           </p>
           <Link
@@ -138,15 +116,7 @@ export default function LandingPage() {
         </div>
       </main>
 
-      <footer
-        style={{
-          padding: "0.75rem 1.5rem",
-          borderTop: "1px solid var(--bg3)",
-          fontSize: "0.8rem",
-          color: "var(--muted)",
-          textAlign: "center",
-        }}
-      >
+      <footer className="page-footer page-footer--center">
         شغّل الخادم: <code style={{ color: "var(--cyan)" }}>python web_api.py</code> و Vite:{" "}
         <code style={{ color: "var(--cyan)" }}>npm run dev</code> — التفاصيل في docs/React_Additions_AR.md
       </footer>

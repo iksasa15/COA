@@ -1,18 +1,42 @@
 :root {
-  --bg: #0f172a;
-  --bg2: #1e293b;
-  --bg3: #334155;
-  --fg: #e2e8f0;
-  --muted: #94a3b8;
-  --cyan: #38bdf8;
-  --green: #22c55e;
-  --red: #ef4444;
-  --orange: #f97316;
-  --yellow: #eab308;
-  --purple: #a855f7;
-  --radius: 10px;
-  --font: "DM Sans", system-ui, sans-serif;
+  /* Defensethon — لوحة ألوان موحّدة لكل الواجهات */
+  --bg: #011f1a;
+  --bg2: rgba(0, 61, 51, 0.78);
+  --bg3: rgba(13, 77, 66, 0.92);
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.72);
+  --cyan: #14b8a6;
+  --green: #5eead4;
+  --red: #f87171;
+  --orange: #fb923c;
+  --yellow: #fbbf24;
+  --purple: #2dd4bf;
+  --radius: 12px;
+  --font: "Noto Sans Arabic", "DM Sans", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
+  --nav-active-bg: rgba(20, 184, 166, 0.14);
+  --surface-border: rgba(20, 184, 166, 0.22);
+  --table-row-hover: rgba(20, 184, 166, 0.06);
+  --accent-strong: #0f766e;
+  --surface-deep: rgba(0, 30, 26, 0.95);
+  --pre-fg: rgba(255, 255, 255, 0.82);
+  /* خريطة حرارية MITRE (تباين على الخلفية الخضراء) */
+  --heat-0: #134e4a;
+  --heat-1: #ca8a04;
+  --heat-2: #c2410c;
+  --heat-3: #7f1d1d;
+  --heat-cell-text: #f8fafc;
+  --heat-cell-border: rgba(20, 184, 166, 0.28);
+  --warn-banner-bg: rgba(0, 40, 35, 0.92);
+  --warn-banner-border: rgba(251, 191, 36, 0.45);
+  --warn-banner-fg: #ecfdf5;
+  --info-banner-bg: rgba(20, 184, 166, 0.1);
+  --info-banner-border: rgba(20, 184, 166, 0.35);
+  --info-banner-fg: var(--fg);
+  /* تخطيط موحّد لكل الصفحات */
+  --page-padding-x: 1.5rem;
+  --page-padding-y: 1rem;
+  --page-max-width: 960px;
 }
 
 * {
@@ -28,7 +52,10 @@ body,
 
 body {
   font-family: var(--font);
-  background: var(--bg);
+  background: radial-gradient(120% 80% at 100% 0%, rgba(20, 184, 166, 0.08) 0%, transparent 45%),
+    linear-gradient(180deg, #011f1a 0%, #001a16 100%);
+  background-color: var(--bg);
+  background-attachment: fixed;
   color: var(--fg);
   line-height: 1.45;
 }
@@ -47,10 +74,11 @@ button:disabled {
 
 .btn-primary {
   background: var(--cyan);
-  color: var(--bg);
+  color: #ffffff;
   font-weight: 700;
   padding: 0.65rem 1.25rem;
   font-size: 0.95rem;
+  box-shadow: 0 0 24px rgba(20, 184, 166, 0.22);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -69,14 +97,18 @@ a.btn-primary.landing-cta:hover {
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: #475569;
+  background: rgba(20, 184, 166, 0.18);
 }
 
 .btn-accent {
-  background: var(--purple);
-  color: var(--fg);
+  background: var(--accent-strong);
+  color: #ecfdf5;
   padding: 0.55rem 1rem;
   font-size: 0.88rem;
+}
+
+.btn-accent:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .tabs {
@@ -116,7 +148,7 @@ table {
 th {
   text-align: left;
   padding: 0.55rem 0.65rem;
-  background: var(--bg3);
+  background: rgba(0, 45, 40, 0.95);
   color: var(--cyan);
   position: sticky;
   top: 0;
@@ -126,12 +158,12 @@ th {
 
 td {
   padding: 0.45rem 0.65rem;
-  border-bottom: 1px solid #33415580;
+  border-bottom: 1px solid var(--surface-border);
   vertical-align: top;
 }
 
 tr:hover td {
-  background: #1e293b90;
+  background: var(--table-row-hover);
 }
 
 .sev-CRITICAL {
@@ -153,7 +185,7 @@ tr:hover td {
 .log-box {
   font-family: var(--mono);
   font-size: 0.78rem;
-  background: var(--bg);
+  background: var(--surface-deep);
   border: 1px solid var(--bg3);
   border-radius: var(--radius);
   padding: 0.75rem;
@@ -187,4 +219,155 @@ tr:hover td {
 
 .checkbox input {
   accent-color: var(--cyan);
+}
+
+/* ——— هيكل صفحات موحّد ——— */
+.page-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-shell--hero {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(20, 184, 166, 0.14), transparent), transparent;
+}
+
+.page-header {
+  padding: var(--page-padding-y) var(--page-padding-x) 0.65rem;
+  border-bottom: 1px solid var(--bg3);
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.page-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-header__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--cyan);
+}
+
+.page-title--purple {
+  color: var(--purple);
+}
+
+.page-title--green {
+  color: var(--green);
+}
+
+.page-title--fg {
+  color: var(--fg);
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  max-width: 52rem;
+}
+
+.page-header__home {
+  margin-inline-start: auto;
+  color: var(--cyan);
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.page-header__home:hover {
+  text-decoration: underline;
+}
+
+.ms-auto {
+  margin-inline-start: auto;
+}
+
+.page-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin-inline: auto;
+  padding: var(--page-padding-y) var(--page-padding-x);
+  box-sizing: border-box;
+}
+
+.page-main--marketing {
+  max-width: 42rem;
+  margin-inline: auto;
+  padding: 1.5rem var(--page-padding-x) 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.page-main--scan {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--page-max-width);
+  margin-inline: auto;
+  width: 100%;
+  padding: 0 var(--page-padding-x) 1.25rem;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.page-toolbar {
+  padding: var(--page-padding-y) var(--page-padding-x);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bg3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.page-toolbar-spacer {
+  flex: 1;
+  min-width: 0.5rem;
+}
+
+.page-section {
+  padding: 0.75rem var(--page-padding-x);
+  box-sizing: border-box;
+  max-width: var(--page-max-width);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.page-outset {
+  margin-inline: var(--page-padding-x);
+  margin-bottom: 0.75rem;
+}
+
+.page-footer {
+  padding: 0.75rem var(--page-padding-x);
+  border-top: 1px solid var(--bg3);
+  background: var(--bg2);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.page-footer--center {
+  text-align: center;
 }

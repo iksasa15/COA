@@ -318,7 +318,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("  API:  http://127.0.0.1:5050")
     print("  UI:   cd web && npm install && npm run dev")
-    print("        → http://localhost:5173")
+    print("        -> http://localhost:5173")
     if _dev_tests_allowed():
         print("  Dev:  UI pytest — COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests")
     print("=" * 60 + "\n")

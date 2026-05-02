@@ -120,40 +120,31 @@ export default function OtDashboardPage() {
   const sp = ot?.ics_specialist;
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", background: "var(--bg)" }}>
-      <header
-        style={{
-          padding: "1rem 1.5rem",
-          borderBottom: "1px solid #334155",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "stretch",
-          background: "#0c1929",
-        }}
-      >
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem", marginBottom: "0.25rem" }}>
-          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "#94a3b8" }}>OT / ICS</h1>
-          <span style={{ color: "#64748b", fontSize: "0.9rem" }}>Passive-by-default · مراقبة فقط</span>
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="page-header__row">
+          <h1 className="page-title">OT / ICS</h1>
+          <span className="page-subtitle">Passive-by-default · مراقبة فقط</span>
         </div>
         <FeatureNav />
       </header>
 
-      <main style={{ flex: 1, padding: "1.25rem 1.5rem", maxWidth: "1100px", margin: "0 auto", width: "100%" }}>
+      <main className="page-main">
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
           <button type="button" className="btn-accent" disabled={demoLoading} onClick={() => void loadPresentationDemo()}>
             {demoLoading ? "جاري التحميل…" : "تحميل عرض OT للمحكّمين (محاكاة)"}
           </button>
-          <span style={{ fontSize: "0.78rem", color: "#64748b", maxWidth: "28rem" }}>
+          <span style={{ fontSize: "0.78rem", color: "var(--muted)", maxWidth: "28rem" }}>
             يملأ لوحة OT من الـ API دون إعادة فحص — مناسب للعرض إذا الجهاز بدون منافذ صناعية.
           </span>
         </div>
         {demoErr && (
-          <p style={{ color: "#f87171", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{demoErr}</p>
+          <p style={{ color: "var(--red)", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{demoErr}</p>
         )}
         {!ot && (
-          <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>
+          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات OT بعد. شغّل فحصاً من{" "}
-            <Link to="/dashboard" style={{ color: "#38bdf8" }}>
+            <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
               لوحة الأداء
             </Link>{" "}
             ثم ارجع هنا.
@@ -167,15 +158,15 @@ export default function OtDashboardPage() {
                 style={{
                   marginBottom: "1rem",
                   padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  border: "1px solid #b45309",
-                  background: "#422006",
-                  color: "#ffedd5",
+                  borderRadius: "var(--radius)",
+                  border: "1px solid var(--warn-banner-border)",
+                  background: "var(--warn-banner-bg)",
+                  color: "var(--warn-banner-fg)",
                   fontSize: "0.86rem",
                   lineHeight: 1.55,
                 }}
               >
-                <strong style={{ color: "#fdba74" }}>عرض توضيحي للمحكّمين:</strong> بيانات OT/ICS المعروضة محاكاة من
+                <strong style={{ color: "var(--yellow)" }}>عرض توضيحي للمحكّمين:</strong> بيانات OT/ICS المعروضة محاكاة من
                 ملف المشروع وليست من جدول اتصالات هذا المضيف الحي.
               </div>
             )}
@@ -184,15 +175,15 @@ export default function OtDashboardPage() {
                 style={{
                   marginBottom: "1rem",
                   padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  border: "1px solid #14532d",
-                  background: "#052e16",
-                  color: "#bbf7d0",
+                  borderRadius: "var(--radius)",
+                  border: "1px solid var(--info-banner-border)",
+                  background: "var(--info-banner-bg)",
+                  color: "var(--info-banner-fg)",
                   fontSize: "0.86rem",
                   lineHeight: 1.55,
                 }}
               >
-                <strong style={{ color: "#86efac" }}>الفحص يعمل — OT فارغ لسبب متوقع:</strong> التحليل هنا يربط
+                <strong style={{ color: "var(--green)" }}>الفحص يعمل — OT فارغ لسبب متوقع:</strong> التحليل هنا يربط
                 جدول اتصالات المضيف بمنافذ ICS شائعة (مثل 502، 102، 4840). على حاسوب تطوير عادي غالباً{" "}
                 <strong>لا</strong> تظهر مثل هذه الاتصالات، فيبقى العدد 0 وهذا ليس عطلاً. جرّب من جهاز يصل لشبكة OT،
                 أو لاحقاً PCAP/Scapy. أقسام <strong>MITRE</strong> و<strong>السياق الدفاعي</strong> تعتمد إشارات أخرى وقد
@@ -208,23 +199,28 @@ export default function OtDashboardPage() {
               }}
             >
               <div style={kpiBox}>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e2e8f0" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--fg)" }}>
                   {ot.distinct_ics_protocols ?? 0}
                 </div>
                 <div style={kpiLabel}>بروتوكولات ICS مميّزة (من الجدول)</div>
               </div>
               <div style={kpiBox}>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e2e8f0" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--fg)" }}>
                   {(ot.ics_protocol_hits || []).length}
                 </div>
                 <div style={kpiLabel}>ملاحظات اتصال على منافذ صناعية</div>
               </div>
-              <div style={{ ...kpiBox, borderColor: pcs != null && pcs < 70 ? "#b91c1c40" : "#334155" }}>
+              <div
+                style={{
+                  ...kpiBox,
+                  borderColor: pcs != null && pcs < 70 ? "rgba(248, 113, 113, 0.35)" : "var(--surface-border)",
+                }}
+              >
                 <div
                   style={{
                     fontSize: "1.5rem",
                     fontWeight: 700,
-                    color: pcs != null && pcs < 70 ? "#f87171" : "#e2e8f0",
+                    color: pcs != null && pcs < 70 ? "var(--red)" : "var(--fg)",
                   }}
                 >
                   {pcs ?? "—"}
@@ -233,7 +229,7 @@ export default function OtDashboardPage() {
               </div>
             </div>
 
-            <p style={{ fontSize: "0.82rem", color: "#64748b", margin: "0 0 1rem", lineHeight: 1.5 }}>
+            <p style={{ fontSize: "0.82rem", color: "var(--muted)", margin: "0 0 1rem", lineHeight: 1.5 }}>
               {ot.disclaimer}
             </p>
 
@@ -244,10 +240,10 @@ export default function OtDashboardPage() {
                   style={{
                     margin: 0,
                     padding: "0.85rem 1rem",
-                    background: "#0f172a",
-                    borderRadius: "8px",
-                    border: "1px solid #1e293b",
-                    color: "#cbd5e1",
+                    background: "var(--surface-deep)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--bg3)",
+                    color: "var(--pre-fg)",
                     fontSize: "0.78rem",
                     overflow: "auto",
                     whiteSpace: "pre-wrap",
@@ -268,10 +264,10 @@ export default function OtDashboardPage() {
             {(ot.ot_playbooks_triggered || []).length > 0 && (
               <section style={section}>
                 <h2 style={h2}>سيناريوهات OT (تنبيه تجريبي)</h2>
-                <ul style={{ margin: 0, paddingLeft: "1.1rem", color: "#94a3b8", fontSize: "0.88rem" }}>
+                <ul style={{ margin: 0, paddingLeft: "1.1rem", color: "var(--muted)", fontSize: "0.88rem" }}>
                   {ot.ot_playbooks_triggered!.map((p) => (
                     <li key={String(p.id)} style={{ marginBottom: "0.35rem" }}>
-                      <strong style={{ color: "#e2e8f0" }}>{p.name_ar || p.id}</strong>
+                      <strong style={{ color: "var(--fg)" }}>{p.name_ar || p.id}</strong>
                       {p.reason ? ` — ${p.reason}` : ""}
                     </li>
                   ))}
@@ -281,15 +277,15 @@ export default function OtDashboardPage() {
 
             <section style={section}>
               <h2 style={h2}>MITRE ATT&CK for ICS (أمثلة من المرجع)</h2>
-              <p style={{ fontSize: "0.8rem", color: "#64748b", margin: "0 0 0.75rem" }}>
-                <a href={ot.ics_mitre_matrix_url || "https://attack.mitre.org/matrices/ics/"} style={{ color: "#38bdf8" }}>
+              <p style={{ fontSize: "0.8rem", color: "var(--muted)", margin: "0 0 0.75rem" }}>
+                <a href={ot.ics_mitre_matrix_url || "https://attack.mitre.org/matrices/ics/"} style={{ color: "var(--cyan)" }}>
                   المصفوفة الرسمية
                 </a>
                 {" · "}تظليل حسب تكرار الربط في هذه الجلسة:
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                 {mitreCounts.length === 0 && (
-                  <span style={{ color: "#64748b", fontSize: "0.85rem" }}>لا توجد تقنيات مرتبطة في هذه الجلسة.</span>
+                  <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>لا توجد تقنيات مرتبطة في هذه الجلسة.</span>
                 )}
                 {mitreCounts.map(([id, n]) => (
                   <span
@@ -301,8 +297,8 @@ export default function OtDashboardPage() {
                       fontSize: "0.75rem",
                       fontFamily: "ui-monospace, monospace",
                       background: heatBg(n),
-                      color: "#f1f5f9",
-                      border: "1px solid #334155",
+                      color: "var(--heat-cell-text)",
+                      border: "1px solid var(--heat-cell-border)",
                     }}
                   >
                     {id} ({n})
@@ -319,14 +315,14 @@ export default function OtDashboardPage() {
                     key={String(inv.endpoint)}
                     style={{
                       padding: "0.65rem 0.85rem",
-                      background: "#0f172a",
-                      border: "1px solid #1e293b",
-                      borderRadius: "8px",
+                      background: "var(--surface-deep)",
+                      border: "1px solid var(--bg3)",
+                      borderRadius: "var(--radius)",
                       fontSize: "0.82rem",
-                      color: "#94a3b8",
+                      color: "var(--muted)",
                     }}
                   >
-                    <div style={{ color: "#e2e8f0", fontWeight: 600, marginBottom: "0.25rem" }}>{inv.endpoint}</div>
+                    <div style={{ color: "var(--fg)", fontWeight: 600, marginBottom: "0.25rem" }}>{inv.endpoint}</div>
                     <div>Protocols: {(inv.protocols_observed || []).join(", ") || "—"}</div>
                     <div>Processes: {(inv.processes || []).join(", ") || "—"}</div>
                     {inv.note && <div style={{ marginTop: "0.35rem", fontSize: "0.78rem" }}>{inv.note}</div>}
@@ -337,7 +333,7 @@ export default function OtDashboardPage() {
 
             <section style={section}>
               <h2 style={h2}>تنبيهات بروتوكول (اتصالات ذات منفذ ICS)</h2>
-              <div className="table-wrap" style={{ borderColor: "#1e293b" }}>
+              <div className="table-wrap">
                 <table>
                   <thead>
                     <tr>
@@ -372,20 +368,20 @@ export default function OtDashboardPage() {
 }
 
 const kpiBox: CSSProperties = {
-  background: "#0f172a",
-  borderRadius: "8px",
+  background: "var(--surface-deep)",
+  borderRadius: "var(--radius)",
   padding: "0.75rem",
-  border: "1px solid #1e293b",
+  border: "1px solid var(--surface-border)",
   textAlign: "center",
 };
 
-const kpiLabel: CSSProperties = { fontSize: "0.72rem", color: "#64748b", marginTop: "0.25rem" };
+const kpiLabel: CSSProperties = { fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.25rem" };
 
 const section: CSSProperties = { marginBottom: "1.35rem" };
 
 const h2: CSSProperties = {
   fontSize: "1rem",
-  color: "#94a3b8",
+  color: "var(--cyan)",
   margin: "0 0 0.5rem",
   fontWeight: 600,
 };
@@ -394,13 +390,13 @@ const pill: CSSProperties = {
   fontSize: "0.75rem",
   padding: "0.2rem 0.5rem",
   borderRadius: "999px",
-  background: "#1e293b",
-  color: "#cbd5e1",
-  border: "1px solid #334155",
+  background: "var(--bg2)",
+  color: "var(--pre-fg)",
+  border: "1px solid var(--surface-border)",
 };
 
 function heatBg(n: number): string {
-  if (n >= 3) return "#7f1d1d";
-  if (n === 2) return "#991b1b90";
-  return "#1e3a5f";
+  if (n >= 3) return "var(--heat-3)";
+  if (n === 2) return "color-mix(in srgb, var(--heat-2) 85%, transparent)";
+  return "var(--heat-0)";
 }

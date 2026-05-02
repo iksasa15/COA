@@ -52,23 +52,19 @@ export default function DevTestsPage() {
   };
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-      <header
-        style={{
-          padding: "1rem 1.5rem",
-          borderBottom: "1px solid var(--bg3)",
-          background: "var(--bg2)",
-        }}
-      >
-        <h1 style={{ margin: "0 0 0.25rem", fontSize: "1.35rem", color: "var(--green)" }}>تشغيل pytest من الواجهة</h1>
-        <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted)", maxWidth: "52rem" }}>
-          للأمان: الميزة معطّلة افتراضياً. شغّل الخادم بـ{" "}
-          <code style={{ color: "var(--cyan)" }}>COA_ALLOW_DEV_TESTS=1 python web_api.py</code> ثم اضغط أحد الأزرار.
-        </p>
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="page-header__stack">
+          <h1 className="page-title page-title--green">تشغيل pytest من الواجهة</h1>
+          <p className="page-subtitle">
+            للأمان: الميزة معطّلة افتراضياً. شغّل الخادم بـ{" "}
+            <code style={{ color: "var(--cyan)" }}>COA_ALLOW_DEV_TESTS=1 python web_api.py</code> ثم اضغط أحد الأزرار.
+          </p>
+        </div>
         <FeatureNav />
       </header>
 
-      <main style={{ flex: 1, padding: "1rem 1.5rem", maxWidth: "960px", margin: "0 auto", width: "100%" }}>
+      <main className="page-main">
         <div style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--muted)" }}>
           حالة التفعيل:{" "}
           {enabled === null ? (
@@ -127,8 +123,8 @@ export default function DevTestsPage() {
                 style={{
                   marginTop: "0.75rem",
                   padding: "0.85rem 1rem",
-                  background: "#0f172a",
-                  color: "#e2e8f0",
+                  background: "var(--surface-deep)",
+                  color: "var(--pre-fg)",
                   borderRadius: "var(--radius)",
                   fontSize: "0.78rem",
                   whiteSpace: "pre-wrap",

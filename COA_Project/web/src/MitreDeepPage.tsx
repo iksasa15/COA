@@ -70,22 +70,16 @@ export default function MitreDeepPage() {
   }
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-      <header
-        style={{
-          padding: "1rem 1.5rem",
-          borderBottom: "1px solid var(--bg3)",
-          background: "var(--bg2)",
-        }}
-      >
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "0.75rem" }}>
-          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "var(--cyan)" }}>MITRE — تحليل عميق</h1>
-          <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>Kill chain · D3FEND hints · ICS · Navigator</span>
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="page-header__row">
+          <h1 className="page-title">MITRE — تحليل عميق</h1>
+          <span className="page-subtitle">Kill chain · D3FEND hints · ICS · Navigator</span>
         </div>
         <FeatureNav />
       </header>
 
-      <main style={{ flex: 1, padding: "1rem 1.5rem", maxWidth: "960px", margin: "0 auto", width: "100%" }}>
+      <main className="page-main">
         {!deep && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات. نفّذ{" "}
@@ -112,10 +106,10 @@ export default function MitreDeepPage() {
                 style={{
                   marginBottom: "1rem",
                   padding: "0.75rem 1rem",
-                  background: deep.ics_context.ics_relevant ? "#422006" : "var(--bg2)",
+                  background: deep.ics_context.ics_relevant ? "var(--warn-banner-bg)" : "var(--bg2)",
                   borderRadius: "var(--radius)",
-                  border: `1px solid ${deep.ics_context.ics_relevant ? "#b45309" : "var(--bg3)"}`,
-                  color: deep.ics_context.ics_relevant ? "#ffedd5" : "var(--muted)",
+                  border: `1px solid ${deep.ics_context.ics_relevant ? "var(--warn-banner-border)" : "var(--bg3)"}`,
+                  color: deep.ics_context.ics_relevant ? "var(--warn-banner-fg)" : "var(--muted)",
                   fontSize: "0.88rem",
                 }}
               >

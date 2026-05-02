@@ -63,9 +63,10 @@ type ScanPayload = {
   network_connections?: Array<Record<string, unknown>>;
   connections_total?: number;
   events?: LogEvent[];
+  council?: { ok?: boolean; report?: string | null; error?: string | null } | null;
 };
 
-type TabId = "threats" | "processes" | "network" | "ot_ics" | "logs";
+type TabId = "threats" | "processes" | "network" | "ot_ics" | "council" | "logs";
 
 function appendLocalLog(
   lines: { ts: string; level: string; text: string }[],
@@ -101,6 +102,7 @@ export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
   const [presentationDemo, setPresentationDemo] = useState(false);
+  const [useCouncil, setUseCouncil] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ScanPayload | null>(null);
   const [logLines, setLogLines] = useState<{ ts: string; level: string; text: string }[]>([]);
@@ -115,7 +117,11 @@ export default function ScanPage() {
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dry_run: dryRun, presentation_demo: presentationDemo }),
+        body: JSON.stringify({
+          dry_run: dryRun,
+          presentation_demo: presentationDemo,
+          use_council: useCouncil,
+        }),
       });
       const json = (await res.json()) as ScanPayload;
       if (!res.ok || !json.ok) {
@@ -167,7 +173,7 @@ export default function ScanPage() {
     } finally {
       setLoading(false);
     }
-  }, [dryRun, presentationDemo]);
+  }, [dryRun, presentationDemo, useCouncil]);
 
   const stats = useMemo(() => {
     const a = data?.analysis;
@@ -215,6 +221,17 @@ export default function ScanPage() {
             onChange={(e) => setPresentationDemo(e.target.checked)}
           />
           عرض OT للمحكّمين (محاكاة)
+        </label>
+        <label
+          className="checkbox"
+          title="يجب أن يعمل Ollama محلياً مع النموذج المعرّف في config/settings.py (مثلاً llama3.1)"
+        >
+          <input
+            type="checkbox"
+            checked={useCouncil}
+            onChange={(e) => setUseCouncil(e.target.checked)}
+          />
+          مجلس الوكلاء (CrewAI + Ollama)
         </label>
         <div className="page-toolbar-spacer" />
         <button
@@ -350,6 +367,7 @@ export default function ScanPage() {
               ["processes", "Processes"],
               ["network", "Network"],
               ["ot_ics", "OT/ICS"],
+              ["council", "Multi-AI"],
               ["logs", "Logs"],
             ] as const
           ).map(([id, label]) => (
@@ -535,6 +553,55 @@ export default function ScanPage() {
                   فتح لوحة OT/ICS الكاملة →
                 </Link>
               </>
+            )}
+          </div>
+        )}
+
+        {tab === "council" && (
+          <div style={{ fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.55 }}>
+            {!data?.council && (
+              <p style={{ margin: 0 }}>
+                فعّل خيار «مجلس الوكلاء» قبل المسح، أو راجع{" "}
+                <code style={{ color: "var(--cyan)" }}>GET /api/health/ollama</code> للتأكد أن Ollama يعمل والنموذج
+                مثبت.
+              </p>
+            )}
+            {data?.council && !data.council.ok && (
+              <pre
+                style={{
+                  margin: "0.75rem 0 0",
+                  padding: "0.75rem 1rem",
+                  background: "rgba(239, 68, 68, 0.08)",
+                  border: "1px solid rgba(239, 68, 68, 0.35)",
+                  borderRadius: "var(--radius)",
+                  color: "var(--fg)",
+                  whiteSpace: "pre-wrap",
+                  fontSize: "0.82rem",
+                }}
+              >
+                {data.council.error || "Council run failed"}
+              </pre>
+            )}
+            {data?.council?.ok && data.council.report && (
+              <pre
+                style={{
+                  margin: 0,
+                  padding: "0.75rem 1rem",
+                  background: "var(--bg2)",
+                  borderRadius: "var(--radius)",
+                  border: "1px solid var(--bg3)",
+                  color: "var(--fg)",
+                  whiteSpace: "pre-wrap",
+                  fontSize: "0.8rem",
+                  maxHeight: "min(70vh, 520px)",
+                  overflow: "auto",
+                }}
+              >
+                {data.council.report}
+              </pre>
+            )}
+            {data?.council?.ok && !data.council.report && (
+              <p style={{ margin: "0.5rem 0 0" }}>اكتمل المجلس لكن لا يوجد نص في الاستجابة.</p>
             )}
           </div>
         )}

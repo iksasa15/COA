@@ -59,6 +59,7 @@ Modes:
 
 CLI Options:
   python main.py --dry-run            # Safe simulation
+  python main.py --council            # CrewAI + Ollama (3 agents) after heuristic scan
   python main.py --vt                 # VirusTotal enrichment
   python main.py --yara               # YARA rules scan
   python main.py --html --json        # Multiple report formats
@@ -79,6 +80,11 @@ CLI Options:
     parser.add_argument('--markdown', action='store_true', help='Generate Markdown report')
     parser.add_argument('--csv', action='store_true', help='Generate CSV report')
     parser.add_argument('--all', action='store_true', help='Enable all features')
+    parser.add_argument(
+        '--council',
+        action='store_true',
+        help='After scan, run CrewAI multi-agent council (Eye/Brain/Strategist) via local Ollama',
+    )
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser.add_argument('--no-admin-check', action='store_true', help='Skip admin check')
 
@@ -177,6 +183,8 @@ def cli_scan(args):
 
     if modes:
         ui.info(f"Enabled: {' | '.join(modes)}")
+    if args.council:
+        ui.info("Enabled: 🤖 CrewAI council (Ollama multi-agent)")
 
     # التحقق من Admin
     if not args.no_admin_check:
@@ -308,6 +316,33 @@ def cli_scan(args):
         ui.section_header("MITRE ATT&CK — Deep analysis (summary)", "📚")
         ui.info(mitre_deep.get("ascii_report", "").strip().replace("\n", "\n  ")[:6000])
 
+        # ============ PHASE 2.9: CrewAI + Ollama (optional multi-agent) ============
+        if args.council:
+            ui.divider()
+            ui.section_header("PHASE 2.9: Multi-Agent Council (CrewAI + Ollama)", "🤖")
+            ui.loading_animation("Running Eye → Brain → Strategist via local LLM…", 0.5)
+            try:
+                from agents.council import OllamaConnectionError, run_council_on_scan
+
+                out = run_council_on_scan(system_data, analysis_result)
+                if out.get("ok") and out.get("report"):
+                    reporter.log_event("COUNCIL", "CrewAI council completed (Ollama)")
+                    text = str(out["report"])
+                    ui.info(text.strip().replace("\n", "\n  ")[:12000])
+                    if len(text) > 12000:
+                        ui.info("… [council output truncated in terminal; full text in logs]")
+                    logger.info("Council report length=%s", len(text))
+                else:
+                    err = out.get("error") or "Unknown council error"
+                    reporter.log_event("COUNCIL", f"Council skipped or failed: {err[:500]}")
+                    ui.warning(f"Council not run: {err[:2000]}")
+            except OllamaConnectionError as e:
+                reporter.log_event("COUNCIL", str(e)[:500])
+                ui.warning(str(e))
+            except Exception as e:
+                reporter.log_event("COUNCIL", f"Error: {e}")
+                ui.warning(f"Council error: {e}")
+
         # ============ PHASE 3-4: Solutions + Approval ============
         if threats:
             ui.divider()
@@ -389,6 +424,7 @@ def cli_scan(args):
             "Collection Time": f"{duration:.2f}s",
             "VirusTotal": "✓" if args.vt else "✗",
             "YARA": "✓" if args.yara else "✗",
+            "CrewAI+Ollama": "✓" if args.council else "✗",
         })
 
         ui.divider()

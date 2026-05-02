@@ -13,11 +13,13 @@ REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
 # ==================== LLM Configuration ====================
-# Local LLM settings (Ollama)
+# Local LLM settings (Ollama). Override with env for CI or different hosts:
+#   COA_LLM_MODEL, COA_LLM_BASE_URL, COA_LLM_TEMPERATURE
 LLM_PROVIDER = "ollama"
-LLM_MODEL = "llama3.1"  # غيّرها حسب النموذج المثبت لديك
-LLM_BASE_URL = "http://localhost:11434"
-LLM_TEMPERATURE = 0.3  # دقة أعلى للتحليل الأمني
+LLM_MODEL = os.environ.get("COA_LLM_MODEL", "llama3.1").strip() or "llama3.1"
+_base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rstrip("/")
+LLM_BASE_URL = _base or "http://localhost:11434"
+LLM_TEMPERATURE = float(os.environ.get("COA_LLM_TEMPERATURE", "0.3") or "0.3")
 
 # ==================== Agent Configuration ====================
 AGENT_CONFIG = {

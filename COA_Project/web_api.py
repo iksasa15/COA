@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
+from agents.council import diagnose_ollama
 from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
@@ -71,6 +72,11 @@ def create_app() -> Flask:
     def health():
         return jsonify({"ok": True, "service": "C.O.A Web API", "time": datetime.now().isoformat()})
 
+    @app.get("/api/health/ollama")
+    def health_ollama():
+        """Ollama reachability + model check (no CrewAI load)."""
+        return jsonify(_json_safe(diagnose_ollama()))
+
     @app.get("/api/demo/ot-ics-fixture")
     def demo_ot_ics_fixture():
         """Simulated OT/ICS payload for judge UI demo (read-only, no host scan)."""
@@ -84,9 +90,11 @@ def create_app() -> Flask:
         body = request.get_json(silent=True) or {}
         dry_run = bool(body.get("dry_run", False))
         presentation_demo = bool(body.get("presentation_demo", False))
+        use_council = bool(body.get("use_council", False))
 
         reporter = ReportGenerator()
         reporter.log_event("SYSTEM", "React UI scan started")
+        council_result = None
 
         try:
             reporter.log_event("DATA", "Collecting system data…")
@@ -126,6 +134,17 @@ def create_app() -> Flask:
                 system_data["system_info"], analysis, classification, defense_context
             )
 
+            council_result = None
+            if use_council:
+                from agents.council import run_council_on_scan
+
+                reporter.log_event("COUNCIL", "Running CrewAI multi-agent council (Ollama)…")
+                council_result = run_council_on_scan(system_data, analysis)
+                if council_result.get("ok"):
+                    reporter.log_event("COUNCIL", "Council finished")
+                else:
+                    reporter.log_event("COUNCIL", (council_result.get("error") or "failed")[:800])
+
             _last = {
                 "system_data": system_data,
                 "analysis": analysis,
@@ -135,6 +154,7 @@ def create_app() -> Flask:
                 "mitre_deep": mitre_deep,
                 "ot_ics": ot_ics,
                 "dry_run": dry_run,
+                "council": council_result,
                 "completed_at": datetime.now().isoformat(),
             }
             _last_reporter = reporter
@@ -154,6 +174,7 @@ def create_app() -> Flask:
                 "network_connections": system_data["network_connections"][:MAX_CONNECTIONS_RESPONSE],
                 "connections_total": len(system_data["network_connections"]),
                 "events": reporter.events,
+                "council": council_result,
             }
             return jsonify(_json_safe(payload))
         except Exception as e:

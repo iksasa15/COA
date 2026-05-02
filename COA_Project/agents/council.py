@@ -8,8 +8,10 @@ How it works:
     User → main.py → CouncilOfAgents → CrewAI → Each Agent → Ollama (localhost:11434) → llama3.1
 """
 
+import json
 import requests
-from typing import Optional
+from typing import Any, Dict
+
 from utils.logger import logger
 from config.settings import (
     LLM_MODEL, LLM_BASE_URL, LLM_TEMPERATURE, AGENT_CONFIG
@@ -321,6 +323,54 @@ class CouncilOfAgents:
         except Exception as e:
             logger.error(f"Council collaboration failed: {e}")
             raise
+
+
+def summarize_for_council(system_data: Dict[str, Any], max_conns: int = 45, max_procs: int = 45) -> str:
+    """Trim scan payload so CrewAI + Ollama stay within practical context limits."""
+    snap = {
+        "system_info": system_data.get("system_info"),
+        "network_connections": (system_data.get("network_connections") or [])[:max_conns],
+        "processes": (system_data.get("processes") or [])[:max_procs],
+        "truncation": {
+            "connections_shown": min(max_conns, len(system_data.get("network_connections") or [])),
+            "connections_total": len(system_data.get("network_connections") or []),
+            "processes_shown": min(max_procs, len(system_data.get("processes") or [])),
+            "processes_total": len(system_data.get("processes") or []),
+        },
+    }
+    raw = json.dumps(snap, indent=2, default=str)
+    if len(raw) > 100_000:
+        return raw[:100_000] + "\n…[truncated]"
+    return raw
+
+
+def run_council_on_scan(system_data: Dict[str, Any], analysis: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Run the 3-agent CrewAI pipeline on top of an existing scan (Ollama must be up).
+
+    Returns:
+        {"ok": bool, "report": str | None, "error": str | None}
+    """
+    try:
+        raw = summarize_for_council(system_data)
+        threats_list = analysis.get("threats") or []
+        threats_json = json.dumps(threats_list, indent=2, default=str)
+        if len(threats_json) > 80_000:
+            threats_json = threats_json[:80_000] + "\n…[truncated]"
+        council = CouncilOfAgents()
+        report = council.run_council(raw, threats_json)
+        return {"ok": True, "report": str(report), "error": None}
+    except OllamaConnectionError as e:
+        return {"ok": False, "report": None, "error": str(e)}
+    except ImportError as e:
+        return {
+            "ok": False,
+            "report": None,
+            "error": f"Missing dependency: {e}. Install: pip install crewai langchain-community",
+        }
+    except Exception as e:
+        logger.error(f"Council scan failed: {e}")
+        return {"ok": False, "report": None, "error": str(e)}
 
 
 # ==================== Standalone Test ====================

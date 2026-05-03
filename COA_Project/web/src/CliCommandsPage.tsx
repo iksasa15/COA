@@ -138,7 +138,7 @@ function RunButton({
       className="btn-primary"
       style={{ fontSize: "0.78rem", padding: "0.3rem 0.65rem", minWidth: "4.5rem" }}
       disabled={!enabled || busy}
-      title={!enabled ? "فعّل COA_ALLOW_DEV_TESTS=1 على خادم web_api" : undefined}
+      title={!enabled ? "فعّل COA_ALLOW_CLI_RUN=1 أو COA_ALLOW_DEV_TESTS=1 على خادم web_api" : undefined}
       onClick={() => void onRun(action)}
     >
       {busy ? "…" : label ?? "تشغيل"}
@@ -149,16 +149,41 @@ function RunButton({
 export default function CliCommandsPage() {
   const [fullCopied, setFullCopied] = useState(false);
   const [runEnabled, setRunEnabled] = useState<boolean | null>(null);
+  const [runGateHint, setRunGateHint] = useState<string | null>(null);
   const [running, setRunning] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<RunCliResponse | null>(null);
 
   const refreshRunEnabled = useCallback(async () => {
+    setRunGateHint(null);
+    setRunEnabled(null);
     try {
+      const health = await fetch("/api/health");
+      if (!health.ok) {
+        setRunEnabled(false);
+        setRunGateHint(
+          `لا اتصال صحيح بالـ API (HTTP ${health.status}). شغّل من COA_Project: python web_api.py على المنفذ 5050 ثم أبقِ npm run dev في web/.`,
+        );
+        return;
+      }
       const r = await fetch("/api/dev/cli-run-enabled");
+      if (!r.ok) {
+        setRunEnabled(false);
+        setRunGateHint(`مسار cli-run-enabled ردّ HTTP ${r.status}. تأكد أن web_api محدّث.`);
+        return;
+      }
       const j = (await r.json()) as { enabled?: boolean };
-      setRunEnabled(Boolean(j.enabled));
+      const on = Boolean(j.enabled);
+      setRunEnabled(on);
+      if (!on) {
+        setRunGateHint(
+          "أعد تشغيل الخادم بأحد الخيارين في الطرفية: COA_ALLOW_CLI_RUN=1 python web_api.py   أو   COA_ALLOW_DEV_TESTS=1 python web_api.py",
+        );
+      }
     } catch {
       setRunEnabled(false);
+      setRunGateHint(
+        "تعذّر الاتصال بالـ API. تأكد: (1) python web_api.py يعمل (2) npm run dev من مجلد web/ (البروكسي يمرّر /api إلى المنفذ 5050).",
+      );
     }
   }, []);
 
@@ -234,7 +259,12 @@ export default function CliCommandsPage() {
           ) : runOk ? (
             <strong style={{ color: "var(--green)" }}>مفعّلة</strong>
           ) : (
-            <strong style={{ color: "var(--orange)" }}>معطّلة — شغّل الخادم بـ COA_ALLOW_DEV_TESTS=1</strong>
+            <strong style={{ color: "var(--orange)" }}>معطّلة — راجع السطر التالي</strong>
+          )}
+          {runGateHint && (
+            <div style={{ marginTop: "0.5rem", color: "var(--orange)", fontSize: "0.8rem", lineHeight: 1.5 }}>
+              {runGateHint}
+            </div>
           )}
           <div style={{ marginTop: "0.35rem", fontSize: "0.78rem" }}>
             الأوامر الطويلة تُشغَّل في الخلفية؛ راجع ملف السجل في <code style={{ color: "var(--cyan)" }}>reports/ui_cli_*.log</code>. لا يُشغَّل{" "}

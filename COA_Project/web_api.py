@@ -49,8 +49,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 def _dev_tests_allowed() -> bool:
-    """Run pytest / CLI-from-browser only when explicitly enabled (local dev / demos)."""
+    """Run pytest from UI only when explicitly enabled (local dev / demos)."""
     return os.environ.get("COA_ALLOW_DEV_TESTS", "").strip().lower() in ("1", "true", "yes")
+
+
+def _cli_ui_allowed() -> bool:
+    """Run CLI from /api/dev/run-cli when COA_ALLOW_CLI_RUN=1 or COA_ALLOW_DEV_TESTS=1."""
+    flag = os.environ.get("COA_ALLOW_CLI_RUN", "").strip().lower() in ("1", "true", "yes")
+    return flag or _dev_tests_allowed()
 
 
 def _cli_run_specs() -> dict[str, dict[str, object]]:
@@ -358,22 +364,34 @@ def create_app() -> Flask:
 
     @app.get("/api/dev/cli-run-enabled")
     def dev_cli_run_enabled():
-        """Same gate as pytest UI: COA_ALLOW_DEV_TESTS=1."""
-        return jsonify({"ok": True, "enabled": _dev_tests_allowed()})
+        """COA_ALLOW_CLI_RUN=1 or COA_ALLOW_DEV_TESTS=1."""
+        return jsonify(
+            {
+                "ok": True,
+                "enabled": _cli_ui_allowed(),
+                "via_dev_tests": _dev_tests_allowed(),
+                "via_cli_flag": os.environ.get("COA_ALLOW_CLI_RUN", "").strip().lower()
+                in ("1", "true", "yes"),
+            }
+        )
 
     @app.post("/api/dev/run-cli")
     def dev_run_cli():
         """
         Run a fixed CLI command (whitelist only). Long jobs run in background; output -> reports/ui_cli_*.log
-        Enable with: COA_ALLOW_DEV_TESTS=1 python web_api.py
+        Enable with: COA_ALLOW_CLI_RUN=1 or COA_ALLOW_DEV_TESTS=1
         """
-        if not _dev_tests_allowed():
+        if not _cli_ui_allowed():
             return (
                 jsonify(
                     {
                         "ok": False,
                         "enabled": False,
-                        "error": "Disabled. Start API with COA_ALLOW_DEV_TESTS=1 to enable Run buttons.",
+                        "error": (
+                            "Disabled. Restart API with one of: "
+                            "COA_ALLOW_CLI_RUN=1 python web_api.py  OR  "
+                            "COA_ALLOW_DEV_TESTS=1 python web_api.py"
+                        ),
                     }
                 ),
                 403,
@@ -472,6 +490,8 @@ if __name__ == "__main__":
     print("  UI:   cd web && npm install && npm run dev")
     print("        -> http://localhost:5173")
     if _dev_tests_allowed():
-        print("  Dev:  COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests | POST /api/dev/run-cli")
+        print("  Dev:  COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests")
+    if _cli_ui_allowed():
+        print("  CLI UI: COA_ALLOW_CLI_RUN=1 or COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-cli")
     print("=" * 60 + "\n")
     create_app().run(host="127.0.0.1", port=5050, debug=False, threaded=True)

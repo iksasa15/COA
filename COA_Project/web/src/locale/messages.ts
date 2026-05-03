@@ -191,6 +191,8 @@ const messagesAr = {
   "heat.3": "شوهد + تطابق ملف تهديد",
 
   "landing.hero": "مرحباً بك في C.O.A",
+  "landing.tagline": "ذكاء دفاعي محلي. بلا سحابة. بلا تسريب.",
+  "landing.brandSub": "مجلس الوكلاء",
   "landing.p1":
     "ابدأ بفحص من لوحة الأداء؛ بعدها تفتح صفحات السياق الدفاعي وMITRE وOT وتقرأ آخر جلسة من المتصفح.",
   "landing.cta": "الانتقال إلى لوحة الأداء ← فحص",
@@ -395,6 +397,8 @@ const messagesEn = {
   "heat.3": "Seen + profile match",
 
   "landing.hero": "Welcome to C.O.A",
+  "landing.tagline": "Sovereign Defense Intelligence. On-Premise. Air-Gapped Ready.",
+  "landing.brandSub": "Council of Agents",
   "landing.p1":
     "Start with a dashboard scan; then open defense context, MITRE, and OT pages to read the latest session from the browser.",
   "landing.cta": "Go to dashboard → scan",

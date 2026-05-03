@@ -174,33 +174,9 @@ export default function OtDashboardPage() {
 
         {ot && (
           <>
-            <p
-              style={{
-                fontSize: "0.88rem",
-                color: "var(--muted)",
-                lineHeight: 1.65,
-                margin: "0 0 1rem",
-                padding: "0.75rem 1rem",
-                background: "var(--bg2)",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--bg3)",
-              }}
-            >
-              {t("ot.intro")}
-            </p>
+            <p className="panel">{t("ot.intro")}</p>
             {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && (
-              <div
-                style={{
-                  marginBottom: "1rem",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--info-banner-border)",
-                  background: "var(--info-banner-bg)",
-                  color: "var(--info-banner-fg)",
-                  fontSize: "0.86rem",
-                  lineHeight: 1.55,
-                }}
-              >
+              <div className="panel panel--info" style={{ marginBottom: "1rem", fontSize: "0.86rem", lineHeight: 1.55 }}>
                 <strong style={{ color: "var(--green)" }}>{t("ot.emptyHitsTitle")}</strong> {t("ot.emptyHitsBody")}
               </div>
             )}
@@ -402,10 +378,10 @@ export default function OtDashboardPage() {
 }
 
 const kpiBox: CSSProperties = {
-  background: "var(--surface-deep)",
+  background: "var(--panel-bg)",
   borderRadius: "var(--radius)",
   padding: "0.75rem",
-  border: "1px solid var(--surface-border)",
+  border: "1px solid var(--panel-border)",
   textAlign: "center",
 };
 

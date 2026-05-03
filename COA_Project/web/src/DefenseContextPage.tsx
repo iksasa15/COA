@@ -141,25 +141,8 @@ export default function DefenseContextPage() {
 
         {dc && (
           <>
-            <p
-              style={{
-                fontSize: "0.88rem",
-                color: "var(--muted)",
-                lineHeight: 1.65,
-                margin: "0 0 1rem",
-                padding: "0.75rem 1rem",
-                background: "var(--bg2)",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--bg3)",
-              }}
-            >
-              {t("dc.intro")}
-            </p>
-            {dc.disclaimer && (
-              <p style={{ color: "var(--yellow)", fontSize: "0.9rem", padding: "0.75rem", background: "var(--bg2)", borderRadius: "var(--radius)" }}>
-                {dc.disclaimer}
-              </p>
-            )}
+            <p className="panel">{t("dc.intro")}</p>
+            {dc.disclaimer && <p className="panel panel--disclaimer">{dc.disclaimer}</p>}
 
             <section style={sec}>
               <h2 style={h2}>{t("dc.attribution")}</h2>

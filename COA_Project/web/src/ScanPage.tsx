@@ -314,82 +314,83 @@ export default function ScanPage() {
       </header>
 
       <div className="page-toolbar">
-        <button type="button" className="btn-primary" disabled={loading || synthLoading} onClick={runScan}>
-          {loading ? t("scan.scanning") : t("scan.startScan")}
-        </button>
-        <button
-          type="button"
-          className="btn-ghost"
-          disabled={loading || synthLoading}
-          title={t("scan.synthTitle")}
-          onClick={() => void loadSyntheticSession()}
-        >
-          {synthLoading ? t("scan.synthLoading") : t("scan.synthBtn")}
-        </button>
-        <label className="checkbox" title={t("scan.councilTitle")}>
-          <input
-            type="checkbox"
-            checked={useCouncil}
-            onChange={(e) => setUseCouncil(e.target.checked)}
-          />
-          {t("scan.councilLabel")}
-        </label>
-        <button
-          type="button"
-          className="btn-ghost"
-          disabled={councilCheckLoading || loading || synthLoading}
-          title={t("scan.councilCheckTitle")}
-          onClick={() => void verifyCouncilAgents()}
-        >
-          {councilCheckLoading ? t("scan.councilCheckLoading") : t("scan.councilCheckBtn")}
-        </button>
+        <div className="toolbar-group">
+          <button type="button" className="btn-primary" disabled={loading || synthLoading} onClick={runScan}>
+            {loading ? t("scan.scanning") : t("scan.startScan")}
+          </button>
+          <button
+            type="button"
+            className="btn-ghost"
+            disabled={loading || synthLoading}
+            title={t("scan.synthTitle")}
+            onClick={() => void loadSyntheticSession()}
+          >
+            {synthLoading ? t("scan.synthLoading") : t("scan.synthBtn")}
+          </button>
+        </div>
+        <div className="toolbar-group">
+          <label className="checkbox" title={t("scan.councilTitle")}>
+            <input
+              type="checkbox"
+              checked={useCouncil}
+              onChange={(e) => setUseCouncil(e.target.checked)}
+            />
+            {t("scan.councilLabel")}
+          </label>
+          <button
+            type="button"
+            className="btn-ghost"
+            disabled={councilCheckLoading || loading || synthLoading}
+            title={t("scan.councilCheckTitle")}
+            onClick={() => void verifyCouncilAgents()}
+          >
+            {councilCheckLoading ? t("scan.councilCheckLoading") : t("scan.councilCheckBtn")}
+          </button>
+        </div>
         <div className="page-toolbar-spacer" />
-        <button
-          type="button"
-          className="btn-ghost"
-          disabled={!data?.ok}
-          onClick={() => downloadFromApi("/api/reports/txt", "COA_Report.txt")}
-        >
-          {t("scan.exportTxt")}
-        </button>
-        <button
-          type="button"
-          className="btn-ghost"
-          disabled={!data?.ok}
-          onClick={() => downloadFromApi("/api/reports/html", "COA_Report.html")}
-        >
-          {t("scan.exportHtml")}
-        </button>
-        <button
-          type="button"
-          className="btn-accent"
-          disabled={!data?.ok}
-          onClick={() => downloadFromApi("/api/reports/incident", "COA_Incident_Report.txt")}
-        >
-          {t("scan.exportIncident")}
-        </button>
-        <button
-          type="button"
-          className="btn-ghost"
-          disabled={!data?.ok}
-          onClick={() => downloadFromApi("/api/reports/mitre-navigator.json", "coa_mitre_navigator_layer.json")}
-        >
-          {t("scan.exportNav")}
-        </button>
+        <div className="toolbar-group toolbar-group--exports">
+          <button
+            type="button"
+            className="btn-ghost"
+            disabled={!data?.ok}
+            onClick={() => downloadFromApi("/api/reports/txt", "COA_Report.txt")}
+          >
+            {t("scan.exportTxt")}
+          </button>
+          <button
+            type="button"
+            className="btn-ghost"
+            disabled={!data?.ok}
+            onClick={() => downloadFromApi("/api/reports/html", "COA_Report.html")}
+          >
+            {t("scan.exportHtml")}
+          </button>
+          <button
+            type="button"
+            className="btn-accent"
+            disabled={!data?.ok}
+            onClick={() => downloadFromApi("/api/reports/incident", "COA_Incident_Report.txt")}
+          >
+            {t("scan.exportIncident")}
+          </button>
+          <button
+            type="button"
+            className="btn-ghost"
+            disabled={!data?.ok}
+            onClick={() => downloadFromApi("/api/reports/mitre-navigator.json", "coa_mitre_navigator_layer.json")}
+          >
+            {t("scan.exportNav")}
+          </button>
+        </div>
       </div>
 
       {councilCheckResult && (
         <div
-          className="page-section"
-          style={{
-            marginTop: "-0.25rem",
-            marginBottom: "0.5rem",
-            padding: "0.65rem 0.85rem",
-            borderRadius: "var(--radius)",
-            border: `1px solid ${councilCheckResult.ok && councilCheckResult.crewai_agents_ready ? "var(--green)" : "var(--orange)"}`,
-            background: "var(--bg2)",
-            fontSize: "0.86rem",
-          }}
+          className={`page-section scan-council-alert${
+            councilCheckResult.ok && councilCheckResult.crewai_agents_ready
+              ? " scan-council-alert--ok"
+              : " scan-council-alert--warn"
+          }`}
         >
           {councilCheckResult.ok && councilCheckResult.crewai_agents_ready ? (
             <strong style={{ color: "var(--green)" }}>{t("scan.councilOk")}</strong>
@@ -418,60 +419,27 @@ export default function ScanPage() {
       )}
 
       <div className="page-section">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-            gap: "0.5rem",
-          }}
-        >
+        <div className="stat-grid">
           {stats.map((s) => (
-            <div
-              key={s.label}
-              style={{
-                background: "var(--bg2)",
-                borderRadius: "var(--radius)",
-                padding: "0.75rem",
-                textAlign: "center",
-                border: "1px solid var(--surface-border)",
-              }}
-            >
-              <div style={{ fontSize: "1.35rem", fontWeight: 700, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: "0.78rem", color: "var(--muted)" }}>{s.label}</div>
+            <div key={s.label} className="stat-cell">
+              <div className="stat-cell__value" style={{ color: s.color }}>
+                {s.value}
+              </div>
+              <div className="stat-cell__label">{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {data?.summary && (
-        <div
-          className="page-outset"
-          style={{
-            padding: "0.85rem 1rem",
-            background: "var(--bg2)",
-            borderRadius: "var(--radius)",
-            border: "1px solid var(--bg3)",
-            fontSize: "0.9rem",
-            color: "var(--muted)",
-          }}
-        >
+        <div className="page-outset panel" style={{ fontSize: "0.9rem" }}>
           <strong style={{ color: "var(--fg)" }}>{t("scan.execSummary")}</strong>
           <p style={{ margin: "0.5rem 0 0", whiteSpace: "pre-wrap" }}>{data.summary}</p>
         </div>
       )}
 
       {data?.defense_context?.attribution && (
-        <div
-          className="page-outset"
-          style={{
-            padding: "0.85rem 1rem",
-            background: "var(--bg2)",
-            borderRadius: "var(--radius)",
-            border: "1px solid var(--purple)",
-            fontSize: "0.88rem",
-            color: "var(--muted)",
-          }}
-        >
+        <div className="page-outset panel panel--accent" style={{ fontSize: "0.88rem" }}>
           <strong style={{ color: "var(--purple)" }}>{t("scan.defenseCard")}</strong>
           <p style={{ margin: "0.4rem 0 0" }}>
             {String((data.defense_context.attribution as { likely_actor?: string }).likely_actor ?? "")}{" "}

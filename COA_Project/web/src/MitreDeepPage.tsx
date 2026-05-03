@@ -146,20 +146,7 @@ export default function MitreDeepPage() {
 
         {deep && (
           <>
-            <p
-              style={{
-                fontSize: "0.88rem",
-                color: "var(--muted)",
-                lineHeight: 1.65,
-                margin: "0 0 1rem",
-                padding: "0.75rem 1rem",
-                background: "var(--bg2)",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--bg3)",
-              }}
-            >
-              {t("md.intro")}
-            </p>
+            <p className="panel">{t("md.intro")}</p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
               <button type="button" className="btn-accent" disabled={!deep.navigator_layer} onClick={downloadNavigatorLayer}>
@@ -172,15 +159,8 @@ export default function MitreDeepPage() {
 
             {deep.ics_context && (
               <section
-                style={{
-                  marginBottom: "1rem",
-                  padding: "0.75rem 1rem",
-                  background: deep.ics_context.ics_relevant ? "var(--warn-banner-bg)" : "var(--bg2)",
-                  borderRadius: "var(--radius)",
-                  border: `1px solid ${deep.ics_context.ics_relevant ? "var(--warn-banner-border)" : "var(--bg3)"}`,
-                  color: deep.ics_context.ics_relevant ? "var(--warn-banner-fg)" : "var(--muted)",
-                  fontSize: "0.88rem",
-                }}
+                className={`panel${deep.ics_context.ics_relevant ? " panel--warn" : ""}`}
+                style={{ marginBottom: "1rem", fontSize: "0.88rem" }}
               >
                 <strong>
                   {deep.ics_context.ics_relevant ? t("md.icsRelevant") : t("md.icsNeutral")}:

@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FeatureNav from "./FeatureNav";
 import { useI18n } from "./i18n";
+import type { MessageKey } from "./locale/messages";
 
 type HeatCell = {
   technique_id: string;
@@ -45,7 +46,8 @@ export default function MitreHeatmapPage() {
 
   const heatLabel = useCallback(
     (heat: number) => {
-      const k = `heat.${Math.min(3, Math.max(0, heat))}` as const;
+      const n = Math.min(3, Math.max(0, heat));
+      const k = `heat.${n}` as MessageKey;
       return t(k);
     },
     [t],
@@ -171,23 +173,10 @@ export default function MitreHeatmapPage() {
             <strong style={{ color: "var(--fg)" }}>{t("mh.attributionLabel")}</strong> {attribution}
           </p>
         )}
-        {disclaimer && (
-          <p style={{ color: "var(--yellow)", fontSize: "0.9rem", maxWidth: "48rem" }}>{disclaimer}</p>
-        )}
+        {disclaimer && <p className="panel panel--disclaimer">{disclaimer}</p>}
 
         {mitreDeep?.ics_context?.ics_relevant && (
-          <div
-            style={{
-              padding: "0.75rem 1rem",
-              background: "var(--warn-banner-bg)",
-              borderRadius: "var(--radius)",
-              border: "1px solid var(--warn-banner-border)",
-              color: "var(--warn-banner-fg)",
-              fontSize: "0.88rem",
-              maxWidth: "56rem",
-              marginBottom: "0.75rem",
-            }}
-          >
+          <div className="panel panel--warn" style={{ maxWidth: "56rem", marginBottom: "0.75rem", fontSize: "0.88rem" }}>
             <strong>{t("mh.icsBanner")}</strong> {mitreDeep.ics_context.note}
           </div>
         )}
@@ -196,32 +185,38 @@ export default function MitreHeatmapPage() {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "0.5rem",
             alignItems: "center",
+            gap: "0.5rem",
             marginBottom: "0.75rem",
+            width: "100%",
           }}
         >
-          <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{t("mh.filterLabel")}</span>
-          {(["all", "apt_top", "gaps_only"] as const).map((k) => (
+          <div className="toolbar-group" style={{ flexWrap: "wrap" }}>
+            <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{t("mh.filterLabel")}</span>
+            {(["all", "apt_top", "gaps_only"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                className={viewFilter === k ? "btn-primary" : "btn-ghost"}
+                style={{ padding: "0.4rem 0.75rem", fontSize: "0.82rem" }}
+                onClick={() => setViewFilter(k)}
+              >
+                {k === "all" ? t("mh.filterAll") : k === "apt_top" ? t("mh.filterApt") : t("mh.filterGaps")}
+              </button>
+            ))}
+          </div>
+          <div className="page-toolbar-spacer" style={{ minWidth: "0.25rem" }} />
+          <div className="toolbar-group toolbar-group--exports">
             <button
-              key={k}
               type="button"
-              className={viewFilter === k ? "btn-primary" : "btn-ghost"}
-              style={{ padding: "0.4rem 0.75rem", fontSize: "0.82rem" }}
-              onClick={() => setViewFilter(k)}
+              className="btn-accent"
+              style={{ fontSize: "0.82rem" }}
+              disabled={!mitreDeep?.navigator_layer}
+              onClick={downloadNavigatorLayer}
             >
-              {k === "all" ? t("mh.filterAll") : k === "apt_top" ? t("mh.filterApt") : t("mh.filterGaps")}
+              {t("mh.exportNav")}
             </button>
-          ))}
-          <button
-            type="button"
-            className="btn-accent ms-auto"
-            style={{ fontSize: "0.82rem" }}
-            disabled={!mitreDeep?.navigator_layer}
-            onClick={downloadNavigatorLayer}
-          >
-            {t("mh.exportNav")}
-          </button>
+          </div>
         </div>
 
         {viewFilter === "gaps_only" ? (
@@ -236,7 +231,9 @@ export default function MitreHeatmapPage() {
           </ul>
         ) : (
           <>
-            <p style={{ color: "var(--muted)", fontSize: "0.85rem", maxWidth: "52rem" }}>{t("mh.legend")}</p>
+            <p className="panel panel--tight" style={{ maxWidth: "52rem", fontSize: "0.85rem" }}>
+              {t("mh.legend")}
+            </p>
             <div
               style={{
                 display: "grid",

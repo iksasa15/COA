@@ -16,33 +16,24 @@ export default function LandingPage() {
     <div className="page-shell page-shell--hero">
       <header className="page-header">
         <div className="page-header__row">
-          <span className="page-title" style={{ fontSize: "1.25rem" }}>
-            C.O.A
-          </span>
-          <span className="page-subtitle" style={{ fontSize: "0.88rem" }}>
-            Council of Agents
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.08rem" }}>
+            <span className="coa-brand coa-brand--compact">C.O.A</span>
+            <span className="coa-brand__sub">{t("landing.brandSub")}</span>
+          </div>
         </div>
         <FeatureNav />
       </header>
 
       <main className="page-main page-main--marketing">
-        <div style={{ width: "100%" }}>
-          <h1
-            style={{
-              margin: "0 0 0.5rem",
-              fontSize: "clamp(1.75rem, 4vw, 2.35rem)",
-              fontWeight: 700,
-              color: "var(--fg)",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {t("landing.hero")}
-          </h1>
-          <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "1rem", lineHeight: 1.55 }}>
-            {t("landing.p1")}
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem", alignItems: "center", marginBottom: "1.25rem" }}>
+        <div className="landing-hero">
+          <div className="landing-hero__brand" style={{ marginBottom: "0.5rem" }}>
+            <div className="coa-brand">C.O.A</div>
+            <div className="coa-brand__sub">{t("landing.brandSub")}</div>
+          </div>
+          <p className="coa-tagline">{t("landing.tagline")}</p>
+          <h1 className="landing-hero__title">{t("landing.hero")}</h1>
+          <p className="landing-hero__lead">{t("landing.p1")}</p>
+          <div className="landing-cta-row">
             <Link
               to="/dashboard"
               className="btn-primary landing-cta"
@@ -56,37 +47,15 @@ export default function LandingPage() {
               {t("landing.cta")}
             </Link>
           </div>
+        </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-              gap: "0.75rem",
-              textAlign: "right",
-            }}
-          >
-            {FEATURE_CARD_KEYS.map((c) => (
-              <Link
-                key={c.to}
-                to={c.to}
-                style={{
-                  display: "block",
-                  padding: "1rem",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--bg3)",
-                  background: "var(--bg2)",
-                  textDecoration: "none",
-                  color: "inherit",
-                  transition: "border-color 0.15s",
-                }}
-              >
-                <div style={{ fontWeight: 700, color: "var(--cyan)", fontSize: "0.95rem", marginBottom: "0.35rem" }}>
-                  {t(c.titleKey)}
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.45 }}>{t(c.descKey)}</div>
-              </Link>
-            ))}
-          </div>
+        <div className="feature-card-grid">
+          {FEATURE_CARD_KEYS.map((c) => (
+            <Link key={c.to} to={c.to} className="feature-card">
+              <div className="feature-card__title">{t(c.titleKey)}</div>
+              <div className="feature-card__desc">{t(c.descKey)}</div>
+            </Link>
+          ))}
         </div>
       </main>
     </div>

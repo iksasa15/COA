@@ -7,7 +7,13 @@ Uses Rich library for professional console output
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+)
 from rich.prompt import Confirm
 from rich.text import Text
 from rich.align import Align
@@ -178,8 +184,8 @@ class UIManager:
     @staticmethod
     def run_with_council_progress(description: str, fn: Callable[[], T]) -> T:
         """
-        تشغيل مهمة طويلة (مجلس CrewAI) مع شريط تقدم ونسبة مئوية.
-        النسبة زمنية تقريبية (تقترب من ~95%% ثم 100%% عند الانتهاء) لأن kickoff لا يعطي خطوات حقيقية.
+        تشغيل مهمة طويلة (مجلس CrewAI) مع شريط تقدم ونسبة مئوية تقريبية + زمن منقضٍ.
+        النسبة لا تعكس خطوات CrewAI الحقيقية؛ تُقترب من سقف دون 100% ثم 100% عند الانتهاء.
         """
         try:
             est = float(os.environ.get("COA_COUNCIL_PROGRESS_EST_SEC", "90") or "90")
@@ -203,19 +209,21 @@ class UIManager:
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            BarColumn(bar_width=None),
+            BarColumn(bar_width=28, complete_style="cyan", finished_style="green"),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            TextColumn(" [dim](estimate)[/dim]"),
+            TimeElapsedColumn(),
             console=console,
             transient=True,
         ) as progress:
             task_id = progress.add_task(description, total=100)
             while th.is_alive():
                 elapsed += poll
-                pct = min(
-                    95.0,
-                    95.0 * (1.0 - math.exp(-elapsed / max(est * 0.45, 1.0))),
-                )
+                # سقف أقل من 100% حتى لا يبدو أن العمل على وشك الانتهاء ثم يتجمد دقائق.
+                base = 88.0 * (1.0 - math.exp(-elapsed / max(est * 0.5, 1.0)))
+                if elapsed > est:
+                    over = elapsed - est
+                    base = min(93.0, max(base, 82.0 + min(11.0, over * 0.035)))
+                pct = min(93.0, base)
                 progress.update(task_id, completed=pct)
                 th.join(timeout=poll)
             progress.update(task_id, completed=100.0)

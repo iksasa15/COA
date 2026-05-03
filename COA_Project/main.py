@@ -324,7 +324,7 @@ def cli_scan(args):
                 from agents.council import OllamaConnectionError, run_council_on_scan
 
                 out = UIManager.run_with_council_progress(
-                    "Eye → Brain → Strategist (Ollama)",
+                    "Council: Eye→Brain→Strategist",
                     lambda: run_council_on_scan(system_data, analysis_result),
                 )
                 if out.get("ok") and out.get("report"):

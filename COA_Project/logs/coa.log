@@ -1780,3 +1780,24 @@
 2026-05-03 17:24:30,391 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-05-03 17:24:30,391 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
 2026-05-03 17:24:30,396 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 22:49:39,681 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 22:49:39,682 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 22:49:39,682 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 22:49:39,682 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 22:49:39,682 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 22:49:39,682 | INFO     | logger:_log:113 | Analysis complete: 4 threats found
+2026-05-03 22:49:39,689 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 22:51:11,920 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 22:51:11,921 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 22:51:12,426 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 22:51:12,427 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 22:51:12,427 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 22:51:12,430 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 22:51:12,431 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 22:51:12,442 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 22:51:12,446 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 22:51:12,462 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 22:51:13,452 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 22:51:13,453 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 22:51:13,453 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 22:54:43,452 | INFO     | logger:_log:113 | Council collaboration completed

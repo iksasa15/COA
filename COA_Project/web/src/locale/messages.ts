@@ -87,7 +87,7 @@ const messagesAr = {
   "scan.logStarting": "بدء الفحص…",
   "scan.logSynthLoad": "تحميل جلسة وهمية…",
   "scan.logSynthDone": "تم تحميل جلسة وهمية — {n} تهديدات (ليس من هذا المضيف)",
-  "scan.synthBtn": "تحميل بيانات وهمية",
+  "scan.synthBtn": "1",
   "scan.councilTitle":
     "المجلس يستخدم Ollama من إعدادات الخادم (.env). عطّل المربع لتسريع الفحص بدون وكلاء LLM.",
   "scan.councilLabel": "مجلس الوكلاء",
@@ -295,7 +295,7 @@ const messagesEn = {
   "scan.logStarting": "Starting scan…",
   "scan.logSynthLoad": "Loading synthetic session…",
   "scan.logSynthDone": "Synthetic session loaded — {n} threats (not from this host)",
-  "scan.synthBtn": "Load synthetic data",
+  "scan.synthBtn": "1",
   "scan.councilTitle":
     "Council uses Ollama from server .env. Uncheck for faster scans without LLM agents.",
   "scan.councilLabel": "Agent council",

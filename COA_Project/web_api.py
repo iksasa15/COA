@@ -109,6 +109,67 @@ def create_app() -> Flask:
         """Ollama reachability + model check (no CrewAI load)."""
         return jsonify(_json_safe(diagnose_ollama()))
 
+    @app.get("/api/health/council-agents")
+    def health_council_agents():
+        """
+        Verify Ollama + CrewAI can construct an agent (no full scan / no crew kickoff).
+        """
+        d = diagnose_ollama()
+        if not d.get("model_available"):
+            return jsonify(
+                _json_safe(
+                    {
+                        "ok": False,
+                        "ollama": d,
+                        "crewai_agents_ready": False,
+                        "error": d.get("error") or "Ollama or model not ready",
+                    }
+                )
+            )
+        try:
+            from crewai import Agent, LLM
+
+            from config.settings import LLM_BASE_URL, LLM_MODEL, LLM_TEMPERATURE
+
+            llm = LLM(
+                model=LLM_MODEL,
+                provider="ollama",
+                base_url=LLM_BASE_URL,
+                temperature=LLM_TEMPERATURE,
+            )
+            _ = Agent(
+                role="COA connectivity probe",
+                goal="No task will run; this only validates wiring.",
+                backstory="Ephemeral probe agent.",
+                llm=llm,
+                memory=False,
+                verbose=False,
+                allow_delegation=False,
+                max_iter=1,
+            )
+            return jsonify(
+                _json_safe(
+                    {
+                        "ok": True,
+                        "ollama": d,
+                        "crewai_agents_ready": True,
+                        "message": "Ollama OK and CrewAI Agent+LLM wiring works (council path should run).",
+                    }
+                )
+            )
+        except Exception as e:
+            logger.warning("council-agents health failed: %s", e)
+            return jsonify(
+                _json_safe(
+                    {
+                        "ok": False,
+                        "ollama": d,
+                        "crewai_agents_ready": False,
+                        "error": str(e),
+                    }
+                )
+            )
+
     @app.get("/api/demo/ot-ics-fixture")
     def demo_ot_ics_fixture():
         """Simulated OT/ICS payload for judge UI demo (read-only, no host scan)."""

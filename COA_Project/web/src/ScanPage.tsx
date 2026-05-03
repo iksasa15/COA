@@ -68,6 +68,21 @@ type ScanPayload = {
 
 type TabId = "threats" | "processes" | "network" | "ot_ics" | "council" | "logs";
 
+type CouncilAgentsHealth = {
+  ok?: boolean;
+  ollama?: {
+    ollama_running?: boolean;
+    model_available?: boolean;
+    model_name?: string;
+    base_url?: string;
+    error?: string | null;
+    suggestion?: string | null;
+  };
+  crewai_agents_ready?: boolean;
+  error?: string;
+  message?: string;
+};
+
 function appendLocalLog(
   lines: { ts: string; level: string; text: string }[],
   level: string,
@@ -102,8 +117,11 @@ export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
   const [presentationDemo, setPresentationDemo] = useState(false);
-  const [useCouncil, setUseCouncil] = useState(false);
+  // CrewAI agents (1–3): on by default; requires local Ollama. User can turn off for faster scans.
+  const [useCouncil, setUseCouncil] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [councilCheckLoading, setCouncilCheckLoading] = useState(false);
+  const [councilCheckResult, setCouncilCheckResult] = useState<CouncilAgentsHealth | null>(null);
   const [data, setData] = useState<ScanPayload | null>(null);
   const [logLines, setLogLines] = useState<{ ts: string; level: string; text: string }[]>([]);
   const [status, setStatus] = useState("Ready — start the API (python web_api.py) then scan.");
@@ -175,6 +193,23 @@ export default function ScanPage() {
     }
   }, [dryRun, presentationDemo, useCouncil]);
 
+  const verifyCouncilAgents = useCallback(async () => {
+    setCouncilCheckLoading(true);
+    setCouncilCheckResult(null);
+    try {
+      const r = await fetch("/api/health/council-agents");
+      const j = (await r.json()) as CouncilAgentsHealth;
+      setCouncilCheckResult(j);
+    } catch (e) {
+      setCouncilCheckResult({
+        ok: false,
+        error: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setCouncilCheckLoading(false);
+    }
+  }, []);
+
   const stats = useMemo(() => {
     const a = data?.analysis;
     const conns = data?.connections_total ?? 0;
@@ -224,15 +259,24 @@ export default function ScanPage() {
         </label>
         <label
           className="checkbox"
-          title="يجب أن يعمل Ollama محلياً مع النموذج المعرّف في config/settings.py (مثلاً llama3.1)"
+          title="يجب أن يعمل Ollama محلياً مع النموذج في config/settings.py (مثلاً llama3.1). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
         >
           <input
             type="checkbox"
             checked={useCouncil}
             onChange={(e) => setUseCouncil(e.target.checked)}
           />
-          مجلس الوكلاء (CrewAI + Ollama)
+          مجلس الوكلاء (CrewAI + Ollama) — افتراضي: تشغيل
         </label>
+        <button
+          type="button"
+          className="btn-ghost"
+          disabled={councilCheckLoading || loading}
+          title="يتحقق من Ollama + إنشاء وكيل CrewAI (بدون تشغيل فحص كامل)"
+          onClick={() => void verifyCouncilAgents()}
+        >
+          {councilCheckLoading ? "جاري التحقق…" : "التحقق من وكلاء الذكاء"}
+        </button>
         <div className="page-toolbar-spacer" />
         <button
           type="button"
@@ -267,6 +311,45 @@ export default function ScanPage() {
           Navigator JSON
         </button>
       </div>
+
+      {councilCheckResult && (
+        <div
+          className="page-section"
+          style={{
+            marginTop: "-0.25rem",
+            marginBottom: "0.5rem",
+            padding: "0.65rem 0.85rem",
+            borderRadius: "var(--radius)",
+            border: `1px solid ${councilCheckResult.ok && councilCheckResult.crewai_agents_ready ? "var(--green)" : "var(--orange)"}`,
+            background: "var(--bg2)",
+            fontSize: "0.86rem",
+          }}
+        >
+          {councilCheckResult.ok && councilCheckResult.crewai_agents_ready ? (
+            <strong style={{ color: "var(--green)" }}>وكلاء الذكاء جاهزة:</strong>
+          ) : (
+            <strong style={{ color: "var(--orange)" }}>وكلاء الذكاء غير جاهزة:</strong>
+          )}{" "}
+          {councilCheckResult.message && <span style={{ color: "var(--muted)" }}>{councilCheckResult.message}</span>}
+          {councilCheckResult.error && (
+            <span style={{ color: "var(--muted)", display: "block", marginTop: "0.35rem" }}>{councilCheckResult.error}</span>
+          )}
+          {councilCheckResult.ollama?.suggestion && !councilCheckResult.ok && (
+            <pre
+              style={{
+                margin: "0.4rem 0 0",
+                fontSize: "0.75rem",
+                color: "var(--muted)",
+                whiteSpace: "pre-wrap",
+                direction: "ltr",
+                textAlign: "left",
+              }}
+            >
+              {councilCheckResult.ollama.suggestion}
+            </pre>
+          )}
+        </div>
+      )}
 
       <div className="page-section">
         {data?.ot_ics?.presentation_demo && (

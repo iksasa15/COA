@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { DEMO_COUNCIL_REPORT_FALLBACK } from "./demoCouncilReport";
 import FeatureNav from "./FeatureNav";
 
 type LogEvent = { timestamp: string; type: string; details: string };
@@ -207,24 +208,35 @@ export default function ScanPage() {
       if (!res.ok || !json.ok) {
         throw new Error(json.error || res.statusText || "Failed to load synthetic session");
       }
-      setData(json);
+      const reportFromApi =
+        json.council?.ok === true &&
+        typeof json.council.report === "string" &&
+        json.council.report.trim()
+          ? json.council.report.trim()
+          : DEMO_COUNCIL_REPORT_FALLBACK;
+      const normalized: ScanPayload = {
+        ...json,
+        demo_seed: true,
+        council: { ok: true, error: null, report: reportFromApi },
+      };
+      setData(normalized);
       try {
-        if (json.defense_context) {
-          sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
+        if (normalized.defense_context) {
+          sessionStorage.setItem("coa_defense_context", JSON.stringify(normalized.defense_context));
         }
         sessionStorage.setItem(
           "coa_last_scan_extras",
           JSON.stringify({
-            defense_context: json.defense_context ?? null,
-            mitre_deep: json.mitre_deep ?? null,
-            ot_ics: json.ot_ics ?? null,
+            defense_context: normalized.defense_context ?? null,
+            mitre_deep: normalized.mitre_deep ?? null,
+            ot_ics: normalized.ot_ics ?? null,
           }),
         );
         window.dispatchEvent(new Event("coa-scan-complete"));
       } catch {
         /* ignore quota */
       }
-      const serverLines = (json.events || []).map((ev) => ({
+      const serverLines = (normalized.events || []).map((ev) => ({
         ts: ev.timestamp,
         level: ev.type === "ERROR" ? "ERROR" : "INFO",
         text: `[${ev.type}] ${ev.details}`,
@@ -236,12 +248,12 @@ export default function ScanPage() {
         {
           ts: endTs,
           level: "SUCCESS",
-          text: `Synthetic session loaded — ${json.analysis?.total_threats ?? 0} threats (not from this host)`,
+          text: `Synthetic session loaded — ${normalized.analysis?.total_threats ?? 0} threats (not from this host)`,
         },
       ]);
       setStatus(
-        `بيانات وهمية — ${json.analysis?.total_threats ?? 0} تهديدات · ` +
-          `${json.connections_total ?? 0} اتصال · ${json.processes_total ?? 0} عملية (جلسة مخبرية ثابتة)`,
+        `بيانات وهمية — ${normalized.analysis?.total_threats ?? 0} تهديدات · ` +
+          `${normalized.connections_total ?? 0} اتصال · ${normalized.processes_total ?? 0} عملية (جلسة مخبرية ثابتة)`,
       );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -645,7 +657,7 @@ export default function ScanPage() {
                 <div style={{ fontSize: "0.85rem", color: "var(--fg)" }}>
                   <strong>Distinct ICS protocols:</strong> {data.ot_ics.distinct_ics_protocols ?? 0} ·{" "}
                   <strong>Hits:</strong> {(data.ot_ics.ics_protocol_hits || []).length} ·{" "}
-                  <strong>Production continuity (demo):</strong>{" "}
+                  <strong>استمرارية الإنتاج (تقدير):</strong>{" "}
                   {data.ot_ics.production_continuity_score ?? "—"}
                 </div>
                 {(data.ot_ics.ot_playbooks_triggered || []).length > 0 && (
@@ -683,30 +695,7 @@ export default function ScanPage() {
 
         {tab === "council" && (
           <div style={{ fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.55 }}>
-            {!data?.council && (
-              <p style={{ margin: 0 }}>
-                فعّل خيار «مجلس الوكلاء» قبل المسح، أو راجع{" "}
-                <code style={{ color: "var(--cyan)" }}>GET /api/health/ollama</code> للتأكد أن Ollama يعمل والنموذج
-                مثبت.
-              </p>
-            )}
-            {data?.council && !data.council.ok && (
-              <pre
-                style={{
-                  margin: "0.75rem 0 0",
-                  padding: "0.75rem 1rem",
-                  background: "rgba(239, 68, 68, 0.08)",
-                  border: "1px solid rgba(239, 68, 68, 0.35)",
-                  borderRadius: "var(--radius)",
-                  color: "var(--fg)",
-                  whiteSpace: "pre-wrap",
-                  fontSize: "0.82rem",
-                }}
-              >
-                {data.council.error || "Council run failed"}
-              </pre>
-            )}
-            {data?.council?.ok && data.council.report && (
+            {data?.demo_seed ? (
               <pre
                 style={{
                   margin: 0,
@@ -721,11 +710,53 @@ export default function ScanPage() {
                   overflow: "auto",
                 }}
               >
-                {data.council.report}
+                {(() => {
+                  const r = data.council?.report;
+                  return typeof r === "string" && r.trim() ? r.trim() : DEMO_COUNCIL_REPORT_FALLBACK;
+                })()}
               </pre>
-            )}
-            {data?.council?.ok && !data.council.report && (
-              <p style={{ margin: "0.5rem 0 0" }}>اكتمل المجلس لكن لا يوجد نص في الاستجابة.</p>
+            ) : data?.council?.ok === true &&
+              typeof data.council.report === "string" &&
+              data.council.report.trim() ? (
+              <pre
+                style={{
+                  margin: 0,
+                  padding: "0.75rem 1rem",
+                  background: "var(--bg2)",
+                  borderRadius: "var(--radius)",
+                  border: "1px solid var(--bg3)",
+                  color: "var(--fg)",
+                  whiteSpace: "pre-wrap",
+                  fontSize: "0.8rem",
+                  maxHeight: "min(70vh, 520px)",
+                  overflow: "auto",
+                }}
+              >
+                {data.council.report.trim()}
+              </pre>
+            ) : data?.council && data.council.ok === false ? (
+              <pre
+                style={{
+                  margin: "0.75rem 0 0",
+                  padding: "0.75rem 1rem",
+                  background: "rgba(239, 68, 68, 0.08)",
+                  border: "1px solid rgba(239, 68, 68, 0.35)",
+                  borderRadius: "var(--radius)",
+                  color: "var(--fg)",
+                  whiteSpace: "pre-wrap",
+                  fontSize: "0.82rem",
+                }}
+              >
+                {data.council.error || "Council run failed"}
+              </pre>
+            ) : data?.council?.ok === true && !data.council.report?.trim() ? (
+              <p style={{ margin: 0 }}>اكتمل المجلس لكن لا يوجد نص في الاستجابة.</p>
+            ) : (
+              <p style={{ margin: 0 }}>
+                فعّل خيار «مجلس الوكلاء» قبل المسح، أو راجع{" "}
+                <code style={{ color: "var(--cyan)" }}>GET /api/health/ollama</code> للتأكد أن Ollama يعمل والنموذج
+                مثبت.
+              </p>
             )}
           </div>
         )}

@@ -17,12 +17,34 @@ from core.threat_analyzer import ThreatAnalyzer
 from ics_analyzer.demo_fixture import load_presentation_demo_ot_ics
 from utils.report_generator import ReportGenerator
 
+# Static narrative for dashboard «Multi-AI» tab in demo sessions (no LLM round-trip).
+DEMO_COUNCIL_REPORT = """
+═══════════════════════════════════════════════════════════════════
+  C.O.A — Multi-Agent Council (جلسة مخبرية ثابتة للواجهة)
+═══════════════════════════════════════════════════════════════════
+
+[Threat Hunter] الأولوية: اتصال ESTABLISHED من PID 88110 (beacon_loader) إلى 198.51.100.77:4444
+مع مسار تحت /var/tmp — يطابق C2 شائع. تهديد ثانٍ: عملية svch0st_cloned (PID 88122) انتحال اسم.
+
+[Defense Analyst] يُوصى بعزل العقدة عن الشبكة الإنتاجية، أخذ صورة ذاكرة للعمليتين،
+ومراجعة جدول الاتصالات للأقران على نفس VLAN.
+
+[Incident Lead] خطوات فورية: (1) احتفاظ بالأدلة (2) تدوين وقت الاكتشاف (3) تنسيق مع SOC
+قبل أي إجراء حجب واسع قد يؤثر على OT المجاور.
+
+[ICS Liaison] جدول OT في الجلسة يعرض ارتباطات بروتوكولات صناعية من حزمة العرض — راجع
+لوحة OT/ICS للتفاصيل الكاملة.
+
+───────────────────────────────────────────────────────────────────
+ملاحظة: نص جاهز للعرض — لا يستدعي نموذجاً حياً في وضع التحميل السريع.
+───────────────────────────────────────────────────────────────────
+""".strip()
+
 
 def _demo_system_data() -> Dict[str, Any]:
     """
-    Synthetic host shaped like a real collector snapshot: two distinct PIDs so
-    ThreatAnalyzer yields one network threat and one process threat (no duplicate row
-    for the same executable).
+    Rich lab snapshot: benign traffic + one suspicious connection; benign processes +
+    one suspicious process — two threats from different PIDs (no duplicate analyzer rows).
     """
     return {
         "system_info": {
@@ -42,9 +64,35 @@ def _demo_system_data() -> Dict[str, Any]:
                 "status": "ESTABLISHED",
                 "protocol": "TCP",
             },
+            {
+                "pid": 1204,
+                "process_name": "chrome",
+                "process_path": "/opt/google/chrome/chrome",
+                "local_address": "192.168.20.15:44102",
+                "remote_address": "142.251.167.14:443",
+                "status": "ESTABLISHED",
+                "protocol": "TCP",
+            },
+            {
+                "pid": 884,
+                "process_name": "systemd-resolved",
+                "process_path": "/usr/lib/systemd/systemd-resolved",
+                "local_address": "127.0.0.1:5353",
+                "remote_address": "1.1.1.1:53",
+                "status": "ESTABLISHED",
+                "protocol": "UDP",
+            },
+            {
+                "pid": 1122,
+                "process_name": "sshd",
+                "process_path": "/usr/sbin/sshd",
+                "local_address": "192.168.20.15:22",
+                "remote_address": "192.168.20.1:51988",
+                "status": "ESTABLISHED",
+                "protocol": "TCP",
+            },
         ],
-        # One process row only (88110 appears only on the connection — avoids duplicate
-        # Network + Process threat for the same PID).
+        # 88110 appears only on the connection row (avoids duplicate Network+Process threat).
         "processes": [
             {
                 "pid": 88122,
@@ -56,6 +104,50 @@ def _demo_system_data() -> Dict[str, Any]:
                 "threads": 2,
                 "status": "running",
                 "started_at": "2024-06-01 10:18:00",
+            },
+            {
+                "pid": 1204,
+                "name": "chrome",
+                "path": "/opt/google/chrome/chrome",
+                "cpu_percent": 14.2,
+                "memory_percent": 8.4,
+                "user": "labuser",
+                "threads": 48,
+                "status": "running",
+                "started_at": "2024-06-01 09:05:00",
+            },
+            {
+                "pid": 884,
+                "name": "systemd-resolved",
+                "path": "/usr/lib/systemd/systemd-resolved",
+                "cpu_percent": 0.4,
+                "memory_percent": 0.2,
+                "user": "systemd-resolve",
+                "threads": 1,
+                "status": "sleeping",
+                "started_at": "2024-06-01 08:00:00",
+            },
+            {
+                "pid": 1122,
+                "name": "sshd",
+                "path": "/usr/sbin/sshd",
+                "cpu_percent": 0.1,
+                "memory_percent": 0.1,
+                "user": "root",
+                "threads": 1,
+                "status": "running",
+                "started_at": "2024-06-01 10:00:00",
+            },
+            {
+                "pid": 3301,
+                "name": "node",
+                "path": "/usr/bin/node",
+                "cpu_percent": 3.8,
+                "memory_percent": 1.9,
+                "user": "labuser",
+                "threads": 11,
+                "status": "running",
+                "started_at": "2024-06-01 09:40:00",
             },
         ],
         "collection_duration": 0.12,
@@ -105,8 +197,17 @@ def build_demo_ui_seed_bundle() -> Tuple[Dict[str, Any], Dict[str, Any], ReportG
         system_data["system_info"], analysis, classification, defense_context
     )
 
-    council_result = None
-    reporter.log_event("COUNCIL", "Council not run for this session")
+    council_result: Dict[str, Any] = {
+        "ok": True,
+        "report": DEMO_COUNCIL_REPORT,
+        "error": None,
+    }
+    reporter.log_event(
+        "COUNCIL",
+        "Demo Multi-AI panel: static council narrative attached (no live LLM for this session)",
+    )
+    reporter.log_event("SCAN", "Demo bundle ready — Threats / Processes / Network / OT / Multi-AI / Logs populated")
+    reporter.log_event("EXPORT", "Navigator layer and defense_context available for MITRE pages")
 
     completed_at = datetime.now().isoformat()
     last_block = {

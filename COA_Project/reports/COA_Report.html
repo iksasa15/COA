@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>C.O.A Security Report — MacBook-Air-Ahmed.local</title>
+<title>C.O.A Security Report — coa-ui-demo</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -155,17 +155,17 @@
             تقرير فحص أمني — Council of Agents
             <br>
             <span class="badge badge-green">Local & Private 🔒</span>
-            <span class="badge badge-green">3 Threats Analyzed</span>
+            <span class="badge badge-green">2 Threats Analyzed</span>
         </div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-value critical">0</div>
+            <div class="stat-value critical">1</div>
             <div class="stat-label">Critical Threats</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value high">0</div>
+            <div class="stat-value high">1</div>
             <div class="stat-label">High Severity</div>
         </div>
         <div class="stat-card">
@@ -173,7 +173,7 @@
             <div class="stat-label">Medium Severity</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value low">3</div>
+            <div class="stat-value low">0</div>
             <div class="stat-label">Low Severity</div>
         </div>
     </div>
@@ -184,37 +184,27 @@
 
             <div class="info-item">
                 <div class="info-key">Hostname</div>
-                <div class="info-value">MacBook-Air-Ahmed.local</div>
+                <div class="info-value">coa-ui-demo</div>
             </div>
 
             <div class="info-item">
-                <div class="info-key">Cpu Cores</div>
-                <div class="info-value">10</div>
+                <div class="info-key">Platform</div>
+                <div class="info-value">Demo</div>
             </div>
 
             <div class="info-item">
-                <div class="info-key">Cpu Usage</div>
-                <div class="info-value">13.1</div>
+                <div class="info-key">Platform Release</div>
+                <div class="info-value">seed</div>
             </div>
 
             <div class="info-item">
-                <div class="info-key">Memory Total Gb</div>
-                <div class="info-value">24.0</div>
+                <div class="info-key">Architecture</div>
+                <div class="info-value">n/a</div>
             </div>
 
             <div class="info-item">
-                <div class="info-key">Memory Used Percent</div>
-                <div class="info-value">67.9</div>
-            </div>
-
-            <div class="info-item">
-                <div class="info-key">Disk Usage Percent</div>
-                <div class="info-value">48.4</div>
-            </div>
-
-            <div class="info-item">
-                <div class="info-key">Boot Time</div>
-                <div class="info-value">2026-05-03 11:43:11</div>
+                <div class="info-key">Processor</div>
+                <div class="info-value">synthetic</div>
             </div>
 
         </div>
@@ -237,45 +227,30 @@
 
                 <tr>
                     <td>1</td>
-                    <td><span class="severity-pill severity-LOW">LOW</span></td>
-                    <td><span class="confidence-LOW">LOW</span></td>
-                    <td>30</td>
-                    <td>com.apple.Mobile (PID: 490)</td>
+                    <td><span class="severity-pill severity-CRITICAL">CRITICAL</span></td>
+                    <td><span class="confidence-HIGH">HIGH</span></td>
+                    <td>135</td>
+                    <td>svch0st_demo (PID: 424242)</td>
                     <td>
-                        Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo
+                        Detected: suspicious port 4444, running from temp folder, connecting externally to 198.51.100.77, masquerading process name
                         <details>
-                            <summary>Signals (1)</summary>
-                            <span class="signal-tag">runs_from_temp</span>
+                            <summary>Signals (4)</summary>
+                            <span class="signal-tag">suspicious_port</span><span class="signal-tag">runs_from_temp</span><span class="signal-tag">external_connection_from_temp</span><span class="signal-tag">masquerading_name</span>
                         </details>
                     </td>
                 </tr>
 
                 <tr>
                     <td>2</td>
-                    <td><span class="severity-pill severity-LOW">LOW</span></td>
-                    <td><span class="confidence-LOW">LOW</span></td>
-                    <td>30</td>
-                    <td>reversetemplated (PID: 8424)</td>
+                    <td><span class="severity-pill severity-HIGH">HIGH</span></td>
+                    <td><span class="confidence-MEDIUM">MEDIUM</span></td>
+                    <td>60</td>
+                    <td>svch0st_demo (PID: 424242)</td>
                     <td>
-                        Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.
+                        Detected: runs from /var/tmp/coa_demo_agent, suspicious name pattern
                         <details>
-                            <summary>Signals (1)</summary>
-                            <span class="signal-tag">runs_from_temp</span>
-                        </details>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <td><span class="severity-pill severity-LOW">LOW</span></td>
-                    <td><span class="confidence-LOW">LOW</span></td>
-                    <td>20</td>
-                    <td>kernel_task (PID: 0)</td>
-                    <td>
-                        Detected: no executable path
-                        <details>
-                            <summary>Signals (1)</summary>
-                            <span class="signal-tag">no_digital_signature</span>
+                            <summary>Signals (2)</summary>
+                            <span class="signal-tag">runs_from_temp</span><span class="signal-tag">masquerading_name</span>
                         </details>
                     </td>
                 </tr>
@@ -297,45 +272,51 @@
             <tbody>
 
                 <tr>
-                    <td>2026-05-03 13:04:25</td>
+                    <td>2026-05-03 17:01:53</td>
                     <td><strong>SYSTEM</strong></td>
-                    <td>C.O.A v3.0 scan initiated</td>
+                    <td>UI demo seed — synthetic bundle (no live host collection)</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:26</td>
-                    <td><strong>DATA_COLLECTION</strong></td>
-                    <td>Collected in 0.51s</td>
+                    <td>2026-05-03 17:01:53</td>
+                    <td><strong>DATA</strong></td>
+                    <td>Synthetic demo: 1 connections, 1 processes</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:28</td>
+                    <td>2026-05-03 17:01:53</td>
+                    <td><strong>ANALYSIS</strong></td>
+                    <td>Threat analysis on synthetic demo data…</td>
+                </tr>
+
+                <tr>
+                    <td>2026-05-03 17:01:53</td>
                     <td><strong>THREAT_DETECTED</strong></td>
-                    <td>[LOW] Process Threat — com.apple.Mobile (PID: 490): Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo</td>
+                    <td>[CRITICAL] Network Threat — svch0st_demo (PID: 424242): Detected: suspicious port 4444, running from temp folder, connecting externally to 198.51.100.77, masquerading process name</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:28</td>
+                    <td>2026-05-03 17:01:53</td>
                     <td><strong>THREAT_DETECTED</strong></td>
-                    <td>[LOW] Process Threat — reversetemplated (PID: 8424): Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.</td>
+                    <td>[HIGH] Process Threat — svch0st_demo (PID: 424242): Detected: runs from /var/tmp/coa_demo_agent, suspicious name pattern</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:28</td>
-                    <td><strong>THREAT_DETECTED</strong></td>
-                    <td>[LOW] Process Threat — kernel_task (PID: 0): Detected: no executable path</td>
+                    <td>2026-05-03 17:01:53</td>
+                    <td><strong>DEFENSE_CONTEXT</strong></td>
+                    <td>Defense Context Analyzer (Agent #5) on demo data…</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:48</td>
-                    <td><strong>ACTION</strong></td>
-                    <td>Command: ps -p 490 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False</td>
+                    <td>2026-05-03 17:01:53</td>
+                    <td><strong>OT_ICS</strong></td>
+                    <td>Presentation OT/ICS fixture for judges UI…</td>
                 </tr>
 
                 <tr>
-                    <td>2026-05-03 13:04:51</td>
-                    <td><strong>ACTION</strong></td>
-                    <td>Command: ps -p 8424 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False</td>
+                    <td>2026-05-03 17:01:53</td>
+                    <td><strong>COUNCIL</strong></td>
+                    <td>Skipped in UI demo seed (use full scan for CrewAI council)</td>
                 </tr>
 
             </tbody>
@@ -344,7 +325,7 @@
 
     <div class="footer">
         Generated by C.O.A — Council of Agents<br>
-        2026-05-03 13:04:51 • All data remains local 🔒
+        2026-05-03 17:02:57 • All data remains local 🔒
     </div>
 </div>
 </body>

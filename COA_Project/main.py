@@ -43,7 +43,11 @@ from agents.ics_specialist import ICSSpecialistAgent
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from agents.incident_reporter import IncidentReporter
 from ics_analyzer import analyze_ot_ics
-from config.settings import REPORTS_DIR
+from config.settings import LLM_PROVIDER, REPORTS_DIR
+
+
+def _council_llm_label() -> str:
+    return "Gemini" if LLM_PROVIDER == "gemini" else "Ollama"
 
 
 def parse_arguments():
@@ -59,7 +63,7 @@ Modes:
 
 CLI Options:
   python main.py --dry-run            # Safe simulation
-  python main.py --council            # CrewAI + Ollama (3 agents) after heuristic scan
+  python main.py --council            # CrewAI council (3 agents; Ollama or Gemini per .env)
   python main.py --vt                 # VirusTotal enrichment
   python main.py --yara               # YARA rules scan
   python main.py --html --json        # Multiple report formats
@@ -83,7 +87,7 @@ CLI Options:
     parser.add_argument(
         '--council',
         action='store_true',
-        help='After scan, run CrewAI multi-agent council (Eye/Brain/Strategist) via local Ollama',
+        help='After scan, run CrewAI council (Eye/Brain/Strategist); LLM from .env (Ollama or Gemini)',
     )
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser.add_argument('--no-admin-check', action='store_true', help='Skip admin check')
@@ -184,7 +188,7 @@ def cli_scan(args):
     if modes:
         ui.info(f"Enabled: {' | '.join(modes)}")
     if args.council:
-        ui.info("Enabled: 🤖 CrewAI council (Ollama multi-agent)")
+        ui.info(f"Enabled: 🤖 CrewAI council ({_council_llm_label()} multi-agent)")
 
     # التحقق من Admin
     if not args.no_admin_check:
@@ -316,10 +320,13 @@ def cli_scan(args):
         ui.section_header("MITRE ATT&CK — Deep analysis (summary)", "📚")
         ui.info(mitre_deep.get("ascii_report", "").strip().replace("\n", "\n  ")[:6000])
 
-        # ============ PHASE 2.9: CrewAI + Ollama (optional multi-agent) ============
+        # ============ PHASE 2.9: CrewAI council (optional multi-agent) ============
         if args.council:
             ui.divider()
-            ui.section_header("PHASE 2.9: Multi-Agent Council (CrewAI + Ollama)", "🤖")
+            ui.section_header(
+                f"PHASE 2.9: Multi-Agent Council (CrewAI + {_council_llm_label()})",
+                "🤖",
+            )
             try:
                 from agents.council import OllamaConnectionError, run_council_on_scan
 
@@ -328,12 +335,15 @@ def cli_scan(args):
                     lambda: run_council_on_scan(system_data, analysis_result),
                 )
                 if out.get("ok") and out.get("report"):
-                    reporter.log_event("COUNCIL", "CrewAI council completed (Ollama)")
+                    reporter.log_event("COUNCIL", f"CrewAI council completed ({_council_llm_label()})")
                     text = str(out["report"])
                     ui.info(text.strip().replace("\n", "\n  ")[:12000])
                     if len(text) > 12000:
                         ui.info("… [council output truncated in terminal; full text in logs]")
-                    logger.info("Council report length=%s", len(text))
+                    logger.info(
+                        f"Council report length={len(text)}",
+                        report_chars=len(text),
+                    )
                 else:
                     err = out.get("error") or "Unknown council error"
                     reporter.log_event("COUNCIL", f"Council skipped or failed: {err[:500]}")
@@ -426,7 +436,7 @@ def cli_scan(args):
             "Collection Time": f"{duration:.2f}s",
             "VirusTotal": "✓" if args.vt else "✗",
             "YARA": "✓" if args.yara else "✗",
-            "CrewAI+Ollama": "✓" if args.council else "✗",
+            f"CrewAI+{_council_llm_label()}": "✓" if args.council else "✗",
         })
 
         ui.divider()

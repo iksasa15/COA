@@ -1,389 +1,55 @@
+#!/usr/bin/env python3
 """
-C.O.A - Council of Agents v3.0
-==============================
-Main Entry Point with ALL enhancements
+C.O.A — تشغيل من جذر الريبو
+===========================
+يوجّه إلى COA_Project/main.py. إن وُجد `COA_Project/venv` يُعاد التشغيل تلقائياً
+بـ Python الافتراضي للـ venv حتى تُحمَّل الحزم (pyfiglet، google-genai، …).
 
-New in v3.0:
-- VirusTotal integration (--vt)
-- YARA rules engine (--yara)
-- 4th agent: Incident Reporter (always on)
-- GUI mode (--gui)
-- Helpdesk bot mode (--helpdesk)
-
-Usage:
-    python main.py                    # Normal CLI scan
-    python main.py --gui              # Launch graphical interface
-    python main.py --helpdesk         # Launch helpdesk bot
-    python main.py --vt               # Enable VirusTotal enrichment
-    python main.py --yara             # Enable YARA scanning
-    python main.py --all              # Enable EVERYTHING
+الموصى به: `cd COA_Project && source venv/bin/activate && python main.py ...`
 """
 
+from __future__ import annotations
+
+import os
+import runpy
 import sys
-import argparse
-import json
-import traceback
 from pathlib import Path
-from datetime import datetime
 
-sys.path.insert(0, str(Path(__file__).parent))
-
-from utils.admin_check import require_admin
-from utils.ui_manager import UIManager
-from utils.report_generator import ReportGenerator
-from utils.html_report import HTMLReportGenerator
-from utils.logger import logger
-from utils.cache import global_cache
-from core.data_collector import SystemDataCollector
-from core.threat_analyzer import ThreatAnalyzer
-from core.solution_engine import SolutionEngine
-from agents.incident_reporter import IncidentReporter
-from config.settings import REPORTS_DIR
+_ROOT = Path(__file__).resolve().parent
+_APP_DIR = _ROOT / "COA_Project"
+_APP_MAIN = _APP_DIR / "main.py"
 
 
-def parse_arguments():
-    """تحليل CLI arguments"""
-    parser = argparse.ArgumentParser(
-        description="C.O.A v3.0 — Advanced AI Security Scanner",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Modes:
-  python main.py --gui                # Graphical interface
-  python main.py --helpdesk           # Interactive chatbot
-  python main.py                      # CLI scan (default)
+def _venv_python(app_dir: Path) -> Path | None:
+    for name in ("python3", "python"):
+        p = app_dir / "venv" / "bin" / name
+        if p.is_file() and os.access(p, os.X_OK):
+            return p
+    return None
 
-CLI Options:
-  python main.py --dry-run            # Safe simulation
-  python main.py --vt                 # VirusTotal enrichment
-  python main.py --yara               # YARA rules scan
-  python main.py --html --json        # Multiple report formats
-  python main.py --all                # Enable everything
-        """
+
+if not _APP_MAIN.is_file():
+    print(
+        f"Cannot find {_APP_MAIN}\n"
+        "Clone or copy the repo so COA_Project/main.py exists, or run:\n"
+        "  cd COA_Project && python main.py ...",
+        file=sys.stderr,
     )
+    sys.exit(1)
 
-    # Main modes
-    parser.add_argument('--gui', action='store_true', help='Launch PyQt6 GUI')
-    parser.add_argument('--helpdesk', action='store_true', help='Launch helpdesk bot')
+_venv = _venv_python(_APP_DIR)
+if _venv is not None and Path(sys.executable).resolve() != _venv.resolve():
+    os.chdir(_APP_DIR)
+    os.execv(str(_venv), [str(_venv), str(_APP_MAIN), *sys.argv[1:]])
 
-    # CLI options
-    parser.add_argument('--dry-run', action='store_true', help='Simulate without executing')
-    parser.add_argument('--vt', action='store_true', help='Enable VirusTotal enrichment')
-    parser.add_argument('--yara', action='store_true', help='Enable YARA rules scanning')
-    parser.add_argument('--html', action='store_true', help='Generate HTML report')
-    parser.add_argument('--json', action='store_true', help='Generate JSON report')
-    parser.add_argument('--markdown', action='store_true', help='Generate Markdown report')
-    parser.add_argument('--csv', action='store_true', help='Generate CSV report')
-    parser.add_argument('--all', action='store_true', help='Enable all features')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
-    parser.add_argument('--no-admin-check', action='store_true', help='Skip admin check')
-
-    return parser.parse_args()
-
-
-def launch_gui():
-    """تشغيل GUI"""
-    try:
-        from gui.app import main as gui_main
-        gui_main()
-    except ImportError as e:
-        print(f"❌ GUI requires PyQt6: pip install PyQt6\nError: {e}")
-        sys.exit(1)
-
-
-def launch_helpdesk():
-    """تشغيل Helpdesk Bot"""
-    from helpdesk.bot import HelpdeskBot, UserMessage
-
-    ui = UIManager()
-    ui.display_banner()
-    ui.section_header("💬 Helpdesk Bot Mode", "🤖")
-    ui.info("Talk to me like you would to an IT support agent!")
-    ui.info("Type 'quit' to exit\n")
-
-    bot = HelpdeskBot()
-    user_id = "cli_user"
-
-    while True:
-        try:
-            text = input("\n👤 You: ").strip()
-            if not text or text.lower() in ['quit', 'exit', 'bye']:
-                ui.success("Goodbye! 👋")
-                break
-
-            msg = UserMessage(text=text, user_id=user_id)
-            response = bot.handle_message(msg)
-            print(f"\n🤖 Bot: {response.text}")
-
-        except KeyboardInterrupt:
-            ui.success("\nGoodbye! 👋")
-            break
-
-
-def save_json_report(system_info, analysis_result, events, output_path):
-    """حفظ تقرير JSON"""
-    report_data = {
-        "metadata": {
-            "generated_at": datetime.now().isoformat(),
-            "version": "3.0",
-            "generator": "C.O.A",
-        },
-        "system_info": system_info,
-        "analysis": analysis_result,
-        "events": events,
-        "cache_stats": global_cache.stats(),
-    }
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(report_data, f, indent=2, ensure_ascii=False, default=str)
-    return str(output_path)
-
-
-def cli_scan(args):
-    """الفحص الرئيسي في وضع CLI"""
-    ui = UIManager()
-    ui.display_banner()
-
-    # تفعيل --all
-    if args.all:
-        args.vt = True
-        args.yara = True
-        args.html = True
-        args.json = True
-        args.markdown = True
-        args.csv = True
-
-    logger.info(
-        "C.O.A v3.0 scan started",
-        dry_run=args.dry_run,
-        vt=args.vt,
-        yara=args.yara,
+os.chdir(_APP_DIR)
+sys.path.insert(0, str(_APP_DIR))
+sys.argv[0] = str(_APP_MAIN)
+if _venv is None:
+    print(
+        "Note: no COA_Project/venv found — using current Python. "
+        "For dependencies, run: cd COA_Project && python -m venv venv && "
+        "source venv/bin/activate && pip install -r requirements.txt",
+        file=sys.stderr,
     )
-
-    # عرض الوضع
-    modes = []
-    if args.dry_run: modes.append("🧪 Dry-run")
-    if args.vt: modes.append("🔍 VirusTotal")
-    if args.yara: modes.append("📋 YARA")
-
-    if modes:
-        ui.info(f"Enabled: {' | '.join(modes)}")
-
-    # التحقق من Admin
-    if not args.no_admin_check:
-        require_admin()
-        ui.success("Administrator privileges confirmed")
-
-    reporter = ReportGenerator()
-    reporter.log_event("SYSTEM", f"C.O.A v3.0 scan initiated")
-    solution_engine = SolutionEngine(dry_run=args.dry_run)
-
-    try:
-        # ============ PHASE 1: Data Collection ============
-        ui.divider()
-        ui.section_header("PHASE 1: Data Collection (The Eye)", "👁️")
-        ui.loading_animation("Collecting system data in parallel...", 1.0)
-
-        system_data = SystemDataCollector.collect_all()
-        sys_info = system_data["system_info"]
-        conn_count = len(system_data["network_connections"])
-        proc_count = len(system_data["processes"])
-        duration = system_data.get("collection_duration", 0)
-
-        ui.success(f"Collected {conn_count} connections + {proc_count} processes in {duration:.2f}s")
-        reporter.log_event("DATA_COLLECTION", f"Collected in {duration:.2f}s")
-
-        # ============ PHASE 2: Threat Analysis ============
-        ui.divider()
-        ui.section_header("PHASE 2: Threat Analysis (The Brain)", "🧠")
-        ui.loading_animation("Analyzing with scoring engine...", 1.5)
-
-        analysis_result = ThreatAnalyzer.full_analysis(system_data)
-
-        # ============ PHASE 2.5: VirusTotal Enrichment ============
-        if args.vt:
-            ui.divider()
-            ui.section_header("PHASE 2.5: VirusTotal Enrichment", "🔍")
-            try:
-                from integrations.virustotal import VirusTotalEnricher
-                enricher = VirusTotalEnricher()
-
-                if enricher.client.enabled:
-                    ui.loading_animation("Checking threats against VirusTotal...", 1.0)
-                    enriched = enricher.enrich_all(analysis_result.get('threats', []))
-                    analysis_result['threats'] = enriched
-                    ui.success("VirusTotal enrichment complete")
-                else:
-                    ui.warning("VirusTotal disabled - no API key configured")
-                    ui.info("Get free key at: https://www.virustotal.com/gui/join-us")
-                    ui.info("Set: export VIRUSTOTAL_API_KEY='your_key'")
-            except Exception as e:
-                ui.warning(f"VirusTotal enrichment failed: {e}")
-
-        # ============ PHASE 2.7: YARA Scanning ============
-        if args.yara:
-            ui.divider()
-            ui.section_header("PHASE 2.7: YARA Rules Scan", "📋")
-            try:
-                from integrations.yara_engine import YARAEngine
-                yara = YARAEngine()
-                ui.info("YARA engine loaded")
-
-                suspicious_processes = [
-                    p for p in system_data.get('processes', [])
-                    if p.get('path') != 'N/A'
-                ][:10]  # فحص أول 10 فقط لتجنب البطء
-
-                yara_matches = 0
-                for proc in suspicious_processes:
-                    matches = yara.scan_file(proc['path'])
-                    if matches:
-                        yara_matches += len(matches)
-                        for match in matches:
-                            ui.danger(f"YARA: {match['rule_name']} in {proc['name']}")
-                            analysis_result['threats'].append({
-                                'severity': 'HIGH',
-                                'confidence': 'HIGH',
-                                'score': 75,
-                                'type': f"YARA: {match['rule_name']}",
-                                'source': f"{proc['name']} (PID: {proc['pid']})",
-                                'details': f"Matched YARA rule: {match['rule_name']}",
-                                'signals': match.get('tags', ['yara_match']),
-                                'recommended_action': 'investigate',
-                                'target_pid': proc['pid'],
-                            })
-                ui.success(f"YARA scan complete: {yara_matches} matches in {len(suspicious_processes)} processes")
-
-            except Exception as e:
-                ui.warning(f"YARA scan failed: {e}")
-
-        # إعادة حساب الإحصائيات بعد الإثراء
-        threats = analysis_result.get('threats', [])
-        analysis_result['total_threats'] = len(threats)
-        analysis_result['critical'] = sum(1 for t in threats if t.get('severity') == 'CRITICAL')
-        analysis_result['high'] = sum(1 for t in threats if t.get('severity') == 'HIGH')
-
-        if threats:
-            ui.danger(f"⚠️ Detected {len(threats)} threats")
-            ui.display_threats_table(threats)
-            for t in threats:
-                reporter.log_threat(t)
-        else:
-            ui.success("🎉 No threats detected!")
-
-        # ============ PHASE 3-4: Solutions + Approval ============
-        if threats:
-            ui.divider()
-            ui.section_header("PHASE 3: Solution Planning (The Strategist)", "🎯")
-            solutions = SolutionEngine.generate_all_solutions(threats)
-
-            ui.divider()
-            ui.section_header("PHASE 4: Human Approval Required", "🔒")
-
-            if args.dry_run:
-                ui.warning("Dry-run mode - commands will be simulated only")
-
-            approved_count = 0
-            for i, solution in enumerate(solutions, 1):
-                if not solution.get("command"):
-                    continue
-
-                ui.divider()
-                ui.info(f"Threat {i}/{len(solutions)} - Score: {solution['threat'].get('score', 0)}")
-
-                approved = ui.ask_confirmation(
-                    solution["command"],
-                    solution["description"],
-                )
-
-                if approved:
-                    result = solution_engine.execute_command(solution["command"], approved=True)
-                    if result["success"]:
-                        ui.success("✅ Command succeeded" + (" [DRY RUN]" if result.get('dry_run') else ""))
-                        approved_count += 1
-                    reporter.log_action(solution["command"], approved=True, result=result)
-                else:
-                    reporter.log_action(solution["command"], approved=False)
-
-        # ============ PHASE 5: Report Generation (4th Agent!) ============
-        ui.divider()
-        ui.section_header("PHASE 5: Incident Reporting (The Reporter)", "📄")
-
-        reporter_agent = IncidentReporter()
-
-        # TXT (default)
-        txt_path = reporter.generate(sys_info, analysis_result)
-        ui.success(f"TXT: {txt_path}")
-
-        # HTML
-        if args.html:
-            html_path = REPORTS_DIR / "COA_Report.html"
-            HTMLReportGenerator.generate(sys_info, analysis_result, reporter.events, html_path)
-            ui.success(f"HTML: {html_path}")
-
-        # JSON
-        if args.json:
-            json_path = REPORTS_DIR / "COA_Report.json"
-            save_json_report(sys_info, analysis_result, reporter.events, json_path)
-            ui.success(f"JSON: {json_path}")
-
-        # Markdown (from 4th agent)
-        if args.markdown:
-            md_path = REPORTS_DIR / "COA_Report.md"
-            reporter_agent.generate_markdown_report(sys_info, analysis_result, reporter.events, md_path)
-            ui.success(f"Markdown: {md_path}")
-
-        # CSV (from 4th agent)
-        if args.csv:
-            csv_path = REPORTS_DIR / "COA_Report.csv"
-            reporter_agent.generate_csv_report(analysis_result, csv_path)
-            ui.success(f"CSV: {csv_path}")
-
-        # ============ Summary ============
-        ui.divider()
-        cache_stats = global_cache.stats()
-        ui.display_summary({
-            "Total Connections": conn_count,
-            "Total Processes": proc_count,
-            "Threats Detected": len(threats),
-            "Critical": analysis_result.get("critical", 0),
-            "High": analysis_result.get("high", 0),
-            "Cache Hit Rate": cache_stats['hit_rate'],
-            "Collection Time": f"{duration:.2f}s",
-            "VirusTotal": "✓" if args.vt else "✗",
-            "YARA": "✓" if args.yara else "✗",
-        })
-
-        ui.divider()
-        ui.success("🎉 C.O.A v3.0 scan completed successfully!")
-        logger.info("Scan completed successfully")
-
-    except KeyboardInterrupt:
-        ui.warning("\nScan interrupted by user")
-        sys.exit(0)
-    except Exception as e:
-        ui.danger(f"Error: {str(e)}")
-        logger.critical(f"Unhandled exception: {e}")
-        if args.verbose:
-            traceback.print_exc()
-        sys.exit(1)
-
-
-def main():
-    """نقطة الدخول الرئيسية - توجه للوضع المناسب"""
-    args = parse_arguments()
-
-    # وضع GUI
-    if args.gui:
-        launch_gui()
-        return
-
-    # وضع Helpdesk
-    if args.helpdesk:
-        launch_helpdesk()
-        return
-
-    # وضع CLI الافتراضي
-    cli_scan(args)
-
-
-if __name__ == "__main__":
-    main()
+runpy.run_path(str(_APP_MAIN), run_name="__main__")

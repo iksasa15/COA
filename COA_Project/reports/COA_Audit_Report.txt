@@ -5,18 +5,18 @@
 
 📋 SESSION INFO
 ----------------------------------------------------------------------
-  Scan Start:    2026-05-03 13:04:25
-  Scan End:      2026-05-03 13:04:51
-  Duration:      26.79 seconds
+  Scan Start:    2026-05-03 14:18:57
+  Scan End:      2026-05-03 14:19:16
+  Duration:      19.28 seconds
   Hostname:      MacBook-Air-Ahmed.local
 
 💻 SYSTEM INFORMATION
 ----------------------------------------------------------------------
   hostname            : MacBook-Air-Ahmed.local
   cpu_cores           : 10
-  cpu_usage           : 13.1
+  cpu_usage           : 6.9
   memory_total_gb     : 24.0
-  memory_used_percent : 67.9
+  memory_used_percent : 68.8
   disk_usage_percent  : 48.4
   boot_time           : 2026-05-03 11:43:11
 
@@ -50,25 +50,28 @@
 
 📜 EVENT LOG
 ----------------------------------------------------------------------
-  [2026-05-03 13:04:25] SYSTEM
+  [2026-05-03 14:18:57] SYSTEM
       C.O.A v3.0 scan initiated
 
-  [2026-05-03 13:04:26] DATA_COLLECTION
+  [2026-05-03 14:18:59] DATA_COLLECTION
       Collected in 0.51s
 
-  [2026-05-03 13:04:28] THREAT_DETECTED
+  [2026-05-03 14:19:00] THREAT_DETECTED
       [LOW] Process Threat — com.apple.Mobile (PID: 490): Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo
 
-  [2026-05-03 13:04:28] THREAT_DETECTED
+  [2026-05-03 14:19:00] THREAT_DETECTED
       [LOW] Process Threat — reversetemplated (PID: 8424): Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.
 
-  [2026-05-03 13:04:28] THREAT_DETECTED
+  [2026-05-03 14:19:00] THREAT_DETECTED
       [LOW] Process Threat — kernel_task (PID: 0): Detected: no executable path
 
-  [2026-05-03 13:04:48] ACTION
+  [2026-05-03 14:19:04] COUNCIL
+      Council skipped or failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/
+
+  [2026-05-03 14:19:15] ACTION
       Command: ps -p 490 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False
 
-  [2026-05-03 13:04:51] ACTION
+  [2026-05-03 14:19:16] ACTION
       Command: ps -p 8424 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False
 
 ======================================================================

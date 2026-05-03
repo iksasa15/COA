@@ -24,11 +24,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
-from agents.council import diagnose_ollama
+from agents.council import diagnose_llm, diagnose_ollama
 from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
-from config.settings import REPORTS_DIR
+from config.settings import LLM_PROVIDER, REPORTS_DIR
 from core.data_collector import SystemDataCollector
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from ics_analyzer import analyze_ot_ics
@@ -106,15 +106,20 @@ def create_app() -> Flask:
 
     @app.get("/api/health/ollama")
     def health_ollama():
-        """Ollama reachability + model check (no CrewAI load)."""
+        """Ollama-only reachability + model check (no CrewAI load). Same as before."""
         return jsonify(_json_safe(diagnose_ollama()))
+
+    @app.get("/api/health/llm")
+    def health_llm():
+        """Active council LLM config: ollama or gemini (no CrewAI load)."""
+        return jsonify(_json_safe(diagnose_llm()))
 
     @app.get("/api/health/council-agents")
     def health_council_agents():
         """
-        Verify Ollama + CrewAI can construct an agent (no full scan / no crew kickoff).
+        Verify CrewAI can construct an agent with the configured LLM (no full scan / no crew kickoff).
         """
-        d = diagnose_ollama()
+        d = diagnose_llm()
         if not d.get("model_available"):
             return jsonify(
                 _json_safe(
@@ -122,21 +127,33 @@ def create_app() -> Flask:
                         "ok": False,
                         "ollama": d,
                         "crewai_agents_ready": False,
-                        "error": d.get("error") or "Ollama or model not ready",
+                        "error": d.get("error") or "LLM not ready (Ollama or API key)",
                     }
                 )
             )
         try:
             from crewai import Agent, LLM
 
-            from config.settings import LLM_BASE_URL, LLM_MODEL, LLM_TEMPERATURE
-
-            llm = LLM(
-                model=LLM_MODEL,
-                provider="ollama",
-                base_url=LLM_BASE_URL,
-                temperature=LLM_TEMPERATURE,
+            from config.settings import (
+                COUNCIL_LLM_TIMEOUT_SEC,
+                COUNCIL_MAX_OUTPUT_TOKENS,
+                LLM_BASE_URL,
+                LLM_GEMINI_API_KEY,
+                LLM_MODEL,
+                LLM_PROVIDER,
+                LLM_TEMPERATURE,
             )
+
+            common = dict(
+                model=LLM_MODEL,
+                temperature=LLM_TEMPERATURE,
+                max_tokens=COUNCIL_MAX_OUTPUT_TOKENS,
+                timeout=COUNCIL_LLM_TIMEOUT_SEC,
+            )
+            if LLM_PROVIDER == "ollama":
+                llm = LLM(provider="ollama", base_url=LLM_BASE_URL, **common)
+            else:
+                llm = LLM(provider="gemini", api_key=LLM_GEMINI_API_KEY, **common)
             _ = Agent(
                 role="COA connectivity probe",
                 goal="No task will run; this only validates wiring.",
@@ -147,18 +164,23 @@ def create_app() -> Flask:
                 allow_delegation=False,
                 max_iter=1,
             )
+            msg = (
+                "Ollama OK and CrewAI wiring works."
+                if LLM_PROVIDER == "ollama"
+                else "Gemini API and CrewAI wiring works."
+            )
             return jsonify(
                 _json_safe(
                     {
                         "ok": True,
                         "ollama": d,
                         "crewai_agents_ready": True,
-                        "message": "Ollama OK and CrewAI Agent+LLM wiring works (council path should run).",
+                        "message": msg,
                     }
                 )
             )
         except Exception as e:
-            logger.warning("council-agents health failed: %s", e)
+            logger.warning(f"council-agents health failed: {e}", error=str(e))
             return jsonify(
                 _json_safe(
                     {
@@ -231,7 +253,8 @@ def create_app() -> Flask:
             if use_council:
                 from agents.council import run_council_on_scan
 
-                reporter.log_event("COUNCIL", "Running CrewAI multi-agent council (Ollama)…")
+                _ll = "Gemini" if LLM_PROVIDER == "gemini" else "Ollama"
+                reporter.log_event("COUNCIL", f"Running CrewAI multi-agent council ({_ll})…")
                 council_result = run_council_on_scan(system_data, analysis)
                 if council_result.get("ok"):
                     reporter.log_event("COUNCIL", "Council finished")

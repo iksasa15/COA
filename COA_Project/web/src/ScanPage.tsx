@@ -117,7 +117,7 @@ export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
   const [presentationDemo, setPresentationDemo] = useState(false);
-  // CrewAI agents (1–3): on by default; requires local Ollama. User can turn off for faster scans.
+  // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama or Gemini). User can turn off for faster scans.
   const [useCouncil, setUseCouncil] = useState(true);
   const [loading, setLoading] = useState(false);
   const [councilCheckLoading, setCouncilCheckLoading] = useState(false);
@@ -259,20 +259,20 @@ export default function ScanPage() {
         </label>
         <label
           className="checkbox"
-          title="يجب أن يعمل Ollama محلياً مع النموذج في config/settings.py (مثلاً llama3.1). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
+          title="المجلس يستخدم LLM من إعدادات الخادم (.env): Ollama محلي أو Gemini. عطّل المربع لتسريع الفحص بدون وكلاء LLM."
         >
           <input
             type="checkbox"
             checked={useCouncil}
             onChange={(e) => setUseCouncil(e.target.checked)}
           />
-          مجلس الوكلاء (CrewAI + Ollama) — افتراضي: تشغيل
+          مجلس الوكلاء (CrewAI + LLM من .env) — افتراضي: تشغيل
         </label>
         <button
           type="button"
           className="btn-ghost"
           disabled={councilCheckLoading || loading}
-          title="يتحقق من Ollama + إنشاء وكيل CrewAI (بدون تشغيل فحص كامل)"
+          title="يتحقق من إعداد LLM + إنشاء وكيل CrewAI (بدون تشغيل فحص كامل)"
           onClick={() => void verifyCouncilAgents()}
         >
           {councilCheckLoading ? "جاري التحقق…" : "التحقق من وكلاء الذكاء"}

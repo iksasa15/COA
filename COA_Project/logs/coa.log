@@ -946,3 +946,226 @@
 2026-05-03 13:38:06,313 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
 2026-05-03 13:38:06,313 | INFO     | logger:_log:113 | Council of Agents initialized successfully
 2026-05-03 13:38:06,314 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:47:24,176 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 13:48:02,288 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 13:48:51,896 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 13:50:10,915 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:50:11,922 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:50:11,925 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:50:12,429 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:50:13,936 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:50:13,937 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:50:13,937 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:50:13,940 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:50:13,940 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:50:14,761 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:50:14,769 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:50:14,829 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:50:18,732 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 13:50:18,756 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:50:20,298 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 13:50:20,321 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:50:20,329 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 13:51:04,249 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:51:05,254 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:51:05,256 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:51:05,761 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:51:07,267 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:51:07,268 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:51:07,268 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:51:07,271 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:51:07,271 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:51:08,093 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:51:08,100 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:51:08,184 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:51:09,102 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 13:51:09,102 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:51:09,102 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:55:22,478 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 13:55:42,305 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 13:55:42,324 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:55:43,663 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 13:55:43,687 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:55:43,695 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 13:56:49,629 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:56:50,636 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:56:50,637 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:56:51,144 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:56:52,651 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:56:52,652 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:56:52,652 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:56:52,655 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:56:52,656 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:56:53,479 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:56:53,485 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:56:53,558 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:56:54,394 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 13:56:54,394 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:56:54,394 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:05:59,673 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:06:00,682 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:06:00,685 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:06:01,190 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:06:02,695 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:06:02,696 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:06:02,697 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:06:02,700 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:06:02,700 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:06:03,524 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:06:03,531 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:06:03,605 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:06:09,323 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 14:06:09,343 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:06:10,655 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 14:06:10,671 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:06:10,674 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 14:08:20,353 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:08:21,360 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:08:21,361 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:08:21,867 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:08:23,376 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:08:23,377 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:08:23,377 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:08:23,379 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:08:23,380 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:08:24,202 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:08:24,208 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:08:24,265 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:08:25,301 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:08:25,302 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:08:25,302 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:08:25,323 | ERROR    | logger:_log:113 | Council collaboration failed: 'ascii' codec can't encode characters in position 0-5: ordinal not in range(128)
+2026-05-03 14:08:25,323 | ERROR    | logger:_log:113 | Council scan failed: 'ascii' codec can't encode characters in position 0-5: ordinal not in range(128)
+2026-05-03 14:13:50,964 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:13:51,970 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:13:51,972 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:13:52,477 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:13:53,986 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:13:53,987 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:13:53,987 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:13:53,989 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:13:53,990 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:13:54,803 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:13:54,807 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:13:54,864 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 14:13:55,519 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:13:55,519 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:13:55,519 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:14:39,774 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:14:40,781 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:14:40,782 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:14:41,287 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:14:42,795 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:14:42,796 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:14:42,797 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:14:42,799 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:14:42,800 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:14:43,622 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:14:43,628 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:14:43,718 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 14:14:44,392 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:14:44,392 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:14:44,392 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:17:45,283 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:17:46,291 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:17:46,293 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:17:46,799 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:17:48,304 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:17:48,305 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:17:48,306 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:17:48,308 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:17:48,309 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:17:49,130 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:17:49,137 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:17:49,190 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:17:50,275 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:17:50,275 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:17:50,275 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:17:52,215 | ERROR    | logger:_log:113 | Council collaboration failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 7.496847124s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}
+2026-05-03 14:17:52,217 | ERROR    | logger:_log:113 | Council scan failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 7.496847124s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}
+2026-05-03 14:18:57,603 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:18:58,609 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:18:58,611 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:18:59,116 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:19:00,626 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:19:00,627 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:19:00,628 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:19:00,631 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:19:00,631 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:19:01,454 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:19:01,461 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:19:01,529 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:19:02,792 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:19:02,792 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:19:02,792 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:19:04,663 | ERROR    | logger:_log:113 | Council collaboration failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 55.038700594s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}
+2026-05-03 14:19:04,665 | ERROR    | logger:_log:113 | Council scan failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 55.038700594s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}
+2026-05-03 14:19:15,430 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 14:19:15,448 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:19:16,863 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 14:19:16,885 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:19:16,891 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 14:20:29,688 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:20:30,696 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:20:30,698 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:20:31,201 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-05-03 14:20:32,711 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:20:32,712 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:20:32,712 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:20:32,716 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:20:32,716 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:20:33,539 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:20:33,545 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:20:33,611 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:20:34,861 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:20:34,862 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:20:34,862 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:20:39,335 | ERROR    | logger:_log:113 | Council collaboration failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 20.425466404s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '20s'}]}}
+2026-05-03 14:20:39,337 | ERROR    | logger:_log:113 | Council scan failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 20.425466404s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '20s'}]}}
+2026-05-03 14:22:11,243 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:22:12,250 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:22:12,251 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:22:12,756 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:22:14,267 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:22:14,267 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:22:14,268 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:22:14,271 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:22:14,272 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:22:15,094 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:22:15,100 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:22:15,151 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:22:16,177 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:22:16,177 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:22:16,177 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:22:18,093 | ERROR    | logger:_log:113 | Council collaboration failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 41.599303116s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}
+2026-05-03 14:22:18,095 | ERROR    | logger:_log:113 | Council scan failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 41.599303116s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}
+2026-05-03 14:25:00,147 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:25:01,155 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:25:01,156 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:25:01,658 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-05-03 14:25:03,165 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:25:03,166 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:03,167 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:03,169 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:03,169 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:25:03,991 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:25:03,998 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:25:04,078 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:25:05,046 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:25:05,046 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:25:05,046 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:25:40,904 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:25:41,906 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:25:41,907 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:25:42,412 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:25:43,922 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:25:43,922 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:43,923 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:43,925 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:25:43,926 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:25:44,748 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:25:44,754 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:25:44,807 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini=3.0-flash)
+2026-05-03 14:25:45,820 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini=3.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:25:45,821 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:25:45,821 | INFO     | logger:_log:113 | Starting Council of Agents collaboration

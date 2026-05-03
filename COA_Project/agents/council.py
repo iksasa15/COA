@@ -1,11 +1,9 @@
 """
-Council of Agents — Connected via Local Ollama LLM
-====================================================
-The 3 agents are connected through CrewAI orchestration.
-All agents share the same local llama3.1 model running on Ollama.
-
-How it works:
-    User → main.py → CouncilOfAgents → CrewAI → Each Agent → Ollama (localhost:11434) → llama3.1
+Council of Agents — CrewAI + LLM (Ollama local or Google Gemini)
+================================================================
+The 3 agents share one LLM. COA_LLM_PROVIDER in .env:
+  ollama (default) — COA_LLM_BASE_URL + local model name
+  gemini — COA_GEMINI_API_KEY / GOOGLE_API_KEY / GEMINI_API_KEY + COA_LLM_MODEL (e.g. gemini-2.0-flash)
 """
 
 import json
@@ -15,12 +13,16 @@ from typing import Any, Dict
 from utils.logger import logger
 from config.settings import (
     AGENT_CONFIG,
+    COUNCIL_LLM_TIMEOUT_SEC,
+    COUNCIL_MAX_OUTPUT_TOKENS,
     COUNCIL_RAW_JSON_MAX,
     COUNCIL_SNAPSHOT_MAX_CONN,
     COUNCIL_SNAPSHOT_MAX_PROC,
     COUNCIL_THREATS_JSON_MAX,
     LLM_BASE_URL,
+    LLM_GEMINI_API_KEY,
     LLM_MODEL,
+    LLM_PROVIDER,
     LLM_TEMPERATURE,
 )
 
@@ -99,6 +101,64 @@ def diagnose_ollama() -> dict:
     return diagnosis
 
 
+def _gemini_api_key_ascii_error(key: str) -> str | None:
+    """
+    Google client sends the key in HTTP headers; non-Latin characters (e.g. Arabic placeholder
+    text in GOOGLE_API_KEY) trigger: 'ascii' codec can't encode characters in position …'
+    """
+    if not key:
+        return None
+    try:
+        key.encode("ascii")
+    except UnicodeEncodeError:
+        return (
+            "Gemini API key must be ASCII only — copy the real key from "
+            "https://aistudio.google.com/apikey (alphanumeric, no Arabic/Unicode in the value). "
+            "Example mistake: GOOGLE_API_KEY=\"مفتاحك_الحقيقي\""
+        )
+    return None
+
+
+def diagnose_llm() -> dict:
+    """
+    Unified readiness check for council LLM (Ollama or Google Gemini).
+
+    Returns dict with at least: provider, model_name, model_available, error, suggestion.
+    Ollama responses also include ollama_running, base_url.
+    """
+    if LLM_PROVIDER == "ollama":
+        d = diagnose_ollama()
+        d["provider"] = "ollama"
+        return d
+
+    out: Dict[str, Any] = {
+        "provider": "gemini",
+        "ollama_running": False,
+        "model_name": LLM_MODEL,
+        "base_url": LLM_BASE_URL or None,
+        "api_key_set": bool(LLM_GEMINI_API_KEY),
+        "model_available": bool(LLM_GEMINI_API_KEY),
+        "error": None,
+        "suggestion": None,
+    }
+    if not LLM_GEMINI_API_KEY:
+        out["error"] = "Missing Gemini API key"
+        out["suggestion"] = (
+            "Set COA_LLM_PROVIDER=gemini and one of: COA_GEMINI_API_KEY, COA_LLM_API_KEY, "
+            "GOOGLE_API_KEY, or GEMINI_API_KEY (see .env.example). "
+            "Use COA_LLM_MODEL=gemini-2.0-flash (or another gemini-* id). "
+            "Install: pip install 'crewai[google-genai]'   (or: pip install -r requirements.txt)"
+        )
+        return out
+    bad_key = _gemini_api_key_ascii_error(LLM_GEMINI_API_KEY)
+    if bad_key:
+        out["model_available"] = False
+        out["api_key_set"] = True
+        out["error"] = "Gemini API key contains non-ASCII characters"
+        out["suggestion"] = bad_key
+    return out
+
+
 # ==================== Lazy Imports for CrewAI ====================
 # نستخدم lazy imports لأن CrewAI ثقيل ولتجنب أخطاء عند فحص النظام فقط
 
@@ -146,25 +206,31 @@ class CouncilOfAgents:
         """
         # تشخيص Ollama قبل تحميل CrewAI
         if auto_diagnose:
-            diagnosis = diagnose_ollama()
-            if not diagnosis['model_available']:
+            diagnosis = diagnose_llm()
+            if not diagnosis.get("model_available"):
                 error_msg = (
                     f"\n{'='*60}\n"
-                    f"❌ Ollama Setup Issue\n"
+                    f"❌ LLM / Council Setup Issue ({diagnosis.get('provider', LLM_PROVIDER)})\n"
                     f"{'='*60}\n"
-                    f"Error:      {diagnosis['error']}\n"
-                    f"Model:      {diagnosis['model_name']}\n"
-                    f"URL:        {diagnosis['base_url']}\n\n"
-                    f"💡 How to fix:\n{diagnosis['suggestion']}\n"
+                    f"Error:      {diagnosis.get('error')}\n"
+                    f"Model:      {diagnosis.get('model_name')}\n"
+                    f"URL:        {diagnosis.get('base_url')}\n\n"
+                    f"💡 How to fix:\n{diagnosis.get('suggestion')}\n"
                     f"{'='*60}\n"
                 )
                 logger.error(error_msg)
                 raise OllamaConnectionError(error_msg)
 
-            logger.info(
-                f"✓ Ollama is running with {diagnosis['model_name']}",
-                base_url=diagnosis['base_url'],
-            )
+            if LLM_PROVIDER == "ollama":
+                logger.info(
+                    f"✓ Ollama is running with {diagnosis['model_name']}",
+                    base_url=diagnosis.get("base_url"),
+                )
+            else:
+                logger.info(
+                    f"✓ Gemini API ready (model={diagnosis['model_name']})",
+                    base_url=diagnosis.get("base_url") or "default",
+                )
 
         # الآن نحمّل CrewAI ونبني الوكلاء
         Agent, Task, Crew, Process, LLM = _get_crewai()
@@ -184,29 +250,72 @@ class CouncilOfAgents:
         logger.info("Council of Agents initialized successfully")
 
     def _initialize_llm(self, LLMClass):
-        """تهيئة Ollama عبر واجهة CrewAI الرسمية (OpenAI-compatible /v1).
+        """تهيئة CrewAI LLM — Ollama محلي أو Google Gemini (سحابي).
 
         CrewAI 1.x يتوقع ``llm`` من نوع ``crewai.llms.base_llm.BaseLLM`` أو اسم نموذج (str).
-        كائنات LangChain (مثل ``langchain_community.llms.Ollama``) ترفضها Pydantic.
         """
         try:
-            llm = LLMClass(
+            common = dict(
                 model=LLM_MODEL,
-                provider="ollama",
-                base_url=LLM_BASE_URL,
                 temperature=LLM_TEMPERATURE,
+                max_tokens=COUNCIL_MAX_OUTPUT_TOKENS,
+                timeout=COUNCIL_LLM_TIMEOUT_SEC,
             )
-            logger.info(f"LLM initialized: {LLM_MODEL} @ {LLM_BASE_URL}")
+            if LLM_PROVIDER == "ollama":
+                llm = LLMClass(
+                    provider="ollama",
+                    base_url=LLM_BASE_URL,
+                    **common,
+                )
+                log_url = LLM_BASE_URL
+            else:
+                bad_key = _gemini_api_key_ascii_error(LLM_GEMINI_API_KEY)
+                if bad_key:
+                    raise OllamaConnectionError(bad_key)
+                try:
+                    from google import genai  # noqa: F401
+                except ImportError as ie:
+                    raise OllamaConnectionError(
+                        "Gemini needs the `google-genai` SDK (not installed in this environment).\n"
+                        "  pip install 'crewai[google-genai]'\n"
+                        "  or:  pip install -r requirements.txt\n"
+                        f"  ImportError: {ie}"
+                    ) from ie
+                llm = LLMClass(
+                    provider="gemini",
+                    api_key=LLM_GEMINI_API_KEY,
+                    **common,
+                )
+                log_url = LLM_BASE_URL or "(Gemini API)"
+
+            logger.info(
+                f"LLM initialized: provider={LLM_PROVIDER} model={LLM_MODEL} @ {log_url} "
+                f"(max_tokens={COUNCIL_MAX_OUTPUT_TOKENS} timeout={COUNCIL_LLM_TIMEOUT_SEC}s)",
+                model=LLM_MODEL,
+                provider=LLM_PROVIDER,
+                base_url=log_url,
+                max_tokens=COUNCIL_MAX_OUTPUT_TOKENS,
+            )
             return llm
         except Exception as e:
+            if LLM_PROVIDER == "ollama":
+                hint = (
+                    f"Make sure:\n"
+                    f"  1. Ollama is running: ollama serve\n"
+                    f"  2. Model is installed: ollama pull {LLM_MODEL}"
+                )
+            else:
+                hint = (
+                    f"Make sure:\n"
+                    f"  1. Gemini API key is set (COA_GEMINI_API_KEY, GOOGLE_API_KEY, GEMINI_API_KEY, or COA_LLM_API_KEY)\n"
+                    f"  2. COA_LLM_MODEL is a valid gemini-* model id\n"
+                    f"  3. google-genai is installed: pip install 'crewai[google-genai]'"
+                )
             raise OllamaConnectionError(
-                f"Failed to initialize Ollama LLM:\n"
+                f"Failed to initialize LLM (provider={LLM_PROVIDER}):\n"
                 f"  Model: {LLM_MODEL}\n"
-                f"  URL: {LLM_BASE_URL}\n"
                 f"  Error: {e}\n\n"
-                f"Make sure:\n"
-                f"  1. Ollama is running: ollama serve\n"
-                f"  2. Model is installed: ollama pull {LLM_MODEL}"
+                f"{hint}"
             )
 
     # ==================== Agent 1: The Eye ====================
@@ -335,7 +444,10 @@ class CouncilOfAgents:
             logger.info("Council collaboration completed")
             return str(result)
         except Exception as e:
-            logger.error(f"Council collaboration failed: {e}")
+            logger.error(
+                "Council collaboration failed: %s",
+                _shorten_council_api_error(str(e)),
+            )
             raise
 
 
@@ -364,9 +476,26 @@ def summarize_for_council(
     return raw
 
 
+def _shorten_council_api_error(message: str) -> str:
+    """أخطاء شائعة من Gemini تُعاد كنص طويل JSON — نختصرها للطرفية."""
+    low = message.lower()
+    if "429" in message or "resource_exhausted" in low or "quota exceeded" in low:
+        return (
+            "Gemini API: تجاوز الحصّة أو حد الطلبات (429 RESOURCE_EXHAUSTED). "
+            "الطبقة المجانية لها سقف دقيقة/يوم. جرّب: الانتظار دقيقة ثم إعادة التشغيل؛ "
+            "نموذج أخف (مثل gemini-2.0-flash-lite أو gemini-1.5-flash-8b)؛ "
+            "تقليل حجم البيانات للمجلس (COA_COUNCIL_MAX_CONN / COA_COUNCIL_MAX_PROC / COA_COUNCIL_RAW_JSON_MAX)؛ "
+            "ربط الفوترة في Google AI Studio / Cloud؛ أو استخدام Ollama محلياً. "
+            "https://ai.google.dev/gemini-api/docs/rate-limits"
+        )
+    if len(message) > 1400:
+        return message[:1400] + "\n…[truncated]"
+    return message
+
+
 def run_council_on_scan(system_data: Dict[str, Any], analysis: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Run the 3-agent CrewAI pipeline on top of an existing scan (Ollama must be up).
+    Run the 3-agent CrewAI pipeline on top of an existing scan (LLM must be configured).
 
     Returns:
         {"ok": bool, "report": str | None, "error": str | None}
@@ -381,7 +510,7 @@ def run_council_on_scan(system_data: Dict[str, Any], analysis: Dict[str, Any]) -
         report = council.run_council(raw, threats_json)
         return {"ok": True, "report": str(report), "error": None}
     except OllamaConnectionError as e:
-        return {"ok": False, "report": None, "error": str(e)}
+        return {"ok": False, "report": None, "error": _shorten_council_api_error(str(e))}
     except ImportError as e:
         return {
             "ok": False,
@@ -389,8 +518,9 @@ def run_council_on_scan(system_data: Dict[str, Any], analysis: Dict[str, Any]) -
             "error": f"Missing dependency: {e}. Install: pip install crewai langchain-community",
         }
     except Exception as e:
-        logger.error(f"Council scan failed: {e}")
-        return {"ok": False, "report": None, "error": str(e)}
+        err = _shorten_council_api_error(str(e))
+        logger.error("Council scan failed: %s", err)
+        return {"ok": False, "report": None, "error": err}
 
 
 # ==================== Standalone Test ====================
@@ -404,22 +534,26 @@ def test_connection():
     print("  C.O.A — Connection Test")
     print("=" * 60 + "\n")
 
-    print("[1] Checking Ollama...")
-    diagnosis = diagnose_ollama()
+    print(f"[1] Checking LLM (provider={LLM_PROVIDER})...")
+    diagnosis = diagnose_llm()
 
-    if diagnosis['ollama_running']:
-        print(f"    ✓ Ollama is running at {diagnosis['base_url']}")
+    if diagnosis.get("provider") == "ollama":
+        if diagnosis.get("ollama_running"):
+            print(f"    ✓ Ollama is running at {diagnosis.get('base_url')}")
+        else:
+            print(f"    ❌ {diagnosis.get('error')}")
+            print(f"    💡 {diagnosis.get('suggestion')}")
+            return False
+        print(f"\n[2] Checking model '{diagnosis.get('model_name')}'...")
     else:
-        print(f"    ❌ {diagnosis['error']}")
-        print(f"    💡 {diagnosis['suggestion']}")
-        return False
+        print(f"    API key set: {'yes' if diagnosis.get('api_key_set') else 'no'}")
+        print(f"\n[2] Checking model '{diagnosis.get('model_name')}'...")
 
-    print(f"\n[2] Checking model '{diagnosis['model_name']}'...")
-    if diagnosis['model_available']:
-        print(f"    ✓ Model is installed and ready")
+    if diagnosis.get("model_available"):
+        print("    ✓ Model / credentials ready")
     else:
-        print(f"    ❌ {diagnosis['error']}")
-        print(f"    💡 {diagnosis['suggestion']}")
+        print(f"    ❌ {diagnosis.get('error')}")
+        print(f"    💡 {diagnosis.get('suggestion')}")
         return False
 
     print("\n[3] Initializing Council of Agents...")

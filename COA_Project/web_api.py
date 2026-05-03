@@ -321,6 +321,18 @@ def create_app() -> Flask:
             return jsonify({"ok": False, "error": "No MITRE deep bundle in last scan"}), 400
         return jsonify(_json_safe({"ok": True, "mitre_deep": md}))
 
+    @app.get("/api/last/ot-ics")
+    def last_ot_ics():
+        """Last scan's ot_ics bundle for OT dashboard without shared sessionStorage."""
+        err = _require_last()
+        if err[1]:
+            return err[1]
+        (data, _) = err[0]
+        bundle = data.get("ot_ics")
+        if bundle is None:
+            return jsonify({"ok": False, "error": "No OT/ICS bundle in last scan"}), 400
+        return jsonify(_json_safe({"ok": True, "ot_ics": bundle}))
+
     @app.get("/api/reports/txt")
     def report_txt():
         err = _require_last()

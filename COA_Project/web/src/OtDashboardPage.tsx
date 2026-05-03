@@ -51,14 +51,60 @@ function loadOtFromSession(): OtIcsPayload | null {
   }
 }
 
+function mirrorOtToSessionStorage(next: OtIcsPayload) {
+  try {
+    let extras: Record<string, unknown> = {};
+    const raw = sessionStorage.getItem("coa_last_scan_extras");
+    if (raw) {
+      try {
+        extras = JSON.parse(raw) as Record<string, unknown>;
+      } catch {
+        extras = {};
+      }
+    }
+    extras.ot_ics = next;
+    sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
+  } catch {
+    /* quota */
+  }
+}
+
 export default function OtDashboardPage() {
   const [ot, setOt] = useState<OtIcsPayload | null>(null);
   const [demoLoading, setDemoLoading] = useState(false);
   const [demoErr, setDemoErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchErr, setFetchErr] = useState<string | null>(null);
   const location = useLocation();
 
-  const refresh = useCallback(() => {
-    setOt(loadOtFromSession());
+  const refresh = useCallback(async () => {
+    setFetchErr(null);
+    const local = loadOtFromSession();
+    if (local) {
+      setLoading(false);
+      setOt(local);
+      return;
+    }
+    setLoading(true);
+    setOt(null);
+    try {
+      const res = await fetch("/api/last/ot-ics");
+      const json = (await res.json()) as { ok?: boolean; ot_ics?: OtIcsPayload; error?: string };
+      if (res.ok && json.ok && json.ot_ics) {
+        mirrorOtToSessionStorage(json.ot_ics);
+        setOt(json.ot_ics);
+      } else {
+        setOt(null);
+        if (res.status >= 500) {
+          setFetchErr(json.error || "خطأ في الخادم.");
+        }
+      }
+    } catch {
+      setOt(null);
+      setFetchErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const loadPresentationDemo = useCallback(async () => {
@@ -81,7 +127,7 @@ export default function OtDashboardPage() {
       extras.ot_ics = fixture;
       sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
       window.dispatchEvent(new Event("coa-scan-complete"));
-      refresh();
+      void refresh();
     } catch (e) {
       setDemoErr(e instanceof Error ? e.message : String(e));
     } finally {
@@ -90,13 +136,15 @@ export default function OtDashboardPage() {
   }, [refresh]);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [location.key, refresh]);
 
   useEffect(() => {
-    const onScan = () => refresh();
+    const onScan = () => {
+      void refresh();
+    };
     const onStorage = (e: StorageEvent) => {
-      if (e.key === "coa_last_scan_extras") refresh();
+      if (e.key === "coa_last_scan_extras") void refresh();
     };
     window.addEventListener("coa-scan-complete", onScan);
     window.addEventListener("storage", onStorage);
@@ -130,6 +178,12 @@ export default function OtDashboardPage() {
       </header>
 
       <main className="page-main">
+        {fetchErr && (
+          <p style={{ color: "var(--red)", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{fetchErr}</p>
+        )}
+        {loading && !ot && !fetchErr && (
+          <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>جاري التحميل من الخادم…</p>
+        )}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
           <button type="button" className="btn-accent" disabled={demoLoading} onClick={() => void loadPresentationDemo()}>
             {demoLoading ? "جاري التحميل…" : "تحميل عرض OT للمحكّمين (محاكاة)"}
@@ -141,18 +195,37 @@ export default function OtDashboardPage() {
         {demoErr && (
           <p style={{ color: "var(--red)", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{demoErr}</p>
         )}
-        {!ot && (
+        {!ot && !loading && !fetchErr && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات OT بعد. شغّل فحصاً من{" "}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
               لوحة الأداء
             </Link>{" "}
-            ثم ارجع هنا.
+            ثم ارجع هنا، أو افتح الصفحة في تبويب جديد بعد إتمام الفحص (يُجلب آخر فحص من الخادم).
           </p>
         )}
 
         {ot && (
           <>
+            <p
+              style={{
+                fontSize: "0.88rem",
+                color: "var(--muted)",
+                lineHeight: 1.65,
+                margin: "0 0 1rem",
+                padding: "0.75rem 1rem",
+                background: "var(--bg2)",
+                borderRadius: "var(--radius)",
+                border: "1px solid var(--bg3)",
+              }}
+            >
+              التحليل هنا <strong style={{ color: "var(--fg)" }}>فعلي وسلبي</strong>: يُبنى من{" "}
+              <strong style={{ color: "var(--fg)" }}>جدول اتصالات وعمليات</strong> جُمعت أثناء الفحص، ويُطابق منافذ
+              ICS شائعة فقط — لا يُفترض اختراق منشأة ولا يُحلّل PCAP. الأصفار على حاسوب تطوير{" "}
+              <strong style={{ color: "var(--fg)" }}>طبيعية</strong>. زر «المحكّمين» أعلاه يحمّل{" "}
+              <strong style={{ color: "var(--fg)" }}>سيناريو محاكاة</strong> من المشروع للعرض عندما تحتاج لقطات
+              واجهة دون شبكة OT.
+            </p>
             {ot.presentation_demo && (
               <div
                 style={{

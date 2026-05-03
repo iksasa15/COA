@@ -185,7 +185,8 @@ class UIManager:
     def run_with_council_progress(description: str, fn: Callable[[], T]) -> T:
         """
         تشغيل مهمة طويلة (مجلس CrewAI) مع شريط تقدم ونسبة مئوية تقريبية + زمن منقضٍ.
-        النسبة لا تعكس خطوات CrewAI الحقيقية؛ تُقترب من سقف دون 100% ثم 100% عند الانتهاء.
+        النسبة لا تعكس خطوات CrewAI الحقيقية؛ تقترب من سقف دون 100% ثم 100% عند الانتهاء.
+        بعد تجاوز COA_COUNCIL_PROGRESS_EST_SEC يزحف الشريط ببطء نحو 98–99% حتى لا يبدو عالقاً عند ~93%.
         """
         try:
             est = float(os.environ.get("COA_COUNCIL_PROGRESS_EST_SEC", "90") or "90")
@@ -218,15 +219,24 @@ class UIManager:
             task_id = progress.add_task(description, total=100)
             while th.is_alive():
                 elapsed += poll
-                # سقف أقل من 100% حتى لا يبدو أن العمل على وشك الانتهاء ثم يتجمد دقائق.
+                # مرحلة أولى: منحنى أسي حتى ~93% (قبل انتهاء التقدير الزمني للعرض).
                 base = 88.0 * (1.0 - math.exp(-elapsed / max(est * 0.5, 1.0)))
                 if elapsed > est:
                     over = elapsed - est
                     base = min(93.0, max(base, 82.0 + min(11.0, over * 0.035)))
-                pct = min(93.0, base)
-                progress.update(task_id, completed=pct)
+                early_cap = min(93.0, base)
+                if elapsed <= est:
+                    pct = early_cap
+                    progress.update(task_id, completed=pct)
+                else:
+                    over = max(0.0, elapsed - est)
+                    # زحف بطيء من ~93 نحو 99 أثناء انتظار Ollama/CrewAI الطويل (حركة مرئية، ليس 100% قبل الانتهاء).
+                    creep = 93.0 + 6.0 * (1.0 - math.exp(-over / 100.0))
+                    pct = min(99.0, max(early_cap, creep))
+                    disp = f"{description} · {int(elapsed)}s (CrewAI/Ollama…)"
+                    progress.update(task_id, completed=pct, description=disp)
                 th.join(timeout=poll)
-            progress.update(task_id, completed=100.0)
+            progress.update(task_id, completed=100.0, description=description)
         th.join()
         if exc_holder:
             raise exc_holder[0]

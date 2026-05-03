@@ -21,7 +21,7 @@
 
 - تبويب **OT/ICS** في لوحة الفحص
 - صفحة [`#/ot-dashboard`](../../web/src/OtDashboardPage.tsx)
-- خيار **عرض للمحكّمين**: [`fixtures/demo_ot_ics.json`](../../fixtures/demo_ot_ics.json) + `GET /api/demo/ot-ics-fixture`
+- خيار **عرض توضيحي (محاكاة OT)**: [`fixtures/demo_ot_ics.json`](../../fixtures/demo_ot_ics.json) + `GET /api/demo/ot-ics-fixture`
 
 ## القيود
 

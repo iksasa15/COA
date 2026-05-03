@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FeatureNav from "./FeatureNav";
 
@@ -160,21 +160,6 @@ export default function MitreHeatmapPage() {
       </header>
 
       <main className="page-main">
-        <p style={{ color: "var(--muted)", fontSize: "0.88rem", maxWidth: "56rem", marginTop: 0 }}>
-          يعرض هذا العرض تقنيات مرتبطة <strong>بفحص واحد</strong> وليس تكراراً على 30 يوماً — يمكن ربط
-          التخزين الزمني لاحقاً. راجع الوثيقة{" "}
-          <a href="https://attack.mitre.org/" style={{ color: "var(--cyan)" }}>
-            MITRE ATT&CK
-          </a>{" "}
-          والدليل المحلي{" "}
-          <code style={{ color: "var(--cyan)" }}>docs/MITRE_ATTACK_DEFENSE_AR.md</code>. للتحليل العميق والـ Navigator
-          انظر{" "}
-          <Link to="/mitre-deep" style={{ color: "var(--cyan)" }}>
-            صفحة MITRE العميق
-          </Link>
-          .
-        </p>
-
         {attribution && (
           <p style={{ color: "var(--muted)" }}>
             <strong style={{ color: "var(--fg)" }}>الإسناد الاسترشادي:</strong> {attribution}

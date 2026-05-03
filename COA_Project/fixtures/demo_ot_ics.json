@@ -2,7 +2,6 @@
   "presentation_demo": true,
   "mode": "presentation_demo",
   "passive_by_default": true,
-  "disclaimer": "عرض توضيحي للمحكّمين — بيانات OT/ICS التالية محاكاة وليست من جدول اتصالات هذا المضيف الحي. For judges: simulated OT footprint for UI demo only.",
   "ics_protocol_hits": [
     {
       "process": "WinCC_Runtime",

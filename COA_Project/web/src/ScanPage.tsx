@@ -116,7 +116,6 @@ async function downloadFromApi(path: string, fallbackName: string) {
 export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
-  const [presentationDemo, setPresentationDemo] = useState(false);
   // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama local). User can turn off for faster scans.
   const [useCouncil, setUseCouncil] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -137,7 +136,7 @@ export default function ScanPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dry_run: dryRun,
-          presentation_demo: presentationDemo,
+          presentation_demo: false,
           use_council: useCouncil,
         }),
       });
@@ -191,7 +190,7 @@ export default function ScanPage() {
     } finally {
       setLoading(false);
     }
-  }, [dryRun, presentationDemo, useCouncil]);
+  }, [dryRun, useCouncil]);
 
   const verifyCouncilAgents = useCallback(async () => {
     setCouncilCheckLoading(true);
@@ -249,14 +248,6 @@ export default function ScanPage() {
           />
           Dry run (remediation simulation)
         </label>
-        <label className="checkbox" title="بيانات OT محاكاة من fixtures — للعرض أمام المحكّمين">
-          <input
-            type="checkbox"
-            checked={presentationDemo}
-            onChange={(e) => setPresentationDemo(e.target.checked)}
-          />
-          عرض OT للمحكّمين (محاكاة)
-        </label>
         <label
           className="checkbox"
           title="المجلس يستخدم Ollama من إعدادات الخادم (.env). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
@@ -266,7 +257,7 @@ export default function ScanPage() {
             checked={useCouncil}
             onChange={(e) => setUseCouncil(e.target.checked)}
           />
-          مجلس الوكلاء (CrewAI + LLM من .env) — افتراضي: تشغيل
+          مجلس الوكلاء
         </label>
         <button
           type="button"
@@ -364,8 +355,7 @@ export default function ScanPage() {
               fontSize: "0.86rem",
             }}
           >
-            <strong>عرض توضيحي:</strong> قسم OT/ICS يعرض بيانات محاكاة من المشروع (للهاكاثون) — بقية الفحص من
-            الجهاز الحقيقي.
+            <strong>عرض توضيحي:</strong> قسم OT/ICS يعرض بيانات محاكاة من المشروع — بقية الفحص من الجهاز الحقيقي.
           </div>
         )}
         <div
@@ -578,10 +568,15 @@ export default function ScanPage() {
 
         {tab === "ot_ics" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
-              {data?.ot_ics?.disclaimer ||
-                "Run a scan to load passive OT/ICS correlation (known industrial ports + processes)."}
-            </p>
+            {!data?.ot_ics ? (
+              <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
+                Run a scan to load passive OT/ICS correlation (known industrial ports + processes).
+              </p>
+            ) : data.ot_ics.disclaimer?.trim() ? (
+              <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
+                {data.ot_ics.disclaimer}
+              </p>
+            ) : null}
             {data?.ot_ics && (
               <>
                 {(data.ot_ics.ics_protocol_hits || []).length === 0 && (

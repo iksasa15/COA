@@ -1,4 +1,4 @@
-"""Static OT/ICS bundle for hackathon / judge presentation (not live host data)."""
+"""Static OT/ICS bundle for UI / presentation demo (not live host data)."""
 
 from __future__ import annotations
 

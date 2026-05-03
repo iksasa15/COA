@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
 
@@ -27,19 +28,60 @@ const FEATURE_CARDS = [
     title: "OT / ICS (الوكيل #6)",
     desc: "مخزون تقريبي، تنبيهات منافذ صناعية، سيناريوهات OT، تقييم ICS Specialist، أمثلة MITRE ICS.",
   },
-  {
-    to: "/dev-tests",
-    title: "تشغيل pytest من المتصفح",
-    desc: "زر لتشغيل اختبارات الوحدة عبر الـ API (يتطلب COA_ALLOW_DEV_TESTS=1 على خادم web_api).",
-  },
-  {
-    to: "/cli-commands",
-    title: "أوامر التشغيل (CLI)",
-    desc: "نسخ أوامر cd، venv، main.py، المجلس، الويب، وغيرها من جذر المشروع.",
-  },
 ] as const;
 
+type SeedPayload = {
+  ok?: boolean;
+  error?: string;
+  defense_context?: unknown;
+  mitre_deep?: unknown;
+  ot_ics?: unknown;
+};
+
 export default function LandingPage() {
+  const [seedLoading, setSeedLoading] = useState(false);
+  const [seedMsg, setSeedMsg] = useState<string | null>(null);
+
+  const loadDemoSession = useCallback(async () => {
+    setSeedLoading(true);
+    setSeedMsg(null);
+    try {
+      const res = await fetch("/api/demo/seed-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      const json = (await res.json()) as SeedPayload;
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || res.statusText || "فشل التحميل");
+      }
+      try {
+        if (json.defense_context) {
+          sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
+        }
+        sessionStorage.setItem(
+          "coa_last_scan_extras",
+          JSON.stringify({
+            defense_context: json.defense_context ?? null,
+            mitre_deep: json.mitre_deep ?? null,
+            ot_ics: json.ot_ics ?? null,
+          }),
+        );
+        window.dispatchEvent(new Event("coa-scan-complete"));
+      } catch {
+        /* ignore quota */
+      }
+      setSeedMsg(
+        "تم تحميل بيانات تجريبية (تهديدات، سياق دفاعي، MITRE، OT/ICS). افتح لوحة الأداء أو أي صفحة ميزة.",
+      );
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setSeedMsg(`تعذر التحميل — تأكد أن الخادم يعمل (python web_api.py). ${msg}`);
+    } finally {
+      setSeedLoading(false);
+    }
+  }, []);
+
   return (
     <div className="page-shell page-shell--hero">
       <header className="page-header">
@@ -68,25 +110,48 @@ export default function LandingPage() {
             مرحباً بك في C.O.A
           </h1>
           <p style={{ margin: "0 0 0.35rem", color: "var(--muted)", fontSize: "1rem", lineHeight: 1.55 }}>
-            ابدأ بـ <strong>فحص واحد</strong> من لوحة الأداء، ثم افتح أي صفحة أدناه لاختبار ميزة منفردة (كل صفحة تقرأ آخر
-            فحص من المتصفح).
+            يمكنك <strong>فحص الجهاز الحقيقي</strong> من لوحة الأداء، أو زر «تحميل بيانات تجريبية» أدناه لملء الواجهات فوراً
+            دون فحص. صفحات الدفاع وMITRE وOT تقرأ آخر جلسة من المتصفح.
           </p>
           <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "0.82rem" }}>
             التوثيق: <code style={{ color: "var(--cyan)" }}>docs/React_Additions_AR.md</code>
           </p>
-          <Link
-            to="/dashboard"
-            className="btn-primary landing-cta"
-            style={{
-              display: "inline-block",
-              textDecoration: "none",
-              padding: "0.75rem 1.5rem",
-              fontSize: "1rem",
-              marginBottom: "1.75rem",
-            }}
-          >
-            تشغيل الفحص أولاً ← لوحة الأداء
-          </Link>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem", alignItems: "center", marginBottom: "1.25rem" }}>
+            <Link
+              to="/dashboard"
+              className="btn-primary landing-cta"
+              style={{
+                display: "inline-block",
+                textDecoration: "none",
+                padding: "0.75rem 1.5rem",
+                fontSize: "1rem",
+              }}
+            >
+              تشغيل الفحص أولاً ← لوحة الأداء
+            </Link>
+            <button
+              type="button"
+              className="btn-accent"
+              style={{ padding: "0.65rem 1.15rem", fontSize: "0.92rem" }}
+              disabled={seedLoading}
+              onClick={() => void loadDemoSession()}
+            >
+              {seedLoading ? "جاري التحميل…" : "تحميل بيانات تجريبية للواجهات"}
+            </button>
+          </div>
+
+          {seedMsg && (
+            <p
+              style={{
+                margin: "0 0 1rem",
+                fontSize: "0.88rem",
+                color: seedMsg.startsWith("تم ") ? "var(--green)" : "var(--orange)",
+                lineHeight: 1.5,
+              }}
+            >
+              {seedMsg}
+            </p>
+          )}
 
           <div
             style={{

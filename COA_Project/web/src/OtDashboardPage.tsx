@@ -71,8 +71,6 @@ function mirrorOtToSessionStorage(next: OtIcsPayload) {
 
 export default function OtDashboardPage() {
   const [ot, setOt] = useState<OtIcsPayload | null>(null);
-  const [demoLoading, setDemoLoading] = useState(false);
-  const [demoErr, setDemoErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetchErr, setFetchErr] = useState<string | null>(null);
   const location = useLocation();
@@ -106,34 +104,6 @@ export default function OtDashboardPage() {
       setLoading(false);
     }
   }, []);
-
-  const loadPresentationDemo = useCallback(async () => {
-    setDemoErr(null);
-    setDemoLoading(true);
-    try {
-      const res = await fetch("/api/demo/ot-ics-fixture");
-      const body = (await res.json()) as OtIcsPayload & { error?: string };
-      if (!res.ok) {
-        throw new Error(body.error || res.statusText);
-      }
-      const fixture = body as OtIcsPayload;
-      let extras: Record<string, unknown> = {};
-      try {
-        const raw = sessionStorage.getItem("coa_last_scan_extras");
-        if (raw) extras = JSON.parse(raw) as Record<string, unknown>;
-      } catch {
-        /* ignore */
-      }
-      extras.ot_ics = fixture;
-      sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
-      window.dispatchEvent(new Event("coa-scan-complete"));
-      void refresh();
-    } catch (e) {
-      setDemoErr(e instanceof Error ? e.message : String(e));
-    } finally {
-      setDemoLoading(false);
-    }
-  }, [refresh]);
 
   useEffect(() => {
     void refresh();
@@ -184,17 +154,6 @@ export default function OtDashboardPage() {
         {loading && !ot && !fetchErr && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>جاري التحميل من الخادم…</p>
         )}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
-          <button type="button" className="btn-accent" disabled={demoLoading} onClick={() => void loadPresentationDemo()}>
-            {demoLoading ? "جاري التحميل…" : "تحميل عرض OT للمحكّمين (محاكاة)"}
-          </button>
-          <span style={{ fontSize: "0.78rem", color: "var(--muted)", maxWidth: "28rem" }}>
-            يملأ لوحة OT من الـ API دون إعادة فحص — مناسب للعرض إذا الجهاز بدون منافذ صناعية.
-          </span>
-        </div>
-        {demoErr && (
-          <p style={{ color: "var(--red)", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{demoErr}</p>
-        )}
         {!ot && !loading && !fetchErr && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات OT بعد. شغّل فحصاً من{" "}
@@ -222,9 +181,7 @@ export default function OtDashboardPage() {
               التحليل هنا <strong style={{ color: "var(--fg)" }}>فعلي وسلبي</strong>: يُبنى من{" "}
               <strong style={{ color: "var(--fg)" }}>جدول اتصالات وعمليات</strong> جُمعت أثناء الفحص، ويُطابق منافذ
               ICS شائعة فقط — لا يُفترض اختراق منشأة ولا يُحلّل PCAP. الأصفار على حاسوب تطوير{" "}
-              <strong style={{ color: "var(--fg)" }}>طبيعية</strong>. زر «المحكّمين» أعلاه يحمّل{" "}
-              <strong style={{ color: "var(--fg)" }}>سيناريو محاكاة</strong> من المشروع للعرض عندما تحتاج لقطات
-              واجهة دون شبكة OT.
+              <strong style={{ color: "var(--fg)" }}>طبيعية</strong>.
             </p>
             {ot.presentation_demo && (
               <div
@@ -239,8 +196,8 @@ export default function OtDashboardPage() {
                   lineHeight: 1.55,
                 }}
               >
-                <strong style={{ color: "var(--yellow)" }}>عرض توضيحي للمحكّمين:</strong> بيانات OT/ICS المعروضة محاكاة من
-                ملف المشروع وليست من جدول اتصالات هذا المضيف الحي.
+                <strong style={{ color: "var(--yellow)" }}>عرض توضيحي:</strong> بيانات OT/ICS المعروضة محاكاة من ملف
+                المشروع وليست من جدول اتصالات هذا المضيف الحي.
               </div>
             )}
             {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && !ot.presentation_demo && (
@@ -302,9 +259,11 @@ export default function OtDashboardPage() {
               </div>
             </div>
 
-            <p style={{ fontSize: "0.82rem", color: "var(--muted)", margin: "0 0 1rem", lineHeight: 1.5 }}>
-              {ot.disclaimer}
-            </p>
+            {ot.disclaimer?.trim() ? (
+              <p style={{ fontSize: "0.82rem", color: "var(--muted)", margin: "0 0 1rem", lineHeight: 1.5 }}>
+                {ot.disclaimer}
+              </p>
+            ) : null}
 
             {sp && (
               <section style={section}>

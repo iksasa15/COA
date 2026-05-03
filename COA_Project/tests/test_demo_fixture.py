@@ -1,4 +1,4 @@
-"""Presentation demo OT bundle (judges UI)."""
+"""Presentation demo OT bundle (UI fixture)."""
 
 from ics_analyzer.demo_fixture import load_presentation_demo_ot_ics
 

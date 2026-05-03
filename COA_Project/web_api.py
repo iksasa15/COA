@@ -30,6 +30,7 @@ from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
 from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
+from core.demo_ui_session import build_demo_ui_seed_bundle
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from ics_analyzer import analyze_ot_ics
 from ics_analyzer.demo_fixture import load_presentation_demo_ot_ics
@@ -185,10 +186,26 @@ def create_app() -> Flask:
 
     @app.get("/api/demo/ot-ics-fixture")
     def demo_ot_ics_fixture():
-        """Simulated OT/ICS payload for judge UI demo (read-only, no host scan)."""
+        """Simulated OT/ICS payload for UI demo (read-only, no host scan)."""
         demo = load_presentation_demo_ot_ics()
         demo["ics_specialist"] = ICSSpecialistAgent.assess(demo)
         return jsonify(_json_safe(demo))
+
+    @app.post("/api/demo/seed-session")
+    def demo_seed_session():
+        """
+        One-click synthetic scan for the React UI: fills _last + same JSON shape as /api/scan
+        (defense_context, mitre_deep, OT fixture, threats) without collecting from the host.
+        """
+        global _last, _last_reporter
+        try:
+            payload, last_block, reporter = build_demo_ui_seed_bundle()
+            _last = last_block
+            _last_reporter = reporter
+            return jsonify(_json_safe(payload))
+        except Exception as e:
+            logger.error(f"demo seed-session failed: {e}\n{traceback.format_exc()}")
+            return jsonify({"ok": False, "error": str(e)}), 500
 
     @app.post("/api/scan")
     def scan():
@@ -221,7 +238,7 @@ def create_app() -> Flask:
             reporter.log_event("DEFENSE_CONTEXT", "Running Defense Context Analyzer (Agent #5)…")
             defense_context = DefenseContextAnalyzer.analyze(system_data, analysis)
             if presentation_demo:
-                reporter.log_event("OT_ICS", "Presentation demo — loading simulated OT/ICS bundle for judges UI…")
+                reporter.log_event("OT_ICS", "Presentation demo — loading simulated OT/ICS bundle for UI…")
                 ot_ics = load_presentation_demo_ot_ics()
             else:
                 reporter.log_event("OT_ICS", "Passive OT/ICS correlation (ports/processes only)…")

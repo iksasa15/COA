@@ -297,6 +297,18 @@ def create_app() -> Flask:
             return None, (jsonify({"ok": False, "error": "Run a scan first"}), 400)
         return (_last, _last_reporter), None
 
+    @app.get("/api/last/defense-context")
+    def last_defense_context():
+        """Last completed scan's defense_context (for UI tabs without shared sessionStorage)."""
+        err = _require_last()
+        if err[1]:
+            return err[1]
+        (data, _) = err[0]
+        dc = data.get("defense_context")
+        if dc is None:
+            return jsonify({"ok": False, "error": "No defense context in last scan"}), 400
+        return jsonify(_json_safe({"ok": True, "defense_context": dc}))
+
     @app.get("/api/reports/txt")
     def report_txt():
         err = _require_last()

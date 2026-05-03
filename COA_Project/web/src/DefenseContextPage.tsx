@@ -30,28 +30,77 @@ function loadDc(): DefenseContext | null {
   return null;
 }
 
+/** Keep other pages that read sessionStorage in sync after a server fetch. */
+function mirrorDcToSessionStorage(next: DefenseContext) {
+  try {
+    sessionStorage.setItem("coa_defense_context", JSON.stringify(next));
+    let extras: Record<string, unknown> = {};
+    const extrasRaw = sessionStorage.getItem("coa_last_scan_extras");
+    if (extrasRaw) {
+      try {
+        extras = JSON.parse(extrasRaw) as Record<string, unknown>;
+      } catch {
+        extras = {};
+      }
+    }
+    extras.defense_context = next;
+    sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
+  } catch {
+    /* quota / private mode */
+  }
+}
+
 export default function DefenseContextPage() {
   const [dc, setDc] = useState<DefenseContext | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
+    setErr(null);
+    const local = loadDc();
+    if (local) {
+      setLoading(false);
+      setDc(local);
+      return;
+    }
+    setLoading(true);
+    setDc(null);
     try {
-      setErr(null);
-      setDc(loadDc());
+      const res = await fetch("/api/last/defense-context");
+      const json = (await res.json()) as {
+        ok?: boolean;
+        defense_context?: DefenseContext;
+        error?: string;
+      };
+      if (res.ok && json.ok && json.defense_context) {
+        mirrorDcToSessionStorage(json.defense_context);
+        setDc(json.defense_context);
+      } else {
+        setDc(null);
+        if (res.status >= 500) {
+          setErr(json.error || "خطأ في الخادم.");
+        }
+        /* 400 = no last scan — leave empty state without error */
+      }
     } catch {
-      setErr("تعذّر قراءة البيانات.");
+      setDc(null);
+      setErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [location.key, refresh]);
 
   useEffect(() => {
-    const onScan = () => refresh();
+    const onScan = () => {
+      void refresh();
+    };
     const onStorage = (e: StorageEvent) => {
-      if (e.key === "coa_last_scan_extras" || e.key === "coa_defense_context") refresh();
+      if (e.key === "coa_last_scan_extras" || e.key === "coa_defense_context") void refresh();
     };
     window.addEventListener("coa-scan-complete", onScan);
     window.addEventListener("storage", onStorage);
@@ -75,13 +124,16 @@ export default function DefenseContextPage() {
 
       <main className="page-main">
         {err && <p style={{ color: "var(--red)" }}>{err}</p>}
-        {!dc && !err && (
+        {loading && !dc && !err && (
+          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>جاري التحميل من الخادم…</p>
+        )}
+        {!dc && !err && !loading && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات. نفّذ{" "}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
               فحصاً من لوحة الأداء
             </Link>{" "}
-            ثم ارجع لهذه الصفحة.
+            ثم ارجع لهذه الصفحة (أو افتحها في تبويب جديد بعد إتمام الفحص — يُجلب آخر فحص من الخادم).
           </p>
         )}
 

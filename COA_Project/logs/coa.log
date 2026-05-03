@@ -1337,3 +1337,13 @@
 2026-05-03 15:45:35,169 | INFO     | logger:_log:113 | Council of Agents initialized successfully
 2026-05-03 15:45:35,169 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
 2026-05-03 15:52:42,120 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 15:59:18,063 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:59:18,064 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:59:18,569 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:59:18,570 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:59:18,570 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:59:18,570 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:59:18,572 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:59:18,573 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:59:18,583 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:59:18,585 | INFO     | logger:_log:113 | OT/ICS passive analysis complete

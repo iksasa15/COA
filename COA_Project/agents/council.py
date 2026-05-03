@@ -14,7 +14,10 @@ from typing import Any, Dict
 
 from utils.logger import logger
 from config.settings import (
-    LLM_MODEL, LLM_BASE_URL, LLM_TEMPERATURE, AGENT_CONFIG
+    LLM_MODEL,
+    LLM_BASE_URL,
+    LLM_TEMPERATURE,
+    AGENT_CONFIG,
 )
 
 
@@ -318,7 +321,7 @@ class CouncilOfAgents:
             ],
             tasks=[task1, task2, task3],
             process=self.Process.sequential,
-            verbose=True,
+            verbose=AGENT_CONFIG.get("verbose", False),
         )
 
         try:

@@ -30,12 +30,20 @@ _base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rst
 LLM_BASE_URL = _base or "http://localhost:11434"
 LLM_TEMPERATURE = float(os.environ.get("COA_LLM_TEMPERATURE", "0.3") or "0.3")
 
+# CrewAI council: full step logs (huge JSON in terminal). Default off for readable CLI.
+_COUNCIL_VERBOSE = os.environ.get("COA_COUNCIL_VERBOSE", "").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 # ==================== Agent Configuration ====================
+# memory=False: CrewAI "Unified Memory" needs OpenAI/Chroma embedder keys without extra setup.
 AGENT_CONFIG = {
-    "verbose": True,
+    "verbose": _COUNCIL_VERBOSE,
     "allow_delegation": False,
     "max_iter": 5,
-    "memory": True,
+    "memory": False,
 }
 
 # ==================== Security Rules ====================

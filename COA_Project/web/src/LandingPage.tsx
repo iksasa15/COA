@@ -32,6 +32,11 @@ const FEATURE_CARDS = [
     title: "تشغيل pytest من المتصفح",
     desc: "زر لتشغيل اختبارات الوحدة عبر الـ API (يتطلب COA_ALLOW_DEV_TESTS=1 على خادم web_api).",
   },
+  {
+    to: "/cli-commands",
+    title: "أوامر التشغيل (CLI)",
+    desc: "نسخ أوامر cd، venv، main.py، المجلس، الويب، وغيرها من جذر المشروع.",
+  },
 ] as const;
 
 export default function LandingPage() {

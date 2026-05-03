@@ -9,6 +9,7 @@ const LINKS = [
   { to: "/mitre-heatmap", label: "خريطة MITRE" },
   { to: "/ot-dashboard", label: "OT/ICS (#6)" },
   { to: "/dev-tests", label: "pytest" },
+  { to: "/cli-commands", label: "أوامر التشغيل" },
 ] as const;
 
 export default function FeatureNav() {

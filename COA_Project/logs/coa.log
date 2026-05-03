@@ -801,3 +801,53 @@
 2026-05-03 13:01:21,642 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
 2026-05-03 13:01:22,085 | INFO     | logger:_log:113 | Council of Agents initialized successfully
 2026-05-03 13:01:22,085 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:03:14,328 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:03:15,333 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:03:15,334 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:03:15,837 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-05-03 13:03:17,345 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:03:17,345 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:17,346 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:17,348 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:17,349 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:03:18,165 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:03:18,169 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:03:21,740 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 13:03:21,757 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:03:22,429 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 13:03:22,446 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:03:22,451 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 13:03:28,636 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:03:28,710 | ERROR    | logger:_log:113 | Council collaboration failed: [Errno 5] Input/output error
+2026-05-03 13:03:28,710 | ERROR    | logger:_log:113 | Council scan failed: [Errno 5] Input/output error
+2026-05-03 13:03:29,643 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:03:29,644 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:03:30,148 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:03:31,656 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:03:31,657 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:31,657 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:31,660 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:03:31,660 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:03:32,483 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:03:32,491 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:03:33,093 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:03:33,961 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 13:03:33,961 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:03:33,961 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:04:25,123 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:04:26,130 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:04:26,132 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:04:26,636 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:04:28,144 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:04:28,144 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:04:28,145 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:04:28,147 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:04:28,148 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:04:28,969 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:04:28,973 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:04:48,558 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 13:04:48,575 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:04:51,901 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 13:04:51,916 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 13:04:51,922 | CRITICAL | logger:_log:113 | Unhandled exception: 'IncidentReporter' object has no attribute 'generate_markdown_report'
+2026-05-03 13:06:49,053 | INFO     | logger:_log:113 | Council collaboration completed

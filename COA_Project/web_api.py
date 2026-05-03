@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import traceback
@@ -48,8 +49,33 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 def _dev_tests_allowed() -> bool:
-    """Run pytest from UI only when explicitly enabled (local dev / demos)."""
+    """Run pytest / CLI-from-browser only when explicitly enabled (local dev / demos)."""
     return os.environ.get("COA_ALLOW_DEV_TESTS", "").strip().lower() in ("1", "true", "yes")
+
+
+def _cli_run_specs() -> dict[str, dict[str, object]]:
+    """Whitelist for POST /api/dev/run-cli — argv + cwd + background + optional timeout (sync only)."""
+    root = str(PROJECT_ROOT)
+    web = str(PROJECT_ROOT / "web")
+    py = sys.executable
+    return {
+        "main": {"argv": [py, "main.py"], "cwd": root, "background": True},
+        "main_council": {"argv": [py, "main.py", "--council"], "cwd": root, "background": True},
+        "main_vt": {"argv": [py, "main.py", "--vt"], "cwd": root, "background": True},
+        "main_yara": {"argv": [py, "main.py", "--yara"], "cwd": root, "background": True},
+        "main_dry_run": {"argv": [py, "main.py", "--dry-run"], "cwd": root, "background": True},
+        "main_reports": {
+            "argv": [py, "main.py", "--html", "--json", "--markdown", "--csv"],
+            "cwd": root,
+            "background": True,
+        },
+        "main_all": {"argv": [py, "main.py", "--all"], "cwd": root, "background": True},
+        "council_test": {"argv": [py, "-m", "agents.council"], "cwd": root, "background": False, "timeout": 300},
+        "gui": {"argv": [py, "gui.py"], "cwd": root, "background": True},
+        "helpdesk_api": {"argv": [py, "helpdesk_api.py"], "cwd": root, "background": True},
+        "helpdesk_main": {"argv": [py, "main.py", "--helpdesk"], "cwd": root, "background": True},
+        "npm_run_dev": {"argv": [], "cwd": web, "background": True},  # argv filled after which("npm")
+    }
 
 
 def _json_safe(obj):
@@ -330,6 +356,111 @@ def create_app() -> Flask:
             logger.error(f"pytest run failed: {e}")
             return jsonify({"ok": False, "enabled": True, "error": str(e)}), 500
 
+    @app.get("/api/dev/cli-run-enabled")
+    def dev_cli_run_enabled():
+        """Same gate as pytest UI: COA_ALLOW_DEV_TESTS=1."""
+        return jsonify({"ok": True, "enabled": _dev_tests_allowed()})
+
+    @app.post("/api/dev/run-cli")
+    def dev_run_cli():
+        """
+        Run a fixed CLI command (whitelist only). Long jobs run in background; output -> reports/ui_cli_*.log
+        Enable with: COA_ALLOW_DEV_TESTS=1 python web_api.py
+        """
+        if not _dev_tests_allowed():
+            return (
+                jsonify(
+                    {
+                        "ok": False,
+                        "enabled": False,
+                        "error": "Disabled. Start API with COA_ALLOW_DEV_TESTS=1 to enable Run buttons.",
+                    }
+                ),
+                403,
+            )
+
+        body = request.get_json(silent=True) or {}
+        action = str(body.get("action") or "").strip()
+        specs = _cli_run_specs()
+        if action not in specs:
+            return jsonify({"ok": False, "enabled": True, "error": f"Unknown action: {action!r}"}), 400
+
+        spec = specs[action]
+        argv: list[str] = list(spec["argv"])  # type: ignore[arg-type]
+        cwd: str = str(spec["cwd"])
+        background = bool(spec["background"])
+
+        if action == "npm_run_dev":
+            npm = shutil.which("npm") or (shutil.which("npm.cmd") if os.name == "nt" else None)
+            if not npm:
+                return jsonify({"ok": False, "enabled": True, "error": "npm not found in PATH"}), 400
+            argv = [npm, "run", "dev"]
+
+        env = {**os.environ, "PYTHONUTF8": "1"}
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_path = REPORTS_DIR / f"ui_cli_{action}_{ts}.log"
+
+        if background:
+            try:
+                logf = open(log_path, "w", encoding="utf-8")
+            except OSError as e:
+                return jsonify({"ok": False, "enabled": True, "error": f"Cannot open log file: {e}"}), 500
+            try:
+                proc = subprocess.Popen(
+                    argv,
+                    cwd=cwd,
+                    stdout=logf,
+                    stderr=subprocess.STDOUT,
+                    start_new_session=True,
+                    env=env,
+                )
+            except Exception as e:
+                logf.close()
+                logger.error(f"CLI run spawn failed action={action}: {e}")
+                return jsonify({"ok": False, "enabled": True, "error": str(e)}), 500
+            logf.close()
+            logger.info("CLI run started (background)", action=action, pid=proc.pid, log=str(log_path))
+            return jsonify(
+                {
+                    "ok": True,
+                    "enabled": True,
+                    "background": True,
+                    "action": action,
+                    "pid": proc.pid,
+                    "log": str(log_path),
+                    "command": argv,
+                }
+            )
+
+        timeout = int(spec.get("timeout") or 120)
+        try:
+            proc = subprocess.run(
+                argv,
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                env=env,
+            )
+            out = (proc.stdout or "") + (("\n" + proc.stderr) if proc.stderr else "")
+            logger.info("CLI run finished (sync)", action=action, exit_code=proc.returncode)
+            return jsonify(
+                {
+                    "ok": True,
+                    "enabled": True,
+                    "background": False,
+                    "action": action,
+                    "exit_code": proc.returncode,
+                    "command": argv,
+                    "output": out[-200000:] if len(out) > 200000 else out,
+                }
+            )
+        except subprocess.TimeoutExpired:
+            return jsonify({"ok": False, "enabled": True, "error": f"Timed out after {timeout}s"}), 500
+        except Exception as e:
+            logger.error(f"CLI run failed action={action}: {e}")
+            return jsonify({"ok": False, "enabled": True, "error": str(e)}), 500
+
     return app
 
 
@@ -341,6 +472,6 @@ if __name__ == "__main__":
     print("  UI:   cd web && npm install && npm run dev")
     print("        -> http://localhost:5173")
     if _dev_tests_allowed():
-        print("  Dev:  UI pytest — COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests")
+        print("  Dev:  COA_ALLOW_DEV_TESTS=1 → POST /api/dev/run-tests | POST /api/dev/run-cli")
     print("=" * 60 + "\n")
     create_app().run(host="127.0.0.1", port=5050, debug=False, threaded=True)

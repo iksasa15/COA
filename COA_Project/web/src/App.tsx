@@ -1,4 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import CliCommandsPage from "./CliCommandsPage";
 import DefenseContextPage from "./DefenseContextPage";
 import DevTestsPage from "./DevTestsPage";
 import LandingPage from "./LandingPage";
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/mitre-heatmap" element={<MitreHeatmapPage />} />
         <Route path="/ot-dashboard" element={<OtDashboardPage />} />
         <Route path="/dev-tests" element={<DevTestsPage />} />
+        <Route path="/cli-commands" element={<CliCommandsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

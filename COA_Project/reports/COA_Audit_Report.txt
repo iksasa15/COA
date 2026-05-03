@@ -5,19 +5,19 @@
 
 📋 SESSION INFO
 ----------------------------------------------------------------------
-  Scan Start:    2026-05-03 13:00:49
-  Scan End:      2026-05-03 13:01:08
-  Duration:      19.22 seconds
+  Scan Start:    2026-05-03 13:04:25
+  Scan End:      2026-05-03 13:04:51
+  Duration:      26.79 seconds
   Hostname:      MacBook-Air-Ahmed.local
 
 💻 SYSTEM INFORMATION
 ----------------------------------------------------------------------
   hostname            : MacBook-Air-Ahmed.local
   cpu_cores           : 10
-  cpu_usage           : 13.3
+  cpu_usage           : 13.1
   memory_total_gb     : 24.0
-  memory_used_percent : 56.6
-  disk_usage_percent  : 48.5
+  memory_used_percent : 67.9
+  disk_usage_percent  : 48.4
   boot_time           : 2026-05-03 11:43:11
 
 🚨 THREAT SUMMARY
@@ -50,25 +50,25 @@
 
 📜 EVENT LOG
 ----------------------------------------------------------------------
-  [2026-05-03 13:00:49] SYSTEM
+  [2026-05-03 13:04:25] SYSTEM
       C.O.A v3.0 scan initiated
 
-  [2026-05-03 13:00:50] DATA_COLLECTION
+  [2026-05-03 13:04:26] DATA_COLLECTION
       Collected in 0.51s
 
-  [2026-05-03 13:00:52] THREAT_DETECTED
+  [2026-05-03 13:04:28] THREAT_DETECTED
       [LOW] Process Threat — com.apple.Mobile (PID: 490): Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo
 
-  [2026-05-03 13:00:52] THREAT_DETECTED
+  [2026-05-03 13:04:28] THREAT_DETECTED
       [LOW] Process Threat — reversetemplated (PID: 8424): Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.
 
-  [2026-05-03 13:00:52] THREAT_DETECTED
+  [2026-05-03 13:04:28] THREAT_DETECTED
       [LOW] Process Threat — kernel_task (PID: 0): Detected: no executable path
 
-  [2026-05-03 13:01:06] ACTION
+  [2026-05-03 13:04:48] ACTION
       Command: ps -p 490 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False
 
-  [2026-05-03 13:01:08] ACTION
+  [2026-05-03 13:04:51] ACTION
       Command: ps -p 8424 -o pid,cmd,ppid,user | Status: APPROVED & EXECUTED | Success: False
 
 ======================================================================

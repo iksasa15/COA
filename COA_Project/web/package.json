@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync-fonts": "node ../scripts/sync-public-fonts.mjs",
+    "postinstall": "node ../scripts/sync-public-fonts.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -14,6 +16,9 @@
     "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
+    "@fontsource/dm-sans": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/tajawal": "^5.2.7",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",

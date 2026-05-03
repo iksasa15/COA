@@ -1,3 +1,40 @@
+/* Tajawal: @fontsource imports in main.tsx (عربي + لاتيني). DM Sans + Mono: web/src/assets/font/ + sync-public-fonts.mjs */
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/font/dm-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/font/dm-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./assets/font/dm-sans-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/font/jetbrains-mono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/font/jetbrains-mono-500.woff2") format("woff2");
+}
+
 :root {
   /* Defensethon — لوحة ألوان موحّدة لكل الواجهات */
   --bg: #011f1a;
@@ -12,7 +49,7 @@
   --yellow: #fbbf24;
   --purple: #2dd4bf;
   --radius: 12px;
-  --font: "Noto Sans Arabic", "DM Sans", system-ui, sans-serif;
+  --font: "Tajawal", "DM Sans", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --nav-active-bg: rgba(20, 184, 166, 0.14);
   --surface-border: rgba(20, 184, 166, 0.22);

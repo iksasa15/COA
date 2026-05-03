@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
 type OtIcsHit = {
   process?: string;
@@ -70,6 +71,7 @@ function mirrorOtToSessionStorage(next: OtIcsPayload) {
 }
 
 export default function OtDashboardPage() {
+  const { locale, t } = useI18n();
   const [ot, setOt] = useState<OtIcsPayload | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetchErr, setFetchErr] = useState<string | null>(null);
@@ -94,16 +96,16 @@ export default function OtDashboardPage() {
       } else {
         setOt(null);
         if (res.status >= 500) {
-          setFetchErr(json.error || "خطأ في الخادم.");
+          setFetchErr(json.error || t("common.serverError"));
         }
       }
     } catch {
       setOt(null);
-      setFetchErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+      setFetchErr(t("common.connectError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void refresh();
@@ -137,12 +139,18 @@ export default function OtDashboardPage() {
   const pcs = ot?.production_continuity_score ?? null;
   const sp = ot?.ics_specialist;
 
+  const impactFields: Array<{ key: "cyber_impact" | "operational_impact" | "safety_impact"; label: string }> = [
+    { key: "cyber_impact", label: t("ot.pillCyber") },
+    { key: "operational_impact", label: t("ot.pillOperational") },
+    { key: "safety_impact", label: t("ot.pillSafety") },
+  ];
+
   return (
     <div className="page-shell">
       <header className="page-header">
         <div className="page-header__row">
-          <h1 className="page-title">OT / ICS</h1>
-          <span className="page-subtitle">Passive-by-default · مراقبة فقط</span>
+          <h1 className="page-title">{t("ot.title")}</h1>
+          <span className="page-subtitle">{t("ot.subtitle")}</span>
         </div>
         <FeatureNav />
       </header>
@@ -152,15 +160,15 @@ export default function OtDashboardPage() {
           <p style={{ color: "var(--red)", fontSize: "0.88rem", marginBottom: "0.75rem" }}>{fetchErr}</p>
         )}
         {loading && !ot && !fetchErr && (
-          <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>جاري التحميل من الخادم…</p>
+          <p style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: "1rem" }}>{t("common.loadingServer")}</p>
         )}
         {!ot && !loading && !fetchErr && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
-            لا توجد بيانات OT بعد. شغّل فحصاً من{" "}
+            {t("ot.noDataPart1")}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
-              لوحة الأداء
-            </Link>{" "}
-            ثم ارجع هنا، أو افتح الصفحة في تبويب جديد بعد إتمام الفحص (يُجلب آخر فحص من الخادم).
+              {t("ot.noDataLink")}
+            </Link>
+            {t("ot.noDataPart2")}
           </p>
         )}
 
@@ -178,10 +186,7 @@ export default function OtDashboardPage() {
                 border: "1px solid var(--bg3)",
               }}
             >
-              التحليل هنا <strong style={{ color: "var(--fg)" }}>فعلي وسلبي</strong>: يُبنى من{" "}
-              <strong style={{ color: "var(--fg)" }}>جدول اتصالات وعمليات</strong> جُمعت أثناء الفحص، ويُطابق منافذ
-              ICS شائعة فقط — لا يُفترض اختراق منشأة ولا يُحلّل PCAP. الأصفار على حاسوب تطوير{" "}
-              <strong style={{ color: "var(--fg)" }}>طبيعية</strong>.
+              {t("ot.intro")}
             </p>
             {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && (
               <div
@@ -196,11 +201,7 @@ export default function OtDashboardPage() {
                   lineHeight: 1.55,
                 }}
               >
-                <strong style={{ color: "var(--green)" }}>الفحص يعمل — OT فارغ لسبب متوقع:</strong> التحليل هنا يربط
-                جدول اتصالات المضيف بمنافذ ICS شائعة (مثل 502، 102، 4840). على حاسوب تطوير عادي غالباً{" "}
-                <strong>لا</strong> تظهر مثل هذه الاتصالات، فيبقى العدد 0 وهذا ليس عطلاً. جرّب من جهاز يصل لشبكة OT،
-                أو لاحقاً PCAP/Scapy. أقسام <strong>MITRE</strong> و<strong>السياق الدفاعي</strong> تعتمد إشارات أخرى وقد
-                تُظهر نتائج حتى بدون OT.
+                <strong style={{ color: "var(--green)" }}>{t("ot.emptyHitsTitle")}</strong> {t("ot.emptyHitsBody")}
               </div>
             )}
             <div
@@ -215,13 +216,13 @@ export default function OtDashboardPage() {
                 <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--fg)" }}>
                   {ot.distinct_ics_protocols ?? 0}
                 </div>
-                <div style={kpiLabel}>بروتوكولات ICS مميّزة (من الجدول)</div>
+                <div style={kpiLabel}>{t("ot.kpiProtocols")}</div>
               </div>
               <div style={kpiBox}>
                 <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--fg)" }}>
                   {(ot.ics_protocol_hits || []).length}
                 </div>
-                <div style={kpiLabel}>ملاحظات اتصال على منافذ صناعية</div>
+                <div style={kpiLabel}>{t("ot.kpiPortHits")}</div>
               </div>
               <div
                 style={{
@@ -238,7 +239,7 @@ export default function OtDashboardPage() {
                 >
                   {pcs ?? "—"}
                 </div>
-                <div style={kpiLabel}>Production continuity (تجريبي)</div>
+                <div style={kpiLabel}>{t("ot.kpiContinuity")}</div>
               </div>
             </div>
 
@@ -250,7 +251,7 @@ export default function OtDashboardPage() {
 
             {sp && (
               <section style={section}>
-                <h2 style={h2}>ICS Specialist (Agent #6)</h2>
+                <h2 style={h2}>{t("ot.icsSpecialistTitle")}</h2>
                 <pre
                   style={{
                     margin: 0,
@@ -267,9 +268,9 @@ export default function OtDashboardPage() {
                   {sp.ascii_report}
                 </pre>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.65rem" }}>
-                  {["cyber_impact", "operational_impact", "safety_impact"].map((k) => (
-                    <span key={k} style={pill}>
-                      {k.replace("_", " ")}: {String((sp as Record<string, string>)[k] ?? "—")}
+                  {impactFields.map(({ key, label }) => (
+                    <span key={key} style={pill}>
+                      {label}: {String((sp as Record<string, string>)[key] ?? "—")}
                     </span>
                   ))}
                 </div>
@@ -278,34 +279,48 @@ export default function OtDashboardPage() {
 
             {(ot.ot_playbooks_triggered || []).length > 0 && (
               <section style={section}>
-                <h2 style={h2}>سيناريوهات OT (تنبيه تجريبي)</h2>
-                <ul style={{ margin: 0, paddingLeft: "1.1rem", color: "var(--muted)", fontSize: "0.88rem" }}>
-                  {ot.ot_playbooks_triggered!.map((p) => (
-                    <li key={String(p.id)} style={{ marginBottom: "0.35rem" }}>
-                      <strong style={{ color: "var(--fg)" }}>{p.name_ar || p.id}</strong>
-                      {p.reason ? ` — ${p.reason}` : ""}
-                    </li>
-                  ))}
+                <h2 style={h2}>{t("ot.otPlaybooks")}</h2>
+                <ul
+                  style={{
+                    margin: 0,
+                    paddingInlineStart: "1.1rem",
+                    color: "var(--muted)",
+                    fontSize: "0.88rem",
+                  }}
+                >
+                  {ot.ot_playbooks_triggered!.map((p) => {
+                    const name =
+                      locale === "ar"
+                        ? (p.name_ar || p.name_en || p.id)
+                        : (p.name_en || p.name_ar || p.id);
+                    return (
+                      <li key={String(p.id)} style={{ marginBottom: "0.35rem" }}>
+                        <strong style={{ color: "var(--fg)" }}>{name}</strong>
+                        {p.reason ? ` — ${p.reason}` : ""}
+                      </li>
+                    );
+                  })}
                 </ul>
               </section>
             )}
 
             <section style={section}>
-              <h2 style={h2}>MITRE ATT&CK for ICS (أمثلة من المرجع)</h2>
+              <h2 style={h2}>{t("ot.mitreSectionTitle")}</h2>
               <p style={{ fontSize: "0.8rem", color: "var(--muted)", margin: "0 0 0.75rem" }}>
                 <a href={ot.ics_mitre_matrix_url || "https://attack.mitre.org/matrices/ics/"} style={{ color: "var(--cyan)" }}>
-                  المصفوفة الرسمية
+                  {t("ot.mitreMatrixLink")}
                 </a>
-                {" · "}تظليل حسب تكرار الربط في هذه الجلسة:
+                {" · "}
+                {t("ot.mitreHint")}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                 {mitreCounts.length === 0 && (
-                  <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>لا توجد تقنيات مرتبطة في هذه الجلسة.</span>
+                  <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{t("ot.noMitreThisSession")}</span>
                 )}
                 {mitreCounts.map(([id, n]) => (
                   <span
                     key={id}
-                    title={`observed ${n}x (passive port hint)`}
+                    title={t("ot.mitreObserved").replace("{n}", String(n))}
                     style={{
                       padding: "0.25rem 0.5rem",
                       borderRadius: "4px",
@@ -323,7 +338,7 @@ export default function OtDashboardPage() {
             </section>
 
             <section style={section}>
-              <h2 style={h2}>خريطة أصول تقريبية (من جدول الاتصالات)</h2>
+              <h2 style={h2}>{t("ot.inventoryTitle")}</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                 {(ot.inventory_sketch || []).map((inv) => (
                   <div
@@ -338,8 +353,12 @@ export default function OtDashboardPage() {
                     }}
                   >
                     <div style={{ color: "var(--fg)", fontWeight: 600, marginBottom: "0.25rem" }}>{inv.endpoint}</div>
-                    <div>Protocols: {(inv.protocols_observed || []).join(", ") || "—"}</div>
-                    <div>Processes: {(inv.processes || []).join(", ") || "—"}</div>
+                    <div>
+                      {t("ot.invProtocols")}: {(inv.protocols_observed || []).join(", ") || "—"}
+                    </div>
+                    <div>
+                      {t("ot.invProcesses")}: {(inv.processes || []).join(", ") || "—"}
+                    </div>
                     {inv.note && <div style={{ marginTop: "0.35rem", fontSize: "0.78rem" }}>{inv.note}</div>}
                   </div>
                 ))}
@@ -347,17 +366,17 @@ export default function OtDashboardPage() {
             </section>
 
             <section style={section}>
-              <h2 style={h2}>تنبيهات بروتوكول (اتصالات ذات منفذ ICS)</h2>
+              <h2 style={h2}>{t("ot.protocolAlertsTitle")}</h2>
               <div className="table-wrap">
                 <table>
                   <thead>
                     <tr>
-                      <th>Process</th>
-                      <th>Local</th>
-                      <th>Remote</th>
-                      <th>Port</th>
-                      <th>Protocol</th>
-                      <th>MITRE ICS (مثال)</th>
+                      <th>{t("ot.thProcess")}</th>
+                      <th>{t("ot.thLocal")}</th>
+                      <th>{t("ot.thRemote")}</th>
+                      <th>{t("ot.thPort")}</th>
+                      <th>{t("ot.thProtocol")}</th>
+                      <th>{t("ot.thMitreExamples")}</th>
                     </tr>
                   </thead>
                   <tbody>

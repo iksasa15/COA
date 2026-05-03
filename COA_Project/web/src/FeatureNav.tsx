@@ -1,16 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
+import { useI18n } from "./i18n";
 
-const LINKS = [
-  { to: "/", label: "الرئيسية" },
-  { to: "/dashboard", label: "فحص / لوحة" },
-  { to: "/defense-context", label: "سياق دفاعي (#5)" },
-  { to: "/mitre-deep", label: "MITRE عميق" },
-  { to: "/mitre-heatmap", label: "خريطة MITRE" },
-  { to: "/ot-dashboard", label: "OT/ICS (#6)" },
-] as const;
+const LINK_KEYS = [
+  { to: "/", key: "nav.home" as const },
+  { to: "/dashboard", key: "nav.dashboard" as const },
+  { to: "/defense-context", key: "nav.defenseContext" as const },
+  { to: "/mitre-deep", key: "nav.mitreDeep" as const },
+  { to: "/mitre-heatmap", key: "nav.mitreHeatmap" as const },
+  { to: "/ot-dashboard", key: "nav.otIcs" as const },
+];
 
 export default function FeatureNav() {
   const { pathname } = useLocation();
+  const { locale, setLocale, t } = useI18n();
+
   return (
     <nav
       className="feature-nav"
@@ -21,10 +24,12 @@ export default function FeatureNav() {
         gap: "0.35rem 0.65rem",
         padding: "0.35rem 0 0",
       }}
-      aria-label="تنقل ميزات الاختبار"
+      aria-label={t("nav.aria")}
     >
-      <span style={{ fontSize: "0.72rem", color: "var(--muted)", marginRight: "0.25rem" }}>اختبار:</span>
-      {LINKS.map(({ to, label }) => {
+      <span style={{ fontSize: "0.72rem", color: "var(--muted)", marginInlineEnd: "0.25rem" }}>
+        {t("nav.testPrefix")}
+      </span>
+      {LINK_KEYS.map(({ to, key }) => {
         const active = to === "/" ? pathname === "/" : pathname === to || pathname.startsWith(`${to}/`);
         return (
           <Link
@@ -41,10 +46,40 @@ export default function FeatureNav() {
               background: active ? "var(--nav-active-bg)" : "transparent",
             }}
           >
-            {label}
+            {t(key)}
           </Link>
         );
       })}
+      <span
+        className="feature-nav__lang"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.2rem",
+          marginInlineStart: "auto",
+          flexWrap: "wrap",
+        }}
+      >
+        <span style={{ fontSize: "0.68rem", color: "var(--muted)" }}>{t("nav.langLabel")}</span>
+        <button
+          type="button"
+          className={locale === "ar" ? "btn-primary" : "btn-ghost"}
+          style={{ padding: "0.15rem 0.45rem", fontSize: "0.72rem" }}
+          onClick={() => setLocale("ar")}
+          aria-pressed={locale === "ar"}
+        >
+          {t("nav.langAr")}
+        </button>
+        <button
+          type="button"
+          className={locale === "en" ? "btn-primary" : "btn-ghost"}
+          style={{ padding: "0.15rem 0.45rem", fontSize: "0.72rem" }}
+          onClick={() => setLocale("en")}
+          aria-pressed={locale === "en"}
+        >
+          {t("nav.langEn")}
+        </button>
+      </span>
     </nav>
   );
 }

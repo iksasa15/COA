@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
 type Phase = {
   tactic?: string;
@@ -51,6 +52,7 @@ function mirrorMitreDeepToSessionStorage(next: MitreDeep) {
 }
 
 export default function MitreDeepPage() {
+  const { t } = useI18n();
   const [deep, setDeep] = useState<MitreDeep | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -75,16 +77,16 @@ export default function MitreDeepPage() {
       } else {
         setDeep(null);
         if (res.status >= 500) {
-          setErr(json.error || "خطأ في الخادم.");
+          setErr(json.error || t("common.serverError"));
         }
       }
     } catch {
       setDeep(null);
-      setErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+      setErr(t("common.connectError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void refresh();
@@ -121,8 +123,8 @@ export default function MitreDeepPage() {
     <div className="page-shell">
       <header className="page-header">
         <div className="page-header__row">
-          <h1 className="page-title">MITRE — تحليل عميق</h1>
-          <span className="page-subtitle">Kill chain · D3FEND hints · ICS · Navigator</span>
+          <h1 className="page-title">{t("md.title")}</h1>
+          <span className="page-subtitle">{t("md.subtitle")}</span>
         </div>
         <FeatureNav />
       </header>
@@ -130,15 +132,15 @@ export default function MitreDeepPage() {
       <main className="page-main">
         {err && <p style={{ color: "var(--red)" }}>{err}</p>}
         {loading && !deep && !err && (
-          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>جاري التحميل من الخادم…</p>
+          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>{t("common.loadingServer")}</p>
         )}
         {!deep && !err && !loading && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
-            لا توجد بيانات. نفّذ{" "}
+            {t("md.emptyPart1")}{" "}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
-              فحصاً
+              {t("md.emptyLink")}
             </Link>{" "}
-            ثم ارجع هنا. يُحفظ محلياً في <code>coa_last_scan_extras.mitre_deep</code>؛ أو يُجلب آخر فحص من الخادم عند فتح التبويب.
+            {t("md.emptyPart2")}
           </p>
         )}
 
@@ -156,19 +158,15 @@ export default function MitreDeepPage() {
                 border: "1px solid var(--bg3)",
               }}
             >
-              هذا العرض مبني على <strong style={{ color: "var(--fg)" }}>نتيجة الفحص الفعلية</strong> لهذا الجهاز: تقنيات
-              MITRE ومراحل السلسلة تُستخرج من <strong style={{ color: "var(--fg)" }}>إشارات التهديد</strong> المسجّلة
-              (مثل المسار، التوقيع، الشبكة). تلميحات «فجوات الكشف» و«الخطوات المتوقعة» هي{" "}
-              <strong style={{ color: "var(--fg)" }}>خرائط تدريب SOC ثابتة</strong> تُقارن بما ظهر في الفحص — ليست
-              تقرير اختراق مؤكد ولا بديل تحقيق على الحدث.
+              {t("md.intro")}
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
               <button type="button" className="btn-accent" disabled={!deep.navigator_layer} onClick={downloadNavigatorLayer}>
-                تصدير Navigator JSON (من الجلسة)
+                {t("md.exportNav")}
               </button>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)", alignSelf: "center" }}>
-                نفس الملف يمكن جلبه من الـ API: <code>/api/reports/mitre-navigator.json</code> بعد فحص من الخادم.
+                {t("md.exportHint")} <code>/api/reports/mitre-navigator.json</code>
               </span>
             </div>
 
@@ -184,14 +182,17 @@ export default function MitreDeepPage() {
                   fontSize: "0.88rem",
                 }}
               >
-                <strong>{deep.ics_context.ics_relevant ? "ICS / OT — ذو صلة" : "ICS / OT"}:</strong> {deep.ics_context.note}
+                <strong>
+                  {deep.ics_context.ics_relevant ? t("md.icsRelevant") : t("md.icsNeutral")}:
+                </strong>{" "}
+                {deep.ics_context.note}
               </section>
             )}
 
             <section style={{ marginBottom: "1.25rem" }}>
-              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>فجوات كشف (تلميحات)</h2>
+              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>{t("md.gapsTitle")}</h2>
               <ul style={{ color: "var(--muted)", fontSize: "0.88rem" }}>
-                {(deep.detection_gap_hints || []).length === 0 && <li>لا تلميحات في هذا الفحص.</li>}
+                {(deep.detection_gap_hints || []).length === 0 && <li>{t("md.noGaps")}</li>}
                 {(deep.detection_gap_hints || []).map((g, i) => (
                   <li key={i} style={{ marginBottom: "0.35rem" }}>
                     {g}
@@ -201,7 +202,7 @@ export default function MitreDeepPage() {
             </section>
 
             <section style={{ marginBottom: "1.25rem" }}>
-              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>سلسلة القتل (مراحل مرتّبة)</h2>
+              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>{t("md.killChainTitle")}</h2>
               {(deep.kill_chain_phases || []).map((ph, i) => (
                 <div
                   key={i}
@@ -229,12 +230,12 @@ export default function MitreDeepPage() {
                 </div>
               ))}
               {!deep.kill_chain_phases?.length && (
-                <p style={{ color: "var(--muted)", fontSize: "0.88rem" }}>لا مراحل مرتبطة بهذا الفحص.</p>
+                <p style={{ color: "var(--muted)", fontSize: "0.88rem" }}>{t("md.noPhases")}</p>
               )}
             </section>
 
             <section>
-              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>تقرير ASCII كامل</h2>
+              <h2 style={{ fontSize: "1rem", color: "var(--fg)", margin: "0 0 0.5rem" }}>{t("md.asciiTitle")}</h2>
               <pre
                 style={{
                   margin: 0,
@@ -249,7 +250,7 @@ export default function MitreDeepPage() {
                   overflow: "auto",
                 }}
               >
-                {deep.ascii_report || "(لا يوجد نص)"}
+                {deep.ascii_report || t("md.noAscii")}
               </pre>
             </section>
           </>

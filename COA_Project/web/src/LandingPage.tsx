@@ -1,35 +1,17 @@
 import { Link } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
-const FEATURE_CARDS = [
-  {
-    to: "/dashboard",
-    title: "فحص / لوحة الأداء",
-    desc: "تشغيل الفحص، التهديدات، العمليات، الشبكة، تبويب OT/ICS المختصر، السجلات، وتصدير التقارير.",
-  },
-  {
-    to: "/defense-context",
-    title: "سياق دفاعي (الوكيل #5)",
-    desc: "إسناد استرشادي من فحص الجهاز، ملفات APT، playbooks، موقف دفاعي، وبيانات heatmap خام — بعد فحص واحد.",
-  },
-  {
-    to: "/mitre-deep",
-    title: "MITRE عميق",
-    desc: "سلسلة القتل، فجوات الكشف، سياق ICS، تقرير ASCII، وتصدير طبقة Navigator من الجلسة.",
-  },
-  {
-    to: "/mitre-heatmap",
-    title: "خريطة MITRE الحرارية",
-    desc: "شبكة تقنيات ملوّنة وفلترة تقنيات أعلى APT أو فجوات النص.",
-  },
-  {
-    to: "/ot-dashboard",
-    title: "OT / ICS (الوكيل #6)",
-    desc: "مخزون تقريبي، تنبيهات منافذ صناعية، سيناريوهات OT، تقييم ICS Specialist، أمثلة MITRE ICS.",
-  },
-] as const;
+const FEATURE_CARD_KEYS = [
+  { to: "/dashboard", titleKey: "landing.card.dash.title" as const, descKey: "landing.card.dash.desc" as const },
+  { to: "/defense-context", titleKey: "landing.card.dc.title" as const, descKey: "landing.card.dc.desc" as const },
+  { to: "/mitre-deep", titleKey: "landing.card.md.title" as const, descKey: "landing.card.md.desc" as const },
+  { to: "/mitre-heatmap", titleKey: "landing.card.mh.title" as const, descKey: "landing.card.mh.desc" as const },
+  { to: "/ot-dashboard", titleKey: "landing.card.ot.title" as const, descKey: "landing.card.ot.desc" as const },
+];
 
 export default function LandingPage() {
+  const { t } = useI18n();
   return (
     <div className="page-shell page-shell--hero">
       <header className="page-header">
@@ -55,14 +37,13 @@ export default function LandingPage() {
               letterSpacing: "-0.02em",
             }}
           >
-            مرحباً بك في C.O.A
+            {t("landing.hero")}
           </h1>
           <p style={{ margin: "0 0 0.35rem", color: "var(--muted)", fontSize: "1rem", lineHeight: 1.55 }}>
-            ابدأ بـ <strong>فحص من لوحة الأداء</strong>؛ بعدها تفتح صفحات السياق الدفاعي وMITRE وOT وتقرأ آخر جلسة من
-            المتصفح.
+            {t("landing.p1")}
           </p>
           <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "0.82rem" }}>
-            التوثيق: <code style={{ color: "var(--cyan)" }}>docs/React_Additions_AR.md</code>
+            {t("landing.docs")} <code style={{ color: "var(--cyan)" }}>docs/React_Additions_AR.md</code>
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem", alignItems: "center", marginBottom: "1.25rem" }}>
             <Link
@@ -75,7 +56,7 @@ export default function LandingPage() {
                 fontSize: "1rem",
               }}
             >
-              الانتقال إلى لوحة الأداء ← فحص
+              {t("landing.cta")}
             </Link>
           </div>
 
@@ -87,7 +68,7 @@ export default function LandingPage() {
               textAlign: "right",
             }}
           >
-            {FEATURE_CARDS.map((c) => (
+            {FEATURE_CARD_KEYS.map((c) => (
               <Link
                 key={c.to}
                 to={c.to}
@@ -103,9 +84,9 @@ export default function LandingPage() {
                 }}
               >
                 <div style={{ fontWeight: 700, color: "var(--cyan)", fontSize: "0.95rem", marginBottom: "0.35rem" }}>
-                  {c.title}
+                  {t(c.titleKey)}
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.45 }}>{c.desc}</div>
+                <div style={{ fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.45 }}>{t(c.descKey)}</div>
               </Link>
             ))}
           </div>
@@ -113,8 +94,11 @@ export default function LandingPage() {
       </main>
 
       <footer className="page-footer page-footer--center">
-        شغّل الخادم: <code style={{ color: "var(--cyan)" }}>python web_api.py</code> و Vite:{" "}
-        <code style={{ color: "var(--cyan)" }}>npm run dev</code> — التفاصيل في docs/React_Additions_AR.md
+        {t("landing.footer1")}
+        <code style={{ color: "var(--cyan)" }}>python web_api.py</code>
+        {t("landing.footer2")}
+        <code style={{ color: "var(--cyan)" }}>npm run dev</code>
+        {t("landing.footer3")}
       </footer>
     </div>
   );

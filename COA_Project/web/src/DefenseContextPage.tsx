@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { Link, useLocation } from "react-router-dom";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
 type DefenseContext = {
   agent?: string;
@@ -51,6 +52,7 @@ function mirrorDcToSessionStorage(next: DefenseContext) {
 }
 
 export default function DefenseContextPage() {
+  const { locale, t } = useI18n();
   const [dc, setDc] = useState<DefenseContext | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -79,17 +81,17 @@ export default function DefenseContextPage() {
       } else {
         setDc(null);
         if (res.status >= 500) {
-          setErr(json.error || "خطأ في الخادم.");
+          setErr(json.error || t("common.serverError"));
         }
         /* 400 = no last scan — leave empty state without error */
       }
     } catch {
       setDc(null);
-      setErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+      setErr(t("common.connectError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void refresh();
@@ -116,8 +118,8 @@ export default function DefenseContextPage() {
     <div className="page-shell">
       <header className="page-header">
         <div className="page-header__row">
-          <h1 className="page-title page-title--purple">سياق دفاعي — الوكيل #5</h1>
-          <span className="page-subtitle">APT profiles · Playbooks · Heatmap بيانات</span>
+          <h1 className="page-title page-title--purple">{t("dc.title")}</h1>
+          <span className="page-subtitle">{t("dc.subtitle")}</span>
         </div>
         <FeatureNav />
       </header>
@@ -125,15 +127,15 @@ export default function DefenseContextPage() {
       <main className="page-main">
         {err && <p style={{ color: "var(--red)" }}>{err}</p>}
         {loading && !dc && !err && (
-          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>جاري التحميل من الخادم…</p>
+          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>{t("common.loadingServer")}</p>
         )}
         {!dc && !err && !loading && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
-            لا توجد بيانات. نفّذ{" "}
+            {t("dc.emptyPart1")}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
-              فحصاً من لوحة الأداء
-            </Link>{" "}
-            ثم ارجع لهذه الصفحة (أو افتحها في تبويب جديد بعد إتمام الفحص — يُجلب آخر فحص من الخادم).
+              {t("dc.emptyLink")}
+            </Link>
+            {t("dc.emptyPart2")}
           </p>
         )}
 
@@ -151,11 +153,7 @@ export default function DefenseContextPage() {
                 border: "1px solid var(--bg3)",
               }}
             >
-              المحتوى أدناه مبني على <strong style={{ color: "var(--fg)" }}>نفس فحص الجهاز</strong> الذي شغّلته من
-              اللوحة: التهديدات والإشارات من محرك التحليل؛ ترتيب ملفات APT والـ playbooks وخلايا الـ heatmap تُحسب{" "}
-              <strong style={{ color: "var(--fg)" }}>محلياً</strong> من قواعد وملفات YAML علنية (مثل MITRE). هذا
-              طبقة <strong style={{ color: "var(--fg)" }}>SOC استرشادية</strong> لمساعدة المحلّل — ليست إسناداً
-              رسمياً ولا بديلاً عن تحقيق على الحدث.
+              {t("dc.intro")}
             </p>
             {dc.disclaimer && (
               <p style={{ color: "var(--yellow)", fontSize: "0.9rem", padding: "0.75rem", background: "var(--bg2)", borderRadius: "var(--radius)" }}>
@@ -164,29 +162,29 @@ export default function DefenseContextPage() {
             )}
 
             <section style={sec}>
-              <h2 style={h2}>الإسناد الاسترشادي</h2>
+              <h2 style={h2}>{t("dc.attribution")}</h2>
               <dl style={dl}>
-                <dt>جهة مرجّحة</dt>
+                <dt>{t("dc.dtActor")}</dt>
                 <dd>{String(att.likely_actor ?? "—")}</dd>
-                <dt>الثقة</dt>
+                <dt>{t("dc.dtConfidence")}</dt>
                 <dd>{String(att.confidence_percent ?? "—")}%</dd>
-                <dt>التبرير</dt>
+                <dt>{t("dc.dtReasoning")}</dt>
                 <dd style={{ whiteSpace: "pre-wrap" }}>{String(att.reasoning ?? "—")}</dd>
-                <dt>ملاحظة المصدر</dt>
+                <dt>{t("dc.dtSourceNote")}</dt>
                 <dd>{String(att.source_note ?? "—")}</dd>
               </dl>
             </section>
 
             <section style={sec}>
-              <h2 style={h2}>ملفات APT المرتبة (أعلى تشابه)</h2>
+              <h2 style={h2}>{t("dc.profilesTitle")}</h2>
               <div className="table-wrap">
                 <table>
                   <thead>
                     <tr>
-                      <th>المعرّف</th>
-                      <th>الاسم</th>
-                      <th>التشابه</th>
-                      <th>أسباب</th>
+                      <th>{t("dc.thId")}</th>
+                      <th>{t("dc.thName")}</th>
+                      <th>{t("dc.thSimilarity")}</th>
+                      <th>{t("dc.thReasons")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -203,13 +201,13 @@ export default function DefenseContextPage() {
                   </tbody>
                 </table>
                 {!dc.profiles_ranked?.length && (
-                  <p style={{ color: "var(--muted)", padding: "0.75rem" }}>لا توجد ترتيبات.</p>
+                  <p style={{ color: "var(--muted)", padding: "0.75rem" }}>{t("dc.noRanks")}</p>
                 )}
               </div>
             </section>
 
             <section style={sec}>
-              <h2 style={h2}>نية استراتيجية / تعقيد / حملة</h2>
+              <h2 style={h2}>{t("dc.strategicBlock")}</h2>
               <pre
                 style={{
                   ...preBox,
@@ -229,20 +227,27 @@ export default function DefenseContextPage() {
             </section>
 
             <section style={sec}>
-              <h2 style={h2}>Playbooks مفعّلة</h2>
+              <h2 style={h2}>{t("dc.playbooksTitle")}</h2>
               <ul style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
-                {(dc.playbooks_triggered || []).map((p, i) => (
-                  <li key={i} style={{ marginBottom: "0.35rem" }}>
-                    <strong style={{ color: "var(--fg)" }}>{String(p.id ?? "")}</strong> — {String(p.name_ar ?? p.name_en ?? "")}{" "}
-                    {p.reason ? <span style={{ opacity: 0.9 }}>({String(p.reason)})</span> : null}
-                  </li>
-                ))}
+                {(dc.playbooks_triggered || []).map((p, i) => {
+                  const pr = p as { id?: string; name_ar?: string; name_en?: string; reason?: string };
+                  const name =
+                    locale === "ar"
+                      ? (pr.name_ar || pr.name_en || "")
+                      : (pr.name_en || pr.name_ar || "");
+                  return (
+                    <li key={i} style={{ marginBottom: "0.35rem" }}>
+                      <strong style={{ color: "var(--fg)" }}>{String(pr.id ?? "")}</strong> — {name}{" "}
+                      {pr.reason ? <span style={{ opacity: 0.9 }}>({String(pr.reason)})</span> : null}
+                    </li>
+                  );
+                })}
               </ul>
-              {!dc.playbooks_triggered?.length && <p style={{ color: "var(--muted)" }}>لم يُفعّل playbook في هذا الفحص.</p>}
+              {!dc.playbooks_triggered?.length && <p style={{ color: "var(--muted)" }}>{t("dc.noPlaybooks")}</p>}
             </section>
 
             <section style={sec}>
-              <h2 style={h2}>موقف دفاعي مقترح</h2>
+              <h2 style={h2}>{t("dc.postureTitle")}</h2>
               <ul style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
                 {(dc.recommended_defense_posture || []).map((line, i) => (
                   <li key={i}>{line}</li>
@@ -251,13 +256,13 @@ export default function DefenseContextPage() {
             </section>
 
             <section style={sec}>
-              <h2 style={h2}>خلايا Heatmap (بيانات خام)</h2>
+              <h2 style={h2}>{t("dc.heatmapRaw")}</h2>
               <p style={{ fontSize: "0.82rem", color: "var(--muted)" }}>
-                للعرض الحراري استخدم{" "}
+                {t("dc.heatmapBefore")}
                 <Link to="/mitre-heatmap" style={{ color: "var(--cyan)" }}>
-                  صفحة خريطة MITRE
+                  {t("dc.heatmapLink")}
                 </Link>
-                .
+                {t("dc.heatmapAfter")}
               </p>
               <pre style={{ ...preBox, maxHeight: "200px", overflow: "auto", fontSize: "0.72rem" }}>
                 {JSON.stringify(dc.mitre_heatmap || [], null, 2)}

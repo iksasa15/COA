@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DEMO_COUNCIL_REPORT_FALLBACK } from "./demoCouncilReport";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
 type LogEvent = { timestamp: string; type: string; details: string };
 
@@ -116,6 +117,7 @@ async function downloadFromApi(path: string, fallbackName: string) {
 }
 
 export default function ScanPage() {
+  const { t } = useI18n();
   const [tab, setTab] = useState<TabId>("threats");
   // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama local). User can turn off for faster scans.
   const [useCouncil, setUseCouncil] = useState(true);
@@ -125,12 +127,12 @@ export default function ScanPage() {
   const [councilCheckResult, setCouncilCheckResult] = useState<CouncilAgentsHealth | null>(null);
   const [data, setData] = useState<ScanPayload | null>(null);
   const [logLines, setLogLines] = useState<{ ts: string; level: string; text: string }[]>([]);
-  const [status, setStatus] = useState("Ready — start the API (python web_api.py) then scan.");
+  const [status, setStatus] = useState(() => t("scan.statusReady"));
 
   const runScan = useCallback(async () => {
     setLoading(true);
-    setLogLines([{ ts: new Date().toLocaleTimeString(), level: "INFO", text: "Starting scan…" }]);
-    setStatus("Scanning…");
+    setLogLines([{ ts: new Date().toLocaleTimeString(), level: "INFO", text: t("scan.logStarting") }]);
+    setStatus(t("scan.scanning"));
     setData(null);
     try {
       const res = await fetch("/api/scan", {
@@ -180,23 +182,24 @@ export default function ScanPage() {
         },
       ]);
       setStatus(
-        `Done — ${json.analysis?.total_threats ?? 0} threats · ` +
-          `${json.connections_total ?? 0} connections · ` +
-          `${json.processes_total ?? 0} processes`,
+        t("scan.statusDone")
+          .replace("{threats}", String(json.analysis?.total_threats ?? 0))
+          .replace("{conns}", String(json.connections_total ?? 0))
+          .replace("{procs}", String(json.processes_total ?? 0)),
       );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       setLogLines((L) => appendLocalLog(L, "ERROR", msg));
-      setStatus("Error — check API is running on port 5050");
+      setStatus(t("scan.errApi"));
     } finally {
       setLoading(false);
     }
-  }, [useCouncil]);
+  }, [useCouncil, t]);
 
   const loadSyntheticSession = useCallback(async () => {
     setSynthLoading(true);
-    setLogLines([{ ts: new Date().toLocaleTimeString(), level: "INFO", text: "Loading synthetic session…" }]);
-    setStatus("Loading synthetic data…");
+    setLogLines([{ ts: new Date().toLocaleTimeString(), level: "INFO", text: t("scan.logSynthLoad") }]);
+    setStatus(t("scan.synthLoading"));
     setData(null);
     try {
       const res = await fetch("/api/demo/seed-session", {
@@ -248,21 +251,23 @@ export default function ScanPage() {
         {
           ts: endTs,
           level: "SUCCESS",
-          text: `Synthetic session loaded — ${normalized.analysis?.total_threats ?? 0} threats (not from this host)`,
+          text: t("scan.logSynthDone").replace("{n}", String(normalized.analysis?.total_threats ?? 0)),
         },
       ]);
       setStatus(
-        `بيانات وهمية — ${normalized.analysis?.total_threats ?? 0} تهديدات · ` +
-          `${normalized.connections_total ?? 0} اتصال · ${normalized.processes_total ?? 0} عملية (جلسة مخبرية ثابتة)`,
+        t("scan.statusSynth")
+          .replace("{threats}", String(normalized.analysis?.total_threats ?? 0))
+          .replace("{conns}", String(normalized.connections_total ?? 0))
+          .replace("{procs}", String(normalized.processes_total ?? 0)),
       );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       setLogLines((L) => appendLocalLog(L, "ERROR", msg));
-      setStatus("تعذّر التحميل — تأكد أن الخادم يعمل (python web_api.py)");
+      setStatus(t("scan.statusSynthFail"));
     } finally {
       setSynthLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const verifyCouncilAgents = useCallback(async () => {
     setCouncilCheckLoading(true);
@@ -286,23 +291,23 @@ export default function ScanPage() {
     const conns = data?.connections_total ?? 0;
     const procs = data?.processes_total ?? 0;
     return [
-      { label: "Connections", value: String(conns), color: "var(--cyan)" },
-      { label: "Processes", value: String(procs), color: "var(--green)" },
-      { label: "Critical", value: String(a?.critical ?? "—"), color: "var(--red)" },
-      { label: "High", value: String(a?.high ?? "—"), color: "var(--orange)" },
-      { label: "Medium", value: String(a?.medium ?? "—"), color: "var(--yellow)" },
-      { label: "Total threats", value: String(a?.total_threats ?? "—"), color: "var(--purple)" },
+      { label: t("scan.statConnections"), value: String(conns), color: "var(--cyan)" },
+      { label: t("scan.statProcesses"), value: String(procs), color: "var(--green)" },
+      { label: t("scan.statCritical"), value: String(a?.critical ?? "—"), color: "var(--red)" },
+      { label: t("scan.statHigh"), value: String(a?.high ?? "—"), color: "var(--orange)" },
+      { label: t("scan.statMedium"), value: String(a?.medium ?? "—"), color: "var(--yellow)" },
+      { label: t("scan.statTotalThreats"), value: String(a?.total_threats ?? "—"), color: "var(--purple)" },
     ];
-  }, [data]);
+  }, [data, t]);
 
   return (
     <div className="page-shell">
       <header className="page-header">
         <div className="page-header__row">
           <h1 className="page-title">C.O.A</h1>
-          <span className="page-subtitle">Council of Agents — لوحة الأداء</span>
+          <span className="page-subtitle">{t("scan.subtitle")}</span>
           <Link to="/" className="page-header__home">
-            الرئيسية
+            {t("scan.home")}
           </Link>
         </div>
         <FeatureNav />
@@ -310,36 +315,33 @@ export default function ScanPage() {
 
       <div className="page-toolbar">
         <button type="button" className="btn-primary" disabled={loading || synthLoading} onClick={runScan}>
-          {loading ? "Scanning…" : "Start scan"}
+          {loading ? t("scan.scanning") : t("scan.startScan")}
         </button>
         <button
           type="button"
           className="btn-ghost"
           disabled={loading || synthLoading}
-          title="لا يُجمع من جهازك: جلسة ثابتة من الخادم (تهديدات، دفاع، MITRE، OT) لتجربة الواجهات بسرعة."
+          title={t("scan.synthTitle")}
           onClick={() => void loadSyntheticSession()}
         >
-          {synthLoading ? "جاري التحميل…" : "تحميل بيانات وهمية"}
+          {synthLoading ? t("scan.synthLoading") : t("scan.synthBtn")}
         </button>
-        <label
-          className="checkbox"
-          title="المجلس يستخدم Ollama من إعدادات الخادم (.env). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
-        >
+        <label className="checkbox" title={t("scan.councilTitle")}>
           <input
             type="checkbox"
             checked={useCouncil}
             onChange={(e) => setUseCouncil(e.target.checked)}
           />
-          مجلس الوكلاء
+          {t("scan.councilLabel")}
         </label>
         <button
           type="button"
           className="btn-ghost"
           disabled={councilCheckLoading || loading || synthLoading}
-          title="يتحقق من إعداد LLM + إنشاء وكيل CrewAI (بدون تشغيل فحص كامل)"
+          title={t("scan.councilCheckTitle")}
           onClick={() => void verifyCouncilAgents()}
         >
-          {councilCheckLoading ? "جاري التحقق…" : "التحقق من وكلاء الذكاء"}
+          {councilCheckLoading ? t("scan.councilCheckLoading") : t("scan.councilCheckBtn")}
         </button>
         <div className="page-toolbar-spacer" />
         <button
@@ -348,7 +350,7 @@ export default function ScanPage() {
           disabled={!data?.ok}
           onClick={() => downloadFromApi("/api/reports/txt", "COA_Report.txt")}
         >
-          Export TXT
+          {t("scan.exportTxt")}
         </button>
         <button
           type="button"
@@ -356,7 +358,7 @@ export default function ScanPage() {
           disabled={!data?.ok}
           onClick={() => downloadFromApi("/api/reports/html", "COA_Report.html")}
         >
-          Export HTML
+          {t("scan.exportHtml")}
         </button>
         <button
           type="button"
@@ -364,7 +366,7 @@ export default function ScanPage() {
           disabled={!data?.ok}
           onClick={() => downloadFromApi("/api/reports/incident", "COA_Incident_Report.txt")}
         >
-          Incident report
+          {t("scan.exportIncident")}
         </button>
         <button
           type="button"
@@ -372,7 +374,7 @@ export default function ScanPage() {
           disabled={!data?.ok}
           onClick={() => downloadFromApi("/api/reports/mitre-navigator.json", "coa_mitre_navigator_layer.json")}
         >
-          Navigator JSON
+          {t("scan.exportNav")}
         </button>
       </div>
 
@@ -390,9 +392,9 @@ export default function ScanPage() {
           }}
         >
           {councilCheckResult.ok && councilCheckResult.crewai_agents_ready ? (
-            <strong style={{ color: "var(--green)" }}>وكلاء الذكاء جاهزة:</strong>
+            <strong style={{ color: "var(--green)" }}>{t("scan.councilOk")}</strong>
           ) : (
-            <strong style={{ color: "var(--orange)" }}>وكلاء الذكاء غير جاهزة:</strong>
+            <strong style={{ color: "var(--orange)" }}>{t("scan.councilBad")}</strong>
           )}{" "}
           {councilCheckResult.message && <span style={{ color: "var(--muted)" }}>{councilCheckResult.message}</span>}
           {councilCheckResult.error && (
@@ -453,7 +455,7 @@ export default function ScanPage() {
             color: "var(--muted)",
           }}
         >
-          <strong style={{ color: "var(--fg)" }}>Executive summary</strong>
+          <strong style={{ color: "var(--fg)" }}>{t("scan.execSummary")}</strong>
           <p style={{ margin: "0.5rem 0 0", whiteSpace: "pre-wrap" }}>{data.summary}</p>
         </div>
       )}
@@ -470,11 +472,11 @@ export default function ScanPage() {
             color: "var(--muted)",
           }}
         >
-          <strong style={{ color: "var(--purple)" }}>Defense Context (Agent #5)</strong>
+          <strong style={{ color: "var(--purple)" }}>{t("scan.defenseCard")}</strong>
           <p style={{ margin: "0.4rem 0 0" }}>
             {String((data.defense_context.attribution as { likely_actor?: string }).likely_actor ?? "")}{" "}
             <span style={{ opacity: 0.85 }}>
-              — confidence{" "}
+              — {t("scan.confidence")}{" "}
               {String((data.defense_context.attribution as { confidence_percent?: number }).confidence_percent ?? 0)}%
             </span>
           </p>
@@ -483,7 +485,7 @@ export default function ScanPage() {
           </p>
           {(data.defense_context.playbooks_triggered?.length ?? 0) > 0 && (
             <p style={{ margin: "0.5rem 0 0", fontSize: "0.82rem" }}>
-              Playbooks:{" "}
+              {t("scan.playbooks")}{" "}
               {data.defense_context.playbooks_triggered!.map((p) => String(p.id ?? p)).join(", ")}
             </p>
           )}
@@ -494,21 +496,21 @@ export default function ScanPage() {
         <div className="tabs">
           {(
             [
-              ["threats", "Threats"],
-              ["processes", "Processes"],
-              ["network", "Network"],
-              ["ot_ics", "OT/ICS"],
-              ["council", "Multi-AI"],
-              ["logs", "Logs"],
+              ["threats", "scan.tab.threats"],
+              ["processes", "scan.tab.processes"],
+              ["network", "scan.tab.network"],
+              ["ot_ics", "scan.tab.otIcs"],
+              ["council", "scan.tab.council"],
+              ["logs", "scan.tab.logs"],
             ] as const
-          ).map(([id, label]) => (
+          ).map(([id, key]) => (
             <button
               key={id}
               type="button"
               className={`tab ${tab === id ? "active" : ""}`}
               onClick={() => setTab(id)}
             >
-              {label}
+              {t(key)}
             </button>
           ))}
         </div>
@@ -628,7 +630,7 @@ export default function ScanPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {!data?.ot_ics ? (
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
-                Run a scan to load passive OT/ICS correlation (known industrial ports + processes).
+                {t("scan.ot.runScanHint")}
               </p>
             ) : data.ot_ics.disclaimer?.trim() ? (
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.5 }}>
@@ -650,19 +652,17 @@ export default function ScanPage() {
                       lineHeight: 1.45,
                     }}
                   >
-                    <strong>0 hits طبيعي</strong> على جهاز بدون اتصالات صناعية — الفحص نفسه ناجح؛ راجع تبويب
-                    Threats وصفحات MITRE/السياق الدفاعي لبقية النتائج.
+                    <strong>{t("scan.ot.zeroHitsStrong")}</strong> {t("scan.ot.zeroHits")}
                   </p>
                 )}
                 <div style={{ fontSize: "0.85rem", color: "var(--fg)" }}>
-                  <strong>Distinct ICS protocols:</strong> {data.ot_ics.distinct_ics_protocols ?? 0} ·{" "}
-                  <strong>Hits:</strong> {(data.ot_ics.ics_protocol_hits || []).length} ·{" "}
-                  <strong>استمرارية الإنتاج (تقدير):</strong>{" "}
-                  {data.ot_ics.production_continuity_score ?? "—"}
+                  <strong>{t("scan.ot.distinctProtocols")}</strong> {data.ot_ics.distinct_ics_protocols ?? 0} ·{" "}
+                  <strong>{t("scan.ot.hits")}</strong> {(data.ot_ics.ics_protocol_hits || []).length} ·{" "}
+                  <strong>{t("scan.ot.continuity")}</strong> {data.ot_ics.production_continuity_score ?? "—"}
                 </div>
                 {(data.ot_ics.ot_playbooks_triggered || []).length > 0 && (
                   <div style={{ fontSize: "0.85rem", color: "var(--orange)" }}>
-                    <strong>OT playbooks:</strong>{" "}
+                    <strong>{t("scan.ot.playbooks")}</strong>{" "}
                     {data.ot_ics.ot_playbooks_triggered!.map((p) => String(p.id ?? p)).join(", ")}
                   </div>
                 )}
@@ -680,13 +680,13 @@ export default function ScanPage() {
                     overflow: "auto",
                   }}
                 >
-                  {data.ot_ics.ics_specialist?.ascii_report || "(no specialist output)"}
+                  {data.ot_ics.ics_specialist?.ascii_report || t("scan.ot.noSpecialist")}
                 </pre>
                 <Link
                   to="/ot-dashboard"
                   style={{ color: "var(--cyan)", fontWeight: 600, fontSize: "0.9rem", textDecoration: "none" }}
                 >
-                  فتح لوحة OT/ICS الكاملة →
+                  {t("scan.ot.openFull")}
                 </Link>
               </>
             )}

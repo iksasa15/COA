@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FeatureNav from "./FeatureNav";
+import { useI18n } from "./i18n";
 
 type HeatCell = {
   technique_id: string;
@@ -29,23 +30,26 @@ const HEAT_COLORS: Record<number, string> = {
   3: "var(--heat-3)",
 };
 
-const HEAT_LABELS: Record<number, string> = {
-  0: "لم يُرصد",
-  1: "إقليمي / ملف تعريف APT",
-  2: "شوهد في هذا الفحص",
-  3: "شوهد + تطابق ملف تعريف",
-};
-
 type ViewFilter = "all" | "apt_top" | "gaps_only";
 
 export default function MitreHeatmapPage() {
+  const { t } = useI18n();
   const [cells, setCells] = useState<HeatCell[]>([]);
   const [disclaimer, setDisclaimer] = useState<string | null>(null);
+  const [sessionMissing, setSessionMissing] = useState(true);
   const [attribution, setAttribution] = useState<string>("");
   const [profiles, setProfiles] = useState<ProfileRank[]>([]);
   const [mitreDeep, setMitreDeep] = useState<MitreDeepExtras | null>(null);
   const [viewFilter, setViewFilter] = useState<ViewFilter>("all");
   const location = useLocation();
+
+  const heatLabel = useCallback(
+    (heat: number) => {
+      const k = `heat.${Math.min(3, Math.max(0, heat))}` as const;
+      return t(k);
+    },
+    [t],
+  );
 
   type DcShape = {
     mitre_heatmap?: HeatCell[];
@@ -83,27 +87,29 @@ export default function MitreHeatmapPage() {
         setCells([]);
         setProfiles([]);
         setAttribution("");
-        setDisclaimer(
-          extrasRaw
-            ? "لا يوجد defense_context في آخر فحص. نفّذ فحصاً من لوحة الأداء أو راجع استجابة الـ API."
-            : "لا توجد بيانات. نفّذ فحصاً من لوحة الأداء أولاً.",
-        );
+        setSessionMissing(true);
+        setDisclaimer(extrasRaw ? t("mh.disclaimerNoExtras") : t("mh.disclaimerNoScan"));
         return;
       }
 
+      setSessionMissing(false);
       setCells(dc.mitre_heatmap || []);
       setDisclaimer(dc.disclaimer || null);
       setProfiles(dc.profiles_ranked || []);
       const a = dc.attribution;
       if (a) {
-        setAttribution(`${a.likely_actor ?? ""} (${a.confidence_percent ?? 0}% confidence)`);
+        const actor = a.likely_actor ?? "";
+        const pct = String(a.confidence_percent ?? 0);
+        const conf = t("mh.attributionConfidence").replace("{pct}", pct);
+        setAttribution(actor ? `${actor} (${conf})` : conf);
       } else {
         setAttribution("");
       }
     } catch {
-      setDisclaimer("تعذّر قراءة بيانات السياق الدفاعي.");
+      setDisclaimer(t("common.readDefenseError"));
+      setSessionMissing(true);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     refresh();
@@ -154,7 +160,7 @@ export default function MitreHeatmapPage() {
     <div className="page-shell">
       <header className="page-header">
         <div className="page-header__row">
-          <h1 className="page-title page-title--fg">MITRE ATT&CK Coverage — تغطية وخريطة حرارية</h1>
+          <h1 className="page-title page-title--fg">{t("mh.title")}</h1>
         </div>
         <FeatureNav />
       </header>
@@ -162,7 +168,7 @@ export default function MitreHeatmapPage() {
       <main className="page-main">
         {attribution && (
           <p style={{ color: "var(--muted)" }}>
-            <strong style={{ color: "var(--fg)" }}>الإسناد الاسترشادي:</strong> {attribution}
+            <strong style={{ color: "var(--fg)" }}>{t("mh.attributionLabel")}</strong> {attribution}
           </p>
         )}
         {disclaimer && (
@@ -182,7 +188,7 @@ export default function MitreHeatmapPage() {
               marginBottom: "0.75rem",
             }}
           >
-            <strong>ICS / OT:</strong> {mitreDeep.ics_context.note}
+            <strong>{t("mh.icsBanner")}</strong> {mitreDeep.ics_context.note}
           </div>
         )}
 
@@ -195,7 +201,7 @@ export default function MitreHeatmapPage() {
             marginBottom: "0.75rem",
           }}
         >
-          <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>فلتر العرض:</span>
+          <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{t("mh.filterLabel")}</span>
           {(["all", "apt_top", "gaps_only"] as const).map((k) => (
             <button
               key={k}
@@ -204,7 +210,7 @@ export default function MitreHeatmapPage() {
               style={{ padding: "0.4rem 0.75rem", fontSize: "0.82rem" }}
               onClick={() => setViewFilter(k)}
             >
-              {k === "all" ? "الكل" : k === "apt_top" ? "تقنيات أعلى APT (ملف YAML)" : "فجوات كشف (نص)"}
+              {k === "all" ? t("mh.filterAll") : k === "apt_top" ? t("mh.filterApt") : t("mh.filterGaps")}
             </button>
           ))}
           <button
@@ -214,13 +220,13 @@ export default function MitreHeatmapPage() {
             disabled={!mitreDeep?.navigator_layer}
             onClick={downloadNavigatorLayer}
           >
-            تصدير Navigator JSON
+            {t("mh.exportNav")}
           </button>
         </div>
 
         {viewFilter === "gaps_only" ? (
           <ul style={{ color: "var(--fg)", maxWidth: "48rem" }}>
-            {(mitreDeep?.detection_gap_hints?.length ? mitreDeep.detection_gap_hints : ["لا توجد تلميحات فجوات بعد الفحص الأخير."]).map(
+            {(mitreDeep?.detection_gap_hints?.length ? mitreDeep.detection_gap_hints : [t("mh.noGapHints")]).map(
               (g, i) => (
                 <li key={i} style={{ marginBottom: "0.35rem" }}>
                   {g}
@@ -230,10 +236,7 @@ export default function MitreHeatmapPage() {
           </ul>
         ) : (
           <>
-            <p style={{ color: "var(--muted)", fontSize: "0.85rem", maxWidth: "52rem" }}>
-              الألوان: أحمر داكن = تطابق قوي؛ برتقالي = شوهد في الفحص؛ أصفر = إقليمي من الملفات؛ رمادي = لا
-              خلية.
-            </p>
+            <p style={{ color: "var(--muted)", fontSize: "0.85rem", maxWidth: "52rem" }}>{t("mh.legend")}</p>
             <div
               style={{
                 display: "grid",
@@ -242,17 +245,15 @@ export default function MitreHeatmapPage() {
                 marginTop: "0.5rem",
               }}
             >
-              {displayCells.length === 0 && !disclaimer?.includes("نفّذ") && (
+              {displayCells.length === 0 && !sessionMissing && (
                 <span style={{ color: "var(--muted)" }}>
-                  {viewFilter === "apt_top"
-                    ? "لا تقاطع بين تقنيات الفحص وأعلى ملف APT — جرّب «الكل»."
-                    : "لا توجد تقنيات مسجّلة لهذا الفحص."}
+                  {viewFilter === "apt_top" ? t("mh.emptyApt") : t("mh.emptyCells")}
                 </span>
               )}
               {displayCells.map((c) => (
                 <div
                   key={c.technique_id}
-                  title={`${c.tactic} — ${HEAT_LABELS[c.heat] ?? ""}`}
+                  title={`${c.tactic} — ${heatLabel(c.heat)}`}
                   style={{
                     borderRadius: "var(--radius)",
                     padding: "0.75rem",
@@ -268,7 +269,7 @@ export default function MitreHeatmapPage() {
                   <div style={{ fontWeight: 600, fontSize: "0.88rem", marginTop: "0.25rem" }}>{c.name}</div>
                   <div style={{ fontSize: "0.75rem", opacity: 0.88, marginTop: "0.35rem" }}>{c.tactic}</div>
                   <div style={{ fontSize: "0.72rem", marginTop: "0.35rem", opacity: 0.85 }}>
-                    Heat: {c.heat} — {HEAT_LABELS[c.heat] ?? ""}
+                    {t("mh.heatWord")}: {c.heat} — {heatLabel(c.heat)}
                   </div>
                 </div>
               ))}

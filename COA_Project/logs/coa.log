@@ -1727,3 +1727,37 @@
 2026-05-03 17:11:00,537 | WARNING  | logger:_log:113 | Threat detected: Process Threat
 2026-05-03 17:11:00,537 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
 2026-05-03 17:11:00,541 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:14:20,222 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:14:20,223 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 17:14:20,223 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:14:20,223 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:14:20,229 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:14:25,240 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 17:14:25,241 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 17:14:25,741 | INFO     | logger:_log:113 | Data collection completed in 0.50s
+2026-05-03 17:14:25,742 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:14:25,742 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:14:25,743 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:14:25,743 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:14:25,747 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:14:25,749 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 17:18:28,373 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:18:28,374 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 17:18:28,374 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:18:28,374 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:18:28,378 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:18:29,038 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:18:29,038 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 17:18:29,039 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:18:29,039 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:18:29,042 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:18:29,254 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:18:29,255 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 17:18:29,255 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:18:29,255 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:18:29,260 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 17:18:30,459 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 17:18:30,459 | WARNING  | logger:_log:113 | Threat detected: Network Threat
+2026-05-03 17:18:30,459 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 17:18:30,459 | INFO     | logger:_log:113 | Analysis complete: 2 threats found
+2026-05-03 17:18:30,466 | INFO     | logger:_log:113 | Defense context analysis complete

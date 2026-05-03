@@ -1,0 +1,7 @@
+# Local secrets
+COA_Project/.env
+
+# Python
+COA_Project/venv/
+COA_Project/**/__pycache__/
+*.pyc

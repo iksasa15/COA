@@ -757,3 +757,13 @@
 2026-05-01 15:50:35,086 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-05-01 15:50:35,089 | WARNING  | logger:_log:113 | VirusTotal disabled - no API key provided
 2026-05-01 15:50:35,190 | INFO     | logger:_log:113 | Dev pytest finished
+2026-05-03 12:55:40,231 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 12:55:42,953 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 12:56:24,751 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 12:56:25,855 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 12:57:41,450 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 12:57:42,144 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 12:57:42,598 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 12:57:47,258 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 12:57:47,954 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 12:57:48,395 | INFO     | logger:_log:113 | Council of Agents initialized successfully

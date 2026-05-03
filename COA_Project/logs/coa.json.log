@@ -757,3 +757,13 @@
 {"timestamp": "2026-05-01T15:50:35.086178", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
 {"timestamp": "2026-05-01T15:50:35.089264", "level": "WARNING", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "VirusTotal disabled - no API key provided"}
 {"timestamp": "2026-05-01T15:50:35.190059", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Dev pytest finished", "exit_code": 0, "scope": "all"}
+{"timestamp": "2026-05-03T12:55:40.231501", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "✓ Ollama is running with llama3.1", "base_url": "http://localhost:11434"}
+{"timestamp": "2026-05-03T12:55:42.953395", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "LLM initialized: llama3.1 @ http://localhost:11434"}
+{"timestamp": "2026-05-03T12:56:24.751956", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "✓ Ollama is running with llama3.1", "base_url": "http://localhost:11434"}
+{"timestamp": "2026-05-03T12:56:25.855997", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "LLM initialized: llama3.1 @ http://localhost:11434"}
+{"timestamp": "2026-05-03T12:57:41.450469", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "✓ Ollama is running with llama3.1", "base_url": "http://localhost:11434"}
+{"timestamp": "2026-05-03T12:57:42.144719", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "LLM initialized: llama3.1 @ http://localhost:11434"}
+{"timestamp": "2026-05-03T12:57:42.598913", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Council of Agents initialized successfully"}
+{"timestamp": "2026-05-03T12:57:47.258821", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "✓ Ollama is running with llama3.1", "base_url": "http://localhost:11434"}
+{"timestamp": "2026-05-03T12:57:47.954091", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "LLM initialized: llama3.1 @ http://localhost:11434"}
+{"timestamp": "2026-05-03T12:57:48.395294", "level": "INFO", "logger": "COA", "module": "logger", "function": "_log", "line": 113, "message": "Council of Agents initialized successfully"}

@@ -9,12 +9,21 @@ from pathlib import Path
 
 # ==================== Project Paths ====================
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load secrets and overrides from COA_Project/.env (before other env reads below)
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:
+    pass
+
 REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
 # ==================== LLM Configuration ====================
-# Local LLM settings (Ollama). Override with env for CI or different hosts:
-#   COA_LLM_MODEL, COA_LLM_BASE_URL, COA_LLM_TEMPERATURE
+# Local LLM settings (Ollama). Put overrides in COA_Project/.env (see .env.example)
+# or export: COA_LLM_MODEL, COA_LLM_BASE_URL, COA_LLM_TEMPERATURE
 LLM_PROVIDER = "ollama"
 LLM_MODEL = os.environ.get("COA_LLM_MODEL", "llama3.1").strip() or "llama3.1"
 _base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rstrip("/")

@@ -98,13 +98,13 @@ def diagnose_ollama() -> dict:
 def _get_crewai():
     """استيراد CrewAI فقط عند الحاجة"""
     try:
-        from crewai import Agent, Task, Crew, Process
-        from langchain_community.llms import Ollama
-        return Agent, Task, Crew, Process, Ollama
+        from crewai import Agent, Crew, LLM, Process, Task
+
+        return Agent, Task, Crew, Process, LLM
     except ImportError as e:
         raise ImportError(
-            f"CrewAI or LangChain not installed: {e}\n"
-            f"Install with: pip install crewai langchain-community"
+            f"CrewAI not installed: {e}\n"
+            f"Install with: pip install crewai"
         )
 
 
@@ -160,14 +160,14 @@ class CouncilOfAgents:
             )
 
         # الآن نحمّل CrewAI ونبني الوكلاء
-        Agent, Task, Crew, Process, Ollama = _get_crewai()
+        Agent, Task, Crew, Process, LLM = _get_crewai()
 
         self.Agent = Agent
         self.Task = Task
         self.Crew = Crew
         self.Process = Process
 
-        self.llm = self._initialize_llm(Ollama)
+        self.llm = self._initialize_llm(LLM)
 
         # بناء الوكلاء الثلاثة
         self.data_collector = self._create_data_collector()
@@ -176,11 +176,16 @@ class CouncilOfAgents:
 
         logger.info("Council of Agents initialized successfully")
 
-    def _initialize_llm(self, OllamaClass):
-        """تهيئة الاتصال بـ Ollama المحلي"""
+    def _initialize_llm(self, LLMClass):
+        """تهيئة Ollama عبر واجهة CrewAI الرسمية (OpenAI-compatible /v1).
+
+        CrewAI 1.x يتوقع ``llm`` من نوع ``crewai.llms.base_llm.BaseLLM`` أو اسم نموذج (str).
+        كائنات LangChain (مثل ``langchain_community.llms.Ollama``) ترفضها Pydantic.
+        """
         try:
-            llm = OllamaClass(
+            llm = LLMClass(
                 model=LLM_MODEL,
+                provider="ollama",
                 base_url=LLM_BASE_URL,
                 temperature=LLM_TEMPERATURE,
             )

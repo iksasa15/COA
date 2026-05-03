@@ -14,10 +14,14 @@ from typing import Any, Dict
 
 from utils.logger import logger
 from config.settings import (
-    LLM_MODEL,
-    LLM_BASE_URL,
-    LLM_TEMPERATURE,
     AGENT_CONFIG,
+    COUNCIL_RAW_JSON_MAX,
+    COUNCIL_SNAPSHOT_MAX_CONN,
+    COUNCIL_SNAPSHOT_MAX_PROC,
+    COUNCIL_THREATS_JSON_MAX,
+    LLM_BASE_URL,
+    LLM_MODEL,
+    LLM_TEMPERATURE,
 )
 
 
@@ -273,10 +277,11 @@ class CouncilOfAgents:
             description=(
                 f"Review the following raw system data and structure it:\n\n"
                 f"{raw_data}\n\n"
-                f"Output a concise structured summary highlighting key observations."
+                "Output a concise structured summary highlighting key observations. "
+                "Be brief: prioritize anomalies and high-signal items; avoid repeating every benign row."
             ),
             agent=self.data_collector,
-            expected_output="A structured summary of system data.",
+            expected_output="Short structured summary (roughly under 1200 words).",
         )
 
     def create_analysis_task(self, threats_data: str):
@@ -284,10 +289,11 @@ class CouncilOfAgents:
             description=(
                 f"Analyze these detected threats and enrich each with explanations:\n\n"
                 f"{threats_data}\n\n"
-                f"For each threat, explain WHY it's suspicious and the potential impact."
+                "For each threat, briefly explain WHY it's suspicious and the potential impact. "
+                "If the list is long, summarize clusters first, then detail only CRITICAL/HIGH."
             ),
             agent=self.threat_hunter,
-            expected_output="Enriched threat analysis with explanations.",
+            expected_output="Concise enriched analysis (prioritize severity).",
         )
 
     def create_solution_task(self, analyzed_threats: str):
@@ -295,11 +301,11 @@ class CouncilOfAgents:
             description=(
                 f"For each analyzed threat, provide remediation:\n\n"
                 f"{analyzed_threats}\n\n"
-                f"Include: exact command, risk level, reversibility, explanation.\n"
-                f"REMEMBER: Human decides — never auto-execute."
+                "Include: exact command, risk level, reversibility, one-line explanation per item. "
+                "Keep the plan compact. REMEMBER: Human decides — never auto-execute."
             ),
             agent=self.solution_advisor,
-            expected_output="Actionable remediation plan.",
+            expected_output="Compact actionable remediation plan.",
         )
 
     # ==================== Orchestration ====================
@@ -333,22 +339,28 @@ class CouncilOfAgents:
             raise
 
 
-def summarize_for_council(system_data: Dict[str, Any], max_conns: int = 45, max_procs: int = 45) -> str:
-    """Trim scan payload so CrewAI + Ollama stay within practical context limits."""
+def summarize_for_council(
+    system_data: Dict[str, Any],
+    max_conns: int | None = None,
+    max_procs: int | None = None,
+) -> str:
+    """Trim scan payload so CrewAI + Ollama stay within practical context limits (tunable via .env)."""
+    mc = COUNCIL_SNAPSHOT_MAX_CONN if max_conns is None else max_conns
+    mp = COUNCIL_SNAPSHOT_MAX_PROC if max_procs is None else max_procs
     snap = {
         "system_info": system_data.get("system_info"),
-        "network_connections": (system_data.get("network_connections") or [])[:max_conns],
-        "processes": (system_data.get("processes") or [])[:max_procs],
+        "network_connections": (system_data.get("network_connections") or [])[:mc],
+        "processes": (system_data.get("processes") or [])[:mp],
         "truncation": {
-            "connections_shown": min(max_conns, len(system_data.get("network_connections") or [])),
+            "connections_shown": min(mc, len(system_data.get("network_connections") or [])),
             "connections_total": len(system_data.get("network_connections") or []),
-            "processes_shown": min(max_procs, len(system_data.get("processes") or [])),
+            "processes_shown": min(mp, len(system_data.get("processes") or [])),
             "processes_total": len(system_data.get("processes") or []),
         },
     }
     raw = json.dumps(snap, indent=2, default=str)
-    if len(raw) > 100_000:
-        return raw[:100_000] + "\n…[truncated]"
+    if len(raw) > COUNCIL_RAW_JSON_MAX:
+        return raw[:COUNCIL_RAW_JSON_MAX] + "\n…[truncated]"
     return raw
 
 
@@ -363,8 +375,8 @@ def run_council_on_scan(system_data: Dict[str, Any], analysis: Dict[str, Any]) -
         raw = summarize_for_council(system_data)
         threats_list = analysis.get("threats") or []
         threats_json = json.dumps(threats_list, indent=2, default=str)
-        if len(threats_json) > 80_000:
-            threats_json = threats_json[:80_000] + "\n…[truncated]"
+        if len(threats_json) > COUNCIL_THREATS_JSON_MAX:
+            threats_json = threats_json[:COUNCIL_THREATS_JSON_MAX] + "\n…[truncated]"
         council = CouncilOfAgents()
         report = council.run_council(raw, threats_json)
         return {"ok": True, "report": str(report), "error": None}

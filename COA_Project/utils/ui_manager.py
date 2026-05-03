@@ -14,6 +14,12 @@ from rich.align import Align
 from rich import box
 import pyfiglet
 import time
+import math
+import os
+import threading
+from typing import Callable, TypeVar
+
+T = TypeVar("T")
 
 
 console = Console()
@@ -168,6 +174,57 @@ class UIManager:
         """رسم متحرك للتحميل"""
         with console.status(f"[cyan]{message}[/cyan]", spinner="dots"):
             time.sleep(duration)
+
+    @staticmethod
+    def run_with_council_progress(description: str, fn: Callable[[], T]) -> T:
+        """
+        تشغيل مهمة طويلة (مجلس CrewAI) مع شريط تقدم ونسبة مئوية.
+        النسبة زمنية تقريبية (تقترب من ~95%% ثم 100%% عند الانتهاء) لأن kickoff لا يعطي خطوات حقيقية.
+        """
+        try:
+            est = float(os.environ.get("COA_COUNCIL_PROGRESS_EST_SEC", "90") or "90")
+        except ValueError:
+            est = 90.0
+        est = max(15.0, min(est, 600.0))
+
+        result: list[T] = []
+        exc_holder: list[BaseException] = []
+
+        def worker() -> None:
+            try:
+                result.append(fn())
+            except BaseException as e:
+                exc_holder.append(e)
+
+        th = threading.Thread(target=worker, daemon=False)
+        th.start()
+        poll = 0.15
+        elapsed = 0.0
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(bar_width=None),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn(" [dim](estimate)[/dim]"),
+            console=console,
+            transient=True,
+        ) as progress:
+            task_id = progress.add_task(description, total=100)
+            while th.is_alive():
+                elapsed += poll
+                pct = min(
+                    95.0,
+                    95.0 * (1.0 - math.exp(-elapsed / max(est * 0.45, 1.0))),
+                )
+                progress.update(task_id, completed=pct)
+                th.join(timeout=poll)
+            progress.update(task_id, completed=100.0)
+        th.join()
+        if exc_holder:
+            raise exc_holder[0]
+        if not result:
+            raise RuntimeError("council worker finished without result")
+        return result[0]
 
     @staticmethod
     def divider():

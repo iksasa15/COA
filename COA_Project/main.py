@@ -320,11 +320,13 @@ def cli_scan(args):
         if args.council:
             ui.divider()
             ui.section_header("PHASE 2.9: Multi-Agent Council (CrewAI + Ollama)", "🤖")
-            ui.loading_animation("Running Eye → Brain → Strategist via local LLM…", 0.5)
             try:
                 from agents.council import OllamaConnectionError, run_council_on_scan
 
-                out = run_council_on_scan(system_data, analysis_result)
+                out = UIManager.run_with_council_progress(
+                    "Eye → Brain → Strategist (Ollama)",
+                    lambda: run_council_on_scan(system_data, analysis_result),
+                )
                 if out.get("ok") and out.get("report"):
                     reporter.log_event("COUNCIL", "CrewAI council completed (Ollama)")
                     text = str(out["report"])

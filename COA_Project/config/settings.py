@@ -30,6 +30,15 @@ _base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rst
 LLM_BASE_URL = _base or "http://localhost:11434"
 LLM_TEMPERATURE = float(os.environ.get("COA_LLM_TEMPERATURE", "0.3") or "0.3")
 
+
+def _int_env(name: str, default: int, lo: int, hi: int) -> int:
+    try:
+        v = int(os.environ.get(name, str(default)) or str(default))
+        return max(lo, min(hi, v))
+    except ValueError:
+        return default
+
+
 # CrewAI council: full step logs (huge JSON in terminal). Default off for readable CLI.
 _COUNCIL_VERBOSE = os.environ.get("COA_COUNCIL_VERBOSE", "").strip().lower() in (
     "1",
@@ -37,12 +46,19 @@ _COUNCIL_VERBOSE = os.environ.get("COA_COUNCIL_VERBOSE", "").strip().lower() in 
     "yes",
 )
 
+# Council speed: smaller snapshot + fewer agent iterations = faster PHASE 2.9 (see .env.example)
+COUNCIL_SNAPSHOT_MAX_CONN = _int_env("COA_COUNCIL_MAX_CONN", 18, 5, 120)
+COUNCIL_SNAPSHOT_MAX_PROC = _int_env("COA_COUNCIL_MAX_PROC", 22, 8, 120)
+COUNCIL_RAW_JSON_MAX = _int_env("COA_COUNCIL_RAW_JSON_MAX", 48_000, 6_000, 250_000)
+COUNCIL_THREATS_JSON_MAX = _int_env("COA_COUNCIL_THREATS_JSON_MAX", 32_000, 4_000, 150_000)
+COUNCIL_MAX_ITER = _int_env("COA_COUNCIL_MAX_ITER", 3, 1, 15)
+
 # ==================== Agent Configuration ====================
 # memory=False: CrewAI "Unified Memory" needs OpenAI/Chroma embedder keys without extra setup.
 AGENT_CONFIG = {
     "verbose": _COUNCIL_VERBOSE,
     "allow_delegation": False,
-    "max_iter": 5,
+    "max_iter": COUNCIL_MAX_ITER,
     "memory": False,
 }
 

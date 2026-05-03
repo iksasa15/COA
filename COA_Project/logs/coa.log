@@ -886,3 +886,48 @@
 2026-05-03 13:18:14,646 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
 2026-05-03 13:18:14,646 | INFO     | logger:_log:113 | Council of Agents initialized successfully
 2026-05-03 13:18:14,646 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:23:40,608 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:23:41,616 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:23:41,618 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:23:42,123 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:23:43,632 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:23:43,633 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:23:43,634 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:23:43,637 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:23:43,637 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:23:44,465 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:23:44,473 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:23:45,060 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:23:45,933 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 13:23:45,933 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:23:45,933 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:26:58,467 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:26:59,475 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:26:59,477 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:26:59,983 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:27:01,490 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:27:01,491 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:27:01,491 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:27:01,493 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:27:01,494 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:27:02,315 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:27:02,322 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:27:02,920 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:27:03,962 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 13:27:03,963 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:27:03,963 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 13:28:46,518 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:28:47,521 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:28:47,523 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:28:48,029 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:28:49,536 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:28:49,537 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:28:49,538 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:28:49,540 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:28:49,540 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:28:50,366 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:28:50,373 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:28:50,449 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 13:28:51,422 | INFO     | logger:_log:113 | LLM initialized: llama3.1 @ http://localhost:11434
+2026-05-03 13:28:51,422 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 13:28:51,422 | INFO     | logger:_log:113 | Starting Council of Agents collaboration

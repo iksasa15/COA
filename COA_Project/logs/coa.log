@@ -1259,3 +1259,81 @@
 2026-05-03 15:25:06,558 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
 2026-05-03 15:25:06,583 | INFO     | logger:_log:113 | Security action approved
 2026-05-03 15:25:06,592 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 15:28:38,648 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:28:38,649 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:28:39,154 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:28:39,155 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:28:39,155 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:28:39,156 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:28:39,158 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:28:39,159 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:28:39,170 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:28:39,174 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:28:39,185 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 15:28:40,154 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 15:28:40,155 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 15:28:40,155 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 15:34:30,765 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 15:35:34,388 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:35:34,401 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:35:34,905 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:35:34,906 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:35:34,906 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:34,906 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:34,909 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:34,909 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:35:34,921 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:35:34,925 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:35:40,551 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:35:40,552 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:35:41,057 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:35:41,058 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:35:41,059 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:41,059 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:41,062 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:41,062 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:35:41,072 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:35:41,074 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:35:41,085 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 15:35:41,099 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 15:35:41,099 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 15:35:41,099 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 15:35:46,618 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:35:46,619 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:35:47,125 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:35:47,126 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:35:47,127 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:47,127 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:47,129 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:35:47,129 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:35:47,139 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:35:47,143 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:36:46,318 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:36:46,322 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:36:46,826 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:36:46,827 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:36:46,827 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:36:46,828 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:36:46,831 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:36:46,832 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:36:46,844 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:36:46,848 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:36:46,853 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 15:36:46,865 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 15:36:46,865 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 15:36:46,865 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 15:45:33,704 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:45:33,707 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:45:34,211 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:45:34,212 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:45:34,212 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:45:34,213 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:45:34,215 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:45:34,216 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:45:34,228 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:45:34,231 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:45:34,243 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 15:45:35,169 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 15:45:35,169 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 15:45:35,169 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 15:52:42,120 | INFO     | logger:_log:113 | Council collaboration completed

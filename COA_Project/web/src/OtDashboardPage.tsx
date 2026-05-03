@@ -183,24 +183,7 @@ export default function OtDashboardPage() {
               ICS شائعة فقط — لا يُفترض اختراق منشأة ولا يُحلّل PCAP. الأصفار على حاسوب تطوير{" "}
               <strong style={{ color: "var(--fg)" }}>طبيعية</strong>.
             </p>
-            {ot.presentation_demo && (
-              <div
-                style={{
-                  marginBottom: "1rem",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--warn-banner-border)",
-                  background: "var(--warn-banner-bg)",
-                  color: "var(--warn-banner-fg)",
-                  fontSize: "0.86rem",
-                  lineHeight: 1.55,
-                }}
-              >
-                <strong style={{ color: "var(--yellow)" }}>عرض توضيحي:</strong> بيانات OT/ICS المعروضة محاكاة من ملف
-                المشروع وليست من جدول اتصالات هذا المضيف الحي.
-              </div>
-            )}
-            {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && !ot.presentation_demo && (
+            {(!ot.ics_protocol_hits || ot.ics_protocol_hits.length === 0) && (
               <div
                 style={{
                   marginBottom: "1rem",

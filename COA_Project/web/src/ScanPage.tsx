@@ -64,6 +64,7 @@ type ScanPayload = {
   connections_total?: number;
   events?: LogEvent[];
   council?: { ok?: boolean; report?: string | null; error?: string | null } | null;
+  demo_seed?: boolean;
 };
 
 type TabId = "threats" | "processes" | "network" | "ot_ics" | "council" | "logs";
@@ -115,10 +116,10 @@ async function downloadFromApi(path: string, fallbackName: string) {
 
 export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
-  const [dryRun, setDryRun] = useState(false);
   // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama local). User can turn off for faster scans.
   const [useCouncil, setUseCouncil] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [synthLoading, setSynthLoading] = useState(false);
   const [councilCheckLoading, setCouncilCheckLoading] = useState(false);
   const [councilCheckResult, setCouncilCheckResult] = useState<CouncilAgentsHealth | null>(null);
   const [data, setData] = useState<ScanPayload | null>(null);
@@ -135,7 +136,6 @@ export default function ScanPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          dry_run: dryRun,
           presentation_demo: false,
           use_council: useCouncil,
         }),
@@ -190,7 +190,67 @@ export default function ScanPage() {
     } finally {
       setLoading(false);
     }
-  }, [dryRun, useCouncil]);
+  }, [useCouncil]);
+
+  const loadSyntheticSession = useCallback(async () => {
+    setSynthLoading(true);
+    setLogLines([{ ts: new Date().toLocaleTimeString(), level: "INFO", text: "Loading synthetic session…" }]);
+    setStatus("Loading synthetic data…");
+    setData(null);
+    try {
+      const res = await fetch("/api/demo/seed-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      const json = (await res.json()) as ScanPayload;
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || res.statusText || "Failed to load synthetic session");
+      }
+      setData(json);
+      try {
+        if (json.defense_context) {
+          sessionStorage.setItem("coa_defense_context", JSON.stringify(json.defense_context));
+        }
+        sessionStorage.setItem(
+          "coa_last_scan_extras",
+          JSON.stringify({
+            defense_context: json.defense_context ?? null,
+            mitre_deep: json.mitre_deep ?? null,
+            ot_ics: json.ot_ics ?? null,
+          }),
+        );
+        window.dispatchEvent(new Event("coa-scan-complete"));
+      } catch {
+        /* ignore quota */
+      }
+      const serverLines = (json.events || []).map((ev) => ({
+        ts: ev.timestamp,
+        level: ev.type === "ERROR" ? "ERROR" : "INFO",
+        text: `[${ev.type}] ${ev.details}`,
+      }));
+      const endTs = new Date().toLocaleTimeString();
+      setLogLines((prev) => [
+        ...prev,
+        ...serverLines,
+        {
+          ts: endTs,
+          level: "SUCCESS",
+          text: `Synthetic session loaded — ${json.analysis?.total_threats ?? 0} threats (not from this host)`,
+        },
+      ]);
+      setStatus(
+        `بيانات وهمية — ${json.analysis?.total_threats ?? 0} تهديدات · ` +
+          `${json.connections_total ?? 0} اتصال · ${json.processes_total ?? 0} عملية (جلسة مخبرية ثابتة)`,
+      );
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setLogLines((L) => appendLocalLog(L, "ERROR", msg));
+      setStatus("تعذّر التحميل — تأكد أن الخادم يعمل (python web_api.py)");
+    } finally {
+      setSynthLoading(false);
+    }
+  }, []);
 
   const verifyCouncilAgents = useCallback(async () => {
     setCouncilCheckLoading(true);
@@ -237,17 +297,18 @@ export default function ScanPage() {
       </header>
 
       <div className="page-toolbar">
-        <button type="button" className="btn-primary" disabled={loading} onClick={runScan}>
+        <button type="button" className="btn-primary" disabled={loading || synthLoading} onClick={runScan}>
           {loading ? "Scanning…" : "Start scan"}
         </button>
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={dryRun}
-            onChange={(e) => setDryRun(e.target.checked)}
-          />
-          Dry run (remediation simulation)
-        </label>
+        <button
+          type="button"
+          className="btn-ghost"
+          disabled={loading || synthLoading}
+          title="لا يُجمع من جهازك: جلسة ثابتة من الخادم (تهديدات، دفاع، MITRE، OT) لتجربة الواجهات بسرعة."
+          onClick={() => void loadSyntheticSession()}
+        >
+          {synthLoading ? "جاري التحميل…" : "تحميل بيانات وهمية"}
+        </button>
         <label
           className="checkbox"
           title="المجلس يستخدم Ollama من إعدادات الخادم (.env). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
@@ -262,7 +323,7 @@ export default function ScanPage() {
         <button
           type="button"
           className="btn-ghost"
-          disabled={councilCheckLoading || loading}
+          disabled={councilCheckLoading || loading || synthLoading}
           title="يتحقق من إعداد LLM + إنشاء وكيل CrewAI (بدون تشغيل فحص كامل)"
           onClick={() => void verifyCouncilAgents()}
         >
@@ -343,21 +404,6 @@ export default function ScanPage() {
       )}
 
       <div className="page-section">
-        {data?.ot_ics?.presentation_demo && (
-          <div
-            style={{
-              marginBottom: "0.75rem",
-              padding: "0.65rem 0.85rem",
-              borderRadius: "var(--radius)",
-              border: "1px solid rgba(251, 191, 36, 0.45)",
-              background: "rgba(0, 40, 35, 0.92)",
-              color: "var(--warn-banner-fg)",
-              fontSize: "0.86rem",
-            }}
-          >
-            <strong>عرض توضيحي:</strong> قسم OT/ICS يعرض بيانات محاكاة من المشروع — بقية الفحص من الجهاز الحقيقي.
-          </div>
-        )}
         <div
           style={{
             display: "grid",

@@ -3,82 +3,206 @@
           C.O.A — Council of Agents
 ===========================================================================
 
-Report ID:    COA-20260429-203012
-Generated:    2026-04-29 20:30:12
-Host:         MacBook-Air-Ahmed.local
-Severity:     MEDIUM
+Report ID:    COA-20260503-170126
+Generated:    2026-05-03 17:01:26
+Host:         coa-ui-demo
+Severity:     CRITICAL
 Category:     Suspicious Execution
-Priority:     P4
+Priority:     P1
 
 ===========================================================================
 EXECUTIVE SUMMARY
 ===========================================================================
-Scan of MacBook-Air-Ahmed.local detected 3 security issue(s). Classification: MEDIUM severity, Suspicious Execution, priority P4/5.
+Scan of coa-ui-demo detected 2 security issue(s). Classification: CRITICAL severity, Suspicious Execution, priority P1/5.
 
+⚠️ CRITICAL: 1 critical threat(s) requiring immediate action.
+1 high-severity threat(s) needing prompt review.
 
-**Recommendation:** Review findings and approve appropriate remediation.
+**Recommendation:** Isolate system immediately. Approve remediation actions. Consider escalating to security team.
+
+**Defense context (heuristic):** Chafer — confidence 24%. TTP overlap: T1071; pattern_hits:1
 
 ===========================================================================
 AFFECTED SYSTEM
 ===========================================================================
-  hostname            : MacBook-Air-Ahmed.local
-  cpu_cores           : 10
-  cpu_usage           : 64.4
-  memory_total_gb     : 24.0
-  memory_used_percent : 56.1
-  disk_usage_percent  : 43.2
-  boot_time           : 2026-04-27 13:21:05
+  hostname            : coa-ui-demo
+  platform            : Demo
+  platform_release    : seed
+  architecture        : n/a
+  processor           : synthetic
 
 ===========================================================================
 TECHNICAL FINDINGS
 ===========================================================================
 --- Finding #1 ---
-  Severity:   LOW
-  Confidence: LOW
-  Score:      30/100
-  Source:     com.apple.Mobile (PID: 522)
-  Details:    Detected: runs from /System/Library/PrivateFrameworks/MobileAssetDaemo
-  Indicators (1):
+  Severity:   CRITICAL
+  Confidence: HIGH
+  Score:      135/100
+  Source:     svch0st_demo (PID: 424242)
+  Details:    Detected: suspicious port 4444, running from temp folder, connecting externally to 198.51.100.77, masquerading process name
+  Indicators (4):
+    • suspicious_port
     • runs_from_temp
+    • external_connection_from_temp
+    • masquerading_name
 
 --- Finding #2 ---
-  Severity:   LOW
-  Confidence: LOW
-  Score:      30/100
-  Source:     reversetemplated (PID: 38365)
-  Details:    Detected: runs from /System/Library/PrivateFrameworks/CoreSuggestions.
-  Indicators (1):
+  Severity:   HIGH
+  Confidence: MEDIUM
+  Score:      60/100
+  Source:     svch0st_demo (PID: 424242)
+  Details:    Detected: runs from /var/tmp/coa_demo_agent, suspicious name pattern
+  Indicators (2):
     • runs_from_temp
-
---- Finding #3 ---
-  Severity:   LOW
-  Confidence: LOW
-  Score:      20/100
-  Source:     kernel_task (PID: 0)
-  Details:    Detected: no executable path
-  Indicators (1):
-    • no_digital_signature
+    • masquerading_name
 
 ===========================================================================
-MITRE ATT&CK MAPPING
+MITRE ATT&CK — QUICK INDEX (indicator-level)
 ===========================================================================
+• T1071 — Application Layer Protocol
+  Tactic: Command and Control
+
 • T1036 — Masquerading
   Tactic: Defense Evasion
 
-• T1553 — Subvert Trust Controls
+• T1041 — Exfiltration Over C2 Channel
+  Tactic: Exfiltration
+
+• T1036.005 — Match Legitimate Name
   Tactic: Defense Evasion
+
+===========================================================================
+MITRE ATT&CK — DEEP ANALYSIS (kill chain + D3FEND + gaps)
+===========================================================================
+══════════════════════════════════════════════════
+  MITRE ATT&CK DEEP ANALYSIS (C.O.A)
+══════════════════════════════════════════════════
+
+▸ Detected techniques (ordered by tactic / kill-chain view)
+
+  ┌─ Defense Evasion (TA0005)
+  │  • T1036 — Masquerading
+  │    Confidence: HIGH | Sources: svch0st_demo (PID: 424242), svch0st_demo (PID: 424242)
+  │  • T1036.005 — Match Legitimate Name or Resource
+  │    Confidence: HIGH | Sources: svch0st_demo (PID: 424242), svch0st_demo (PID: 424242)
+  └──────────────────────────────────────────────
+  ┌─ Command and Control (TA0011)
+  │  • T1071 — Application Layer Protocol
+  │    Confidence: HIGH | Sources: svch0st_demo (PID: 424242)
+  └──────────────────────────────────────────────
+  ┌─ Exfiltration (TA0010)
+  │  • T1041 — Exfiltration Over C2 Channel
+  │    Confidence: HIGH | Sources: svch0st_demo (PID: 424242)
+  └──────────────────────────────────────────────
+
+▸ Attack chain completeness (heuristic)
+  Tactics with at least one mapped technique: 3 / 14
+  ⚠ Interpret as triage hint — not proof of attacker progress.
+
+▸ Threat actor correlation (defense context / heuristic)
+  Best match: Chafer — 24%
+  Alternative: Lazarus Group — 16.0 similarity
+
+▸ Defensive mappings (MITRE mitigations + D3FEND hints)
+  • M1040 (Behavior Prevention on Endpoint) — relates to T1036
+  • M1026 (Privileged Account Management) — relates to T1036
+  • D3FEND D3-EAL: Executable Allowlisting ← for T1036
+  • D3FEND D3-PA: Process Analysis ← for T1036
+  • M1049 (Antivirus/Antimalware) — relates to T1036.005
+  • M1022 (Restrict Admin) — relates to T1036.005
+  • D3FEND D3-PA: Process Analysis ← for T1036.005
+  • M1031 (Network Intrusion Prevention) — relates to T1071
+  • M1042 (Disable or Remove Feature) — relates to T1071
+  • D3FEND D3-NTF: Network Traffic Filtering ← for T1071
+  • D3FEND D3-PH: Protocol Analysis ← for T1071
+  • M1037 (Filter Network Traffic) — relates to T1041
+  • M1057 (Data Loss Prevention) — relates to T1041
+  • D3FEND D3-NTF: Network Traffic Filtering ← for T1041
+
+▸ Expected next steps (generic prediction, not attribution)
+  → Often next in narratives: T1021 Lateral movement
+  → Often next in narratives: T1486 Impact
+
+▸ Detection gap hints (environment-agnostic)
+  • No DNS tunneling (T1071.004) hypothesis in this scan — if DNS is blind spot, deploy DNS logging/monitoring.
+  • Multi-hop proxy (T1090.003) not indicated — validate forward-proxy and egress visibility.
+
+▸ ICS / OT context
+  Review MITRE ATT&CK for ICS (e.g. T0855 Unauthorized Command Message, T0831 Manipulation of Control) if OT assets are in scope — import ics-attack.json via scripts/download_mitre_stix.py for full matrix alignment. Passive OT module: 3 connection(s) on known ICS ports.
+
+▸ Shallow vs deep binding
+  Shallow: single technique label without tactic chain.
+  Deep: tactic ordering, likely before/after, mitigations, D3FEND, ICS note, Navigator export.
+
+===========================================================================
+DEFENSE CONTEXT (Agent #5 — heuristic)
+===========================================================================
+
+══════════════════════════════════════════
+  DEFENSE CONTEXT ANALYSIS (Agent #5)
+══════════════════════════════════════════
+
+▸ Threat Attribution (heuristic)
+  Likely actor: Chafer
+  Confidence: 24%
+  Reasoning: TTP overlap: T1071; pattern_hits:1
+  Source note: MITRE ATT&CK G0040
+
+▸ Strategic intent
+  Primary: Credential access / C2 or staging (investigate)
+  Secondary: Possible targeted network activity
+
+▸ Sophistication
+  Level: HIGH (10/10)
+  Notes: Masquerading increases assessed operator care
+
+▸ Campaign
+  Two findings — correlate timelines and parent/child processes for coordinated activity.
+
+▸ Playbooks triggered
+  • [cyber_espionage] Cyber espionage indicators — signals_any ['external_connection_from_temp', 'suspicious_port']
+  • [supply_chain] Supply-chain style cluster (heuristic) — signals_all ['runs_from_temp']
+
+▸ Recommended defense posture
+  • Immediate: treat as high priority — critical severity in scan
+  • Immediate: validate findings on-host and isolate if business rules allow
+  • Short-term: hunt for shared IOCs across subnet from same timeframe
+  • Strategic: tune profiles/YARA to your sector — these templates are non-authoritative
+
+Disclaimer: Deterministic layer: this scan's threats/signals are matched locally to public-style YAML APT profiles and SOC playbooks. Heuristic triage only — not intelligence-grade or legal attribution.
+
 
 ===========================================================================
 RECOMMENDED ACTIONS
 ===========================================================================
-  1. 🔍 Investigate temp directories for additional artifacts
-  2. 🛡️ Update endpoint security solutions
-  3. 📊 Monitor network traffic for 48+ hours
-  4. 📚 Document findings for future reference
+  1. ⚠️ Isolate affected systems from network immediately
+  2. 🔍 Investigate temp directories for additional artifacts
+  3. 📞 Notify incident response team
+  4. 📝 Preserve evidence for forensic analysis
+  5. 🔐 Rotate credentials for affected accounts
+  6. 🛡️ Update endpoint security solutions
+  7. 📊 Monitor network traffic for 48+ hours
+  8. 📚 Document findings for future reference
 
 ===========================================================================
 EVENT TIMELINE
 ===========================================================================
+  [2026-05-03 17:00:09] SYSTEM
+      UI demo seed — synthetic bundle (no live host collection)
+  [2026-05-03 17:00:09] DATA
+      Synthetic demo: 1 connections, 1 processes
+  [2026-05-03 17:00:09] ANALYSIS
+      Threat analysis on synthetic demo data…
+  [2026-05-03 17:00:09] THREAT_DETECTED
+      [CRITICAL] Network Threat — svch0st_demo (PID: 424242): Detected: suspicious port 4444, running from temp folder, connecting externally to 198.51.100.77, masquerading process name
+  [2026-05-03 17:00:09] THREAT_DETECTED
+      [HIGH] Process Threat — svch0st_demo (PID: 424242): Detected: runs from /var/tmp/coa_demo_agent, suspicious name pattern
+  [2026-05-03 17:00:09] DEFENSE_CONTEXT
+      Defense Context Analyzer (Agent #5) on demo data…
+  [2026-05-03 17:00:09] OT_ICS
+      Presentation OT/ICS fixture for judges UI…
+  [2026-05-03 17:00:09] COUNCIL
+      Skipped in UI demo seed (use full scan for CrewAI council)
 
 ===========================================================================
   Report by C.O.A Agent #4 — All analysis done locally 🔒

@@ -309,6 +309,18 @@ def create_app() -> Flask:
             return jsonify({"ok": False, "error": "No defense context in last scan"}), 400
         return jsonify(_json_safe({"ok": True, "defense_context": dc}))
 
+    @app.get("/api/last/mitre-deep")
+    def last_mitre_deep():
+        """Last scan's mitre_deep bundle (Navigator, kill chain, ASCII) for UI without shared sessionStorage."""
+        err = _require_last()
+        if err[1]:
+            return err[1]
+        (data, _) = err[0]
+        md = data.get("mitre_deep")
+        if md is None:
+            return jsonify({"ok": False, "error": "No MITRE deep bundle in last scan"}), 400
+        return jsonify(_json_safe({"ok": True, "mitre_deep": md}))
+
     @app.get("/api/reports/txt")
     def report_txt():
         err = _require_last()

@@ -80,6 +80,12 @@ TRUSTED_PROCESSES = [
     "explorer.exe", "svchost.exe", "System", "Registry",
     "csrss.exe", "winlogon.exe", "services.exe", "lsass.exe",
     "chrome.exe", "firefox.exe", "msedge.exe",
+    # macOS / Darwin — psutil often has no path; avoid false "no path" / signing heuristics
+    "kernel_task",
+    "launchd",
+    "WindowServer",
+    "syslogd",
+    "logd",
 ]
 
 # مجلدات مشبوهة (يجب فحص أي عملية تعمل منها)

@@ -32,22 +32,70 @@ function loadDeep(): MitreDeep | null {
   }
 }
 
+function mirrorMitreDeepToSessionStorage(next: MitreDeep) {
+  try {
+    let extras: Record<string, unknown> = {};
+    const extrasRaw = sessionStorage.getItem("coa_last_scan_extras");
+    if (extrasRaw) {
+      try {
+        extras = JSON.parse(extrasRaw) as Record<string, unknown>;
+      } catch {
+        extras = {};
+      }
+    }
+    extras.mitre_deep = next;
+    sessionStorage.setItem("coa_last_scan_extras", JSON.stringify(extras));
+  } catch {
+    /* quota */
+  }
+}
+
 export default function MitreDeepPage() {
   const [deep, setDeep] = useState<MitreDeep | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
 
-  const refresh = useCallback(() => {
-    setDeep(loadDeep());
+  const refresh = useCallback(async () => {
+    setErr(null);
+    const local = loadDeep();
+    if (local) {
+      setLoading(false);
+      setDeep(local);
+      return;
+    }
+    setLoading(true);
+    setDeep(null);
+    try {
+      const res = await fetch("/api/last/mitre-deep");
+      const json = (await res.json()) as { ok?: boolean; mitre_deep?: MitreDeep; error?: string };
+      if (res.ok && json.ok && json.mitre_deep) {
+        mirrorMitreDeepToSessionStorage(json.mitre_deep);
+        setDeep(json.mitre_deep);
+      } else {
+        setDeep(null);
+        if (res.status >= 500) {
+          setErr(json.error || "خطأ في الخادم.");
+        }
+      }
+    } catch {
+      setDeep(null);
+      setErr("تعذّر الاتصال بالخادم. تأكد أن API يعمل (python web_api.py على المنفذ 5050).");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [location.key, refresh]);
 
   useEffect(() => {
-    const onScan = () => refresh();
+    const onScan = () => {
+      void refresh();
+    };
     const onStorage = (e: StorageEvent) => {
-      if (e.key === "coa_last_scan_extras") refresh();
+      if (e.key === "coa_last_scan_extras") void refresh();
     };
     window.addEventListener("coa-scan-complete", onScan);
     window.addEventListener("storage", onStorage);
@@ -80,18 +128,41 @@ export default function MitreDeepPage() {
       </header>
 
       <main className="page-main">
-        {!deep && (
+        {err && <p style={{ color: "var(--red)" }}>{err}</p>}
+        {loading && !deep && !err && (
+          <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>جاري التحميل من الخادم…</p>
+        )}
+        {!deep && !err && !loading && (
           <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
             لا توجد بيانات. نفّذ{" "}
             <Link to="/dashboard" style={{ color: "var(--cyan)" }}>
               فحصاً
             </Link>{" "}
-            ثم ارجع هنا. (يُحفظ في <code>sessionStorage</code> مفتاح <code>coa_last_scan_extras</code>.)
+            ثم ارجع هنا. يُحفظ محلياً في <code>coa_last_scan_extras.mitre_deep</code>؛ أو يُجلب آخر فحص من الخادم عند فتح التبويب.
           </p>
         )}
 
         {deep && (
           <>
+            <p
+              style={{
+                fontSize: "0.88rem",
+                color: "var(--muted)",
+                lineHeight: 1.65,
+                margin: "0 0 1rem",
+                padding: "0.75rem 1rem",
+                background: "var(--bg2)",
+                borderRadius: "var(--radius)",
+                border: "1px solid var(--bg3)",
+              }}
+            >
+              هذا العرض مبني على <strong style={{ color: "var(--fg)" }}>نتيجة الفحص الفعلية</strong> لهذا الجهاز: تقنيات
+              MITRE ومراحل السلسلة تُستخرج من <strong style={{ color: "var(--fg)" }}>إشارات التهديد</strong> المسجّلة
+              (مثل المسار، التوقيع، الشبكة). تلميحات «فجوات الكشف» و«الخطوات المتوقعة» هي{" "}
+              <strong style={{ color: "var(--fg)" }}>خرائط تدريب SOC ثابتة</strong> تُقارن بما ظهر في الفحص — ليست
+              تقرير اختراق مؤكد ولا بديل تحقيق على الحدث.
+            </p>
+
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
               <button type="button" className="btn-accent" disabled={!deep.navigator_layer} onClick={downloadNavigatorLayer}>
                 تصدير Navigator JSON (من الجلسة)

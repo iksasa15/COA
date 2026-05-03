@@ -8,6 +8,7 @@ Enhanced with:
 - Confidence levels for reducing false positives
 """
 
+import platform
 from typing import Dict, List
 from config.settings import (
     TRUSTED_PROCESSES,
@@ -213,11 +214,18 @@ class ThreatAnalyzer:
             score += ThreatScorer.SIGNALS['high_cpu_low_memory']
             details_parts.append(f"{cpu}% CPU + {memory}% RAM (cryptominer pattern)")
 
-        # إشارة 4: عملية في النظام بدون مسار معروف
+        # إشارة 4: لا مسار تنفيذي (غالباً قيد جمع البيانات) — لا تُخطئ kernel_task ونظائره على Darwin
         if path == "N/A" and not cls._is_trusted_process(name):
-            signals.append('no_digital_signature')
-            score += ThreatScorer.SIGNALS['no_digital_signature']
-            details_parts.append("no executable path")
+            pid_int = int(pid) if pid is not None and str(pid).isdigit() else None
+            if platform.system() == "Darwin" and (
+                (name or "").lower() == "kernel_task"
+                or pid_int == 0
+            ):
+                pass
+            else:
+                signals.append("no_digital_signature")
+                score += ThreatScorer.SIGNALS["no_digital_signature"]
+                details_parts.append("no executable path")
 
         if not signals:
             return None

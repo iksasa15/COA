@@ -193,11 +193,7 @@ const messagesAr = {
   "landing.hero": "مرحباً بك في C.O.A",
   "landing.p1":
     "ابدأ بفحص من لوحة الأداء؛ بعدها تفتح صفحات السياق الدفاعي وMITRE وOT وتقرأ آخر جلسة من المتصفح.",
-  "landing.docs": "التوثيق:",
   "landing.cta": "الانتقال إلى لوحة الأداء ← فحص",
-  "landing.footer1": "شغّل الخادم: ",
-  "landing.footer2": " و Vite: ",
-  "landing.footer3": " — التفاصيل في docs/React_Additions_AR.md",
   "landing.card.dash.title": "فحص / لوحة الأداء",
   "landing.card.dash.desc":
     "تشغيل الفحص، التهديدات، العمليات، الشبكة، تبويب OT/ICS المختصر، السجلات، وتصدير التقارير.",
@@ -401,11 +397,7 @@ const messagesEn = {
   "landing.hero": "Welcome to C.O.A",
   "landing.p1":
     "Start with a dashboard scan; then open defense context, MITRE, and OT pages to read the latest session from the browser.",
-  "landing.docs": "Docs:",
   "landing.cta": "Go to dashboard → scan",
-  "landing.footer1": "Run server: ",
-  "landing.footer2": " and Vite: ",
-  "landing.footer3": " — see docs/React_Additions_AR.md",
   "landing.card.dash.title": "Scan / dashboard",
   "landing.card.dash.desc":
     "Run scans, threats, processes, network, short OT/ICS tab, logs, and report exports.",

@@ -39,11 +39,8 @@ export default function LandingPage() {
           >
             {t("landing.hero")}
           </h1>
-          <p style={{ margin: "0 0 0.35rem", color: "var(--muted)", fontSize: "1rem", lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "1rem", lineHeight: 1.55 }}>
             {t("landing.p1")}
-          </p>
-          <p style={{ margin: "0 0 1.25rem", color: "var(--muted)", fontSize: "0.82rem" }}>
-            {t("landing.docs")} <code style={{ color: "var(--cyan)" }}>docs/React_Additions_AR.md</code>
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem", alignItems: "center", marginBottom: "1.25rem" }}>
             <Link
@@ -92,14 +89,6 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
-
-      <footer className="page-footer page-footer--center">
-        {t("landing.footer1")}
-        <code style={{ color: "var(--cyan)" }}>python web_api.py</code>
-        {t("landing.footer2")}
-        <code style={{ color: "var(--cyan)" }}>npm run dev</code>
-        {t("landing.footer3")}
-      </footer>
     </div>
   );
 }

@@ -851,3 +851,24 @@
 2026-05-03 13:04:51,916 | INFO     | logger:_log:113 | Security action approved
 2026-05-03 13:04:51,922 | CRITICAL | logger:_log:113 | Unhandled exception: 'IncidentReporter' object has no attribute 'generate_markdown_report'
 2026-05-03 13:06:49,053 | INFO     | logger:_log:113 | Council collaboration completed
+2026-05-03 13:15:25,582 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 13:15:26,589 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:15:26,590 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:15:27,095 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:15:28,603 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:15:28,604 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:28,605 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:28,608 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:28,608 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:15:29,425 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:15:29,430 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 13:15:41,006 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 13:15:41,007 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 13:15:41,512 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 13:15:41,513 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 13:15:41,513 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:41,513 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:41,516 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 13:15:41,517 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 13:15:41,528 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 13:15:41,531 | INFO     | logger:_log:113 | OT/ICS passive analysis complete

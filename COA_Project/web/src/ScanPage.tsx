@@ -117,7 +117,7 @@ export default function ScanPage() {
   const [tab, setTab] = useState<TabId>("threats");
   const [dryRun, setDryRun] = useState(false);
   const [presentationDemo, setPresentationDemo] = useState(false);
-  // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama or Gemini). User can turn off for faster scans.
+  // CrewAI agents (1–3): on by default; backend LLM from .env (Ollama local). User can turn off for faster scans.
   const [useCouncil, setUseCouncil] = useState(true);
   const [loading, setLoading] = useState(false);
   const [councilCheckLoading, setCouncilCheckLoading] = useState(false);
@@ -259,7 +259,7 @@ export default function ScanPage() {
         </label>
         <label
           className="checkbox"
-          title="المجلس يستخدم LLM من إعدادات الخادم (.env): Ollama محلي أو Gemini. عطّل المربع لتسريع الفحص بدون وكلاء LLM."
+          title="المجلس يستخدم Ollama من إعدادات الخادم (.env). عطّل المربع لتسريع الفحص بدون وكلاء LLM."
         >
           <input
             type="checkbox"

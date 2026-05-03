@@ -1,8 +1,7 @@
 # ===== C.O.A v3.0 Requirements =====
 
 # === Core Dependencies ===
-# google-genai pulled in for Gemini council (COA_LLM_PROVIDER=gemini)
-crewai[google-genai]>=0.28.0
+crewai>=0.28.0
 crewai-tools>=0.1.6
 
 # === Local LLM Support ===

@@ -43,11 +43,11 @@ from agents.ics_specialist import ICSSpecialistAgent
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from agents.incident_reporter import IncidentReporter
 from ics_analyzer import analyze_ot_ics
-from config.settings import LLM_PROVIDER, REPORTS_DIR
+from config.settings import REPORTS_DIR
 
 
 def _council_llm_label() -> str:
-    return "Gemini" if LLM_PROVIDER == "gemini" else "Ollama"
+    return "Ollama"
 
 
 def parse_arguments():
@@ -63,7 +63,7 @@ Modes:
 
 CLI Options:
   python main.py --dry-run            # Safe simulation
-  python main.py --council            # CrewAI council (3 agents; Ollama or Gemini per .env)
+  python main.py --council            # CrewAI council (3 agents; Ollama local per .env)
   python main.py --vt                 # VirusTotal enrichment
   python main.py --yara               # YARA rules scan
   python main.py --html --json        # Multiple report formats
@@ -87,7 +87,7 @@ CLI Options:
     parser.add_argument(
         '--council',
         action='store_true',
-        help='After scan, run CrewAI council (Eye/Brain/Strategist); LLM from .env (Ollama or Gemini)',
+        help='After scan, run CrewAI council (Eye/Brain/Strategist); Ollama from .env',
     )
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser.add_argument('--no-admin-check', action='store_true', help='Skip admin check')
@@ -201,6 +201,9 @@ def cli_scan(args):
     reporter = ReportGenerator()
     reporter.log_event("SYSTEM", f"C.O.A v3.0 scan initiated")
     solution_engine = SolutionEngine(dry_run=args.dry_run)
+
+    # Scan summary: only ✓ when council ran and produced a report (not merely --council passed).
+    council_ok = False
 
     try:
         # ============ PHASE 1: Data Collection ============
@@ -335,6 +338,7 @@ def cli_scan(args):
                     lambda: run_council_on_scan(system_data, analysis_result),
                 )
                 if out.get("ok") and out.get("report"):
+                    council_ok = True
                     reporter.log_event("COUNCIL", f"CrewAI council completed ({_council_llm_label()})")
                     text = str(out["report"])
                     ui.info(text.strip().replace("\n", "\n  ")[:12000])
@@ -436,7 +440,7 @@ def cli_scan(args):
             "Collection Time": f"{duration:.2f}s",
             "VirusTotal": "✓" if args.vt else "✗",
             "YARA": "✓" if args.yara else "✗",
-            f"CrewAI+{_council_llm_label()}": "✓" if args.council else "✗",
+            f"CrewAI+{_council_llm_label()}": "✓" if (args.council and council_ok) else "✗",
         })
 
         ui.divider()

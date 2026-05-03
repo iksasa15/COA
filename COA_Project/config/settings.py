@@ -22,32 +22,14 @@ REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
 # ==================== LLM Configuration ====================
-# COA_LLM_PROVIDER: ollama (default, local) | gemini (Google Gemini API).
-# Put secrets in COA_Project/.env — see .env.example
-_raw_llm_provider = (os.environ.get("COA_LLM_PROVIDER", "ollama") or "ollama").strip().lower()
-# السحابي = Gemini فقط (أسماء قديمة openai/external تُعامل كـ gemini لتفادي الرجوع لـ ollama بالخطأ).
-if _raw_llm_provider in ("gemini", "google", "openai", "external", "api", "cloud"):
-    LLM_PROVIDER = "gemini"
-else:
-    LLM_PROVIDER = "ollama"
+# مجلس CrewAI: Ollama محلي فقط — COA_LLM_MODEL و COA_LLM_BASE_URL (انظر .env.example).
+LLM_PROVIDER = "ollama"
 
 LLM_MODEL = os.environ.get("COA_LLM_MODEL", "llama3.1").strip() or "llama3.1"
-# مفتاح Gemini: أي من المتغيرات التالية (CrewAI يقرأ GOOGLE_API_KEY أيضاً داخلياً).
-LLM_GEMINI_API_KEY = (
-    (os.environ.get("COA_GEMINI_API_KEY") or "").strip()
-    or (os.environ.get("COA_LLM_API_KEY") or "").strip()
-    or (os.environ.get("GOOGLE_API_KEY") or "").strip()
-    or (os.environ.get("GEMINI_API_KEY") or "").strip()
-)
 LLM_TEMPERATURE = float(os.environ.get("COA_LLM_TEMPERATURE", "0.3") or "0.3")
 
-if LLM_PROVIDER == "ollama":
-    _base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rstrip("/")
-    LLM_BASE_URL = _base or "http://localhost:11434"
-else:
-    # Gemini: عادةً فارغ (مفتاح AI Studio). يُترك للتوسعات لاحقاً (Vertex إلخ).
-    _base = (os.environ.get("COA_LLM_BASE_URL") or "").strip().rstrip("/")
-    LLM_BASE_URL = _base
+_base = os.environ.get("COA_LLM_BASE_URL", "http://localhost:11434").strip().rstrip("/")
+LLM_BASE_URL = _base or "http://localhost:11434"
 
 
 def _int_env(name: str, default: int, lo: int, hi: int) -> int:

@@ -28,7 +28,7 @@ from agents.council import diagnose_llm, diagnose_ollama
 from agents.defense_context_analyzer import DefenseContextAnalyzer
 from agents.ics_specialist import ICSSpecialistAgent
 from agents.incident_reporter import IncidentReporter
-from config.settings import LLM_PROVIDER, REPORTS_DIR
+from config.settings import REPORTS_DIR
 from core.data_collector import SystemDataCollector
 from core.mitre_deep_analysis import build_mitre_deep_bundle
 from ics_analyzer import analyze_ot_ics
@@ -111,7 +111,7 @@ def create_app() -> Flask:
 
     @app.get("/api/health/llm")
     def health_llm():
-        """Active council LLM config: ollama or gemini (no CrewAI load)."""
+        """Council LLM config: Ollama local only (no CrewAI load)."""
         return jsonify(_json_safe(diagnose_llm()))
 
     @app.get("/api/health/council-agents")
@@ -127,7 +127,7 @@ def create_app() -> Flask:
                         "ok": False,
                         "ollama": d,
                         "crewai_agents_ready": False,
-                        "error": d.get("error") or "LLM not ready (Ollama or API key)",
+                        "error": d.get("error") or "LLM not ready (Ollama)",
                     }
                 )
             )
@@ -138,9 +138,7 @@ def create_app() -> Flask:
                 COUNCIL_LLM_TIMEOUT_SEC,
                 COUNCIL_MAX_OUTPUT_TOKENS,
                 LLM_BASE_URL,
-                LLM_GEMINI_API_KEY,
                 LLM_MODEL,
-                LLM_PROVIDER,
                 LLM_TEMPERATURE,
             )
 
@@ -150,10 +148,7 @@ def create_app() -> Flask:
                 max_tokens=COUNCIL_MAX_OUTPUT_TOKENS,
                 timeout=COUNCIL_LLM_TIMEOUT_SEC,
             )
-            if LLM_PROVIDER == "ollama":
-                llm = LLM(provider="ollama", base_url=LLM_BASE_URL, **common)
-            else:
-                llm = LLM(provider="gemini", api_key=LLM_GEMINI_API_KEY, **common)
+            llm = LLM(provider="ollama", base_url=LLM_BASE_URL, **common)
             _ = Agent(
                 role="COA connectivity probe",
                 goal="No task will run; this only validates wiring.",
@@ -164,11 +159,7 @@ def create_app() -> Flask:
                 allow_delegation=False,
                 max_iter=1,
             )
-            msg = (
-                "Ollama OK and CrewAI wiring works."
-                if LLM_PROVIDER == "ollama"
-                else "Gemini API and CrewAI wiring works."
-            )
+            msg = "Ollama OK and CrewAI wiring works."
             return jsonify(
                 _json_safe(
                     {
@@ -253,7 +244,7 @@ def create_app() -> Flask:
             if use_council:
                 from agents.council import run_council_on_scan
 
-                _ll = "Gemini" if LLM_PROVIDER == "gemini" else "Ollama"
+                _ll = "Ollama"
                 reporter.log_event("COUNCIL", f"Running CrewAI multi-agent council ({_ll})…")
                 council_result = run_council_on_scan(system_data, analysis)
                 if council_result.get("ok"):

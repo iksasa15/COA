@@ -1169,3 +1169,40 @@
 2026-05-03 14:25:45,820 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini=3.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
 2026-05-03 14:25:45,821 | INFO     | logger:_log:113 | Council of Agents initialized successfully
 2026-05-03 14:25:45,821 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:42:53,841 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 14:42:54,849 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 14:42:54,851 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 14:42:55,355 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 14:42:56,865 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 14:42:56,865 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:42:56,866 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:42:56,868 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 14:42:56,869 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 14:42:57,689 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 14:42:57,695 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 14:42:57,749 | INFO     | logger:_log:113 | ✓ Gemini API ready (model=gemini-2.0-flash)
+2026-05-03 14:42:58,833 | INFO     | logger:_log:113 | LLM initialized: provider=gemini model=gemini-2.0-flash @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 14:42:58,833 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 14:42:58,833 | INFO     | logger:_log:113 | Starting Council of Agents collaboration
+2026-05-03 14:43:00,946 | ERROR    | logger:_log:113 | Council collaboration failed: Gemini API: تجاوز الحصّة أو حد الطلبات (429 RESOURCE_EXHAUSTED). الطبقة المجانية لها سقف دقيقة/يوم. جرّب: الانتظار دقيقة ثم إعادة التشغيل؛ نموذج أخف (مثل gemini-2.0-flash-lite أو gemini-1.5-flash-8b)؛ تقليل حجم البيانات للمجلس (COA_COUNCIL_MAX_CONN / COA_COUNCIL_MAX_PROC / COA_COUNCIL_RAW_JSON_MAX)؛ ربط الفوترة في Google AI Studio / Cloud؛ أو استخدام Ollama محلياً. https://ai.google.dev/gemini-api/docs/rate-limits
+2026-05-03 14:43:00,948 | ERROR    | logger:_log:113 | Council scan failed: Gemini API: تجاوز الحصّة أو حد الطلبات (429 RESOURCE_EXHAUSTED). الطبقة المجانية لها سقف دقيقة/يوم. جرّب: الانتظار دقيقة ثم إعادة التشغيل؛ نموذج أخف (مثل gemini-2.0-flash-lite أو gemini-1.5-flash-8b)؛ تقليل حجم البيانات للمجلس (COA_COUNCIL_MAX_CONN / COA_COUNCIL_MAX_PROC / COA_COUNCIL_RAW_JSON_MAX)؛ ربط الفوترة في Google AI Studio / Cloud؛ أو استخدام Ollama محلياً. https://ai.google.dev/gemini-api/docs/rate-limits
+2026-05-03 14:43:08,103 | INFO     | logger:_log:113 | Executing command: ps -p 490 -o pid,cmd,ppid,user
+2026-05-03 14:43:08,118 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:43:11,786 | INFO     | logger:_log:113 | Executing command: ps -p 8424 -o pid,cmd,ppid,user
+2026-05-03 14:43:11,810 | INFO     | logger:_log:113 | Security action approved
+2026-05-03 14:43:11,816 | INFO     | logger:_log:113 | Scan completed successfully
+2026-05-03 15:10:49,026 | INFO     | logger:_log:113 | C.O.A v3.0 scan started
+2026-05-03 15:10:50,033 | INFO     | logger:_log:113 | Starting parallel data collection
+2026-05-03 15:10:50,034 | WARNING  | logger:_log:113 | Access denied when collecting connections
+2026-05-03 15:10:50,539 | INFO     | logger:_log:113 | Data collection completed in 0.51s
+2026-05-03 15:10:52,047 | INFO     | logger:_log:113 | Starting threat analysis
+2026-05-03 15:10:52,048 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:10:52,049 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:10:52,051 | WARNING  | logger:_log:113 | Threat detected: Process Threat
+2026-05-03 15:10:52,052 | INFO     | logger:_log:113 | Analysis complete: 3 threats found
+2026-05-03 15:10:52,871 | INFO     | logger:_log:113 | Defense context analysis complete
+2026-05-03 15:10:52,877 | INFO     | logger:_log:113 | OT/ICS passive analysis complete
+2026-05-03 15:10:52,923 | INFO     | logger:_log:113 | ✓ Ollama is running with llama3.1
+2026-05-03 15:10:53,668 | INFO     | logger:_log:113 | LLM initialized: provider=ollama model=llama3.1 @ http://localhost:11434 (max_tokens=2048 timeout=300.0s)
+2026-05-03 15:10:53,669 | INFO     | logger:_log:113 | Council of Agents initialized successfully
+2026-05-03 15:10:53,669 | INFO     | logger:_log:113 | Starting Council of Agents collaboration

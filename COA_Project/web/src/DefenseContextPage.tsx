@@ -139,6 +139,24 @@ export default function DefenseContextPage() {
 
         {dc && (
           <>
+            <p
+              style={{
+                fontSize: "0.88rem",
+                color: "var(--muted)",
+                lineHeight: 1.65,
+                margin: "0 0 1rem",
+                padding: "0.75rem 1rem",
+                background: "var(--bg2)",
+                borderRadius: "var(--radius)",
+                border: "1px solid var(--bg3)",
+              }}
+            >
+              المحتوى أدناه مبني على <strong style={{ color: "var(--fg)" }}>نفس فحص الجهاز</strong> الذي شغّلته من
+              اللوحة: التهديدات والإشارات من محرك التحليل؛ ترتيب ملفات APT والـ playbooks وخلايا الـ heatmap تُحسب{" "}
+              <strong style={{ color: "var(--fg)" }}>محلياً</strong> من قواعد وملفات YAML علنية (مثل MITRE). هذا
+              طبقة <strong style={{ color: "var(--fg)" }}>SOC استرشادية</strong> لمساعدة المحلّل — ليست إسناداً
+              رسمياً ولا بديلاً عن تحقيق على الحدث.
+            </p>
             {dc.disclaimer && (
               <p style={{ color: "var(--yellow)", fontSize: "0.9rem", padding: "0.75rem", background: "var(--bg2)", borderRadius: "var(--radius)" }}>
                 {dc.disclaimer}
@@ -146,7 +164,7 @@ export default function DefenseContextPage() {
             )}
 
             <section style={sec}>
-              <h2 style={h2}>الإسناد (فرضي)</h2>
+              <h2 style={h2}>الإسناد الاسترشادي</h2>
               <dl style={dl}>
                 <dt>جهة مرجّحة</dt>
                 <dd>{String(att.likely_actor ?? "—")}</dd>

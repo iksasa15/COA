@@ -10,7 +10,7 @@ const FEATURE_CARDS = [
   {
     to: "/defense-context",
     title: "سياق دفاعي (الوكيل #5)",
-    desc: "إسناد فرضي، ملفات APT، playbooks، موقف دفاعي، وبيانات heatmap خام — بعد فحص واحد.",
+    desc: "إسناد استرشادي من فحص الجهاز، ملفات APT، playbooks، موقف دفاعي، وبيانات heatmap خام — بعد فحص واحد.",
   },
   {
     to: "/mitre-deep",

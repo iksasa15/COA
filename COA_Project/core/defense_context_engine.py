@@ -329,8 +329,9 @@ def run_defense_context_analysis(system_data: Dict[str, Any], analysis: Dict[str
         "mitre_heatmap": _build_mitre_heatmap(threats, best if best_score >= 18 else None),
         "recommended_defense_posture": posture,
         "disclaimer": (
-            "Heuristic demo correlation from open-source-style YAML profiles — "
-            "not attribution from classified intelligence."
+            "Deterministic layer: this scan's threats/signals are matched locally to "
+            "public-style YAML APT profiles and SOC playbooks. Heuristic triage only — "
+            "not intelligence-grade or legal attribution."
         ),
     }
     logger.info(

@@ -177,7 +177,7 @@ export default function MitreHeatmapPage() {
 
         {attribution && (
           <p style={{ color: "var(--muted)" }}>
-            <strong style={{ color: "var(--fg)" }}>الإسناد (فرضي):</strong> {attribution}
+            <strong style={{ color: "var(--fg)" }}>الإسناد الاسترشادي:</strong> {attribution}
           </p>
         )}
         {disclaimer && (

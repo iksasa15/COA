@@ -81,10 +81,6 @@ class ThreatAnalyzer:
         'chrom3', 'firef0x',
     ]
 
-    DEV_TOOL_PROCESSES = {
-        "esbuild", "node", "npm", "vite", "webpack", "tsserver",
-    }
-
     @staticmethod
     def _is_trusted_ip(ip: str) -> bool:
         if not ip or ip == "N/A":
@@ -103,32 +99,6 @@ class ThreatAnalyzer:
         if not name:
             return False
         return name.lower() in [p.lower() for p in TRUSTED_PROCESSES]
-
-    @staticmethod
-    def _is_known_safe_temp_case(name: str, path: str) -> bool:
-        """
-        Suppress common false positives for 'runs_from_temp':
-        - macOS system/private framework binaries
-        - local web build tools (esbuild/node/vite) under project workspace
-        """
-        if not path or path == "N/A":
-            return False
-
-        name_l = (name or "").lower()
-        path_l = path.lower()
-
-        # macOS system binaries can live under PrivateFrameworks; not temp malware.
-        if platform.system() == "Darwin" and path_l.startswith("/system/library/"):
-            return True
-
-        # Dev/build tools running from project/web/node_modules are expected.
-        if name_l in ThreatAnalyzer.DEV_TOOL_PROCESSES and (
-            "/node_modules/" in path_l
-            or "/downloads/council_of_agents_v2/web/" in path_l
-        ):
-            return True
-
-        return False
 
     @staticmethod
     def _is_masquerading(name: str) -> bool:
@@ -167,16 +137,13 @@ class ThreatAnalyzer:
             details_parts.append(f"suspicious port {remote_port}")
 
         # إشارة 2: عملية من مجلد مؤقت
-        if cls._is_suspicious_path(process_path) and not cls._is_known_safe_temp_case(
-            process_name, process_path
-        ):
+        if cls._is_suspicious_path(process_path):
             signals.append('runs_from_temp')
             score += ThreatScorer.SIGNALS['runs_from_temp']
             details_parts.append("running from temp folder")
 
         # إشارة 3: اتصال خارجي + مجلد مشبوه
         if (cls._is_suspicious_path(process_path)
-                and not cls._is_known_safe_temp_case(process_name, process_path)
                 and not cls._is_trusted_ip(remote_ip)
                 and remote_ip != "N/A"):
             signals.append('external_connection_from_temp')
@@ -230,11 +197,7 @@ class ThreatAnalyzer:
         memory = proc.get("memory_percent", 0)
 
         # إشارة 1: مسار مؤقت
-        if (
-            cls._is_suspicious_path(path)
-            and not cls._is_trusted_process(name)
-            and not cls._is_known_safe_temp_case(name, path)
-        ):
+        if cls._is_suspicious_path(path) and not cls._is_trusted_process(name):
             signals.append('runs_from_temp')
             score += ThreatScorer.SIGNALS['runs_from_temp']
             details_parts.append(f"runs from {path[:50]}")

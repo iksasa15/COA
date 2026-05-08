@@ -5,3 +5,12 @@ COA_Project/.env
 COA_Project/venv/
 COA_Project/**/__pycache__/
 *.pyc
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local runtime artifacts
+COA_Project/venv/
+COA_Project/logs/
+COA_Project/reports/
